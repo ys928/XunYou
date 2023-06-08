@@ -4,6 +4,8 @@
 
 同时为了节约空间，软件所使用的小说文件格式为：txt文本经bzip2算法压缩得到的文件。
 
+> 注：可以通过链接[点击这里](https://github.com/ys928/XunYou/releases/tag/1.0)，下载bzip2.exe程序，通过拖拽txt文本文件到该命令行程序，会自动生成符合软件格式的文件（txt文件必须为utf-8编码，CRLF作为换行符）
+
 暂时只支持window，未来看情况支持linux、mac、android等等
 
 其中novels文件夹中为几本测试小说，均为网络收集，如有侵权，可联系我进行删除
