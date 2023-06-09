@@ -50,6 +50,9 @@ const global_style=inject("global_style");
 const cenpan_pro_jump_input=inject('cenpan_pro_jump_input') as Ref<Function>;
 //存放所有遍历到的小说目录
 const mainpan_novel_cata=inject("mainpan_novel_cata") as Ref<Array<type_cata_obj>>
+//存放跳转函数
+const mainpan_nov_jump_fun=inject("mainpan_nov_jump_fun") as Ref<Function>;
+
 /*
 普通变量
 */
@@ -63,6 +66,9 @@ let cur_novel_path:string;
  * 初始化函数
  */
 onMounted(()=>{
+    //初始化跳转函数
+    mainpan_nov_jump_fun.value=fun_jump;
+    //初始化跳转组件的按键处理函数
     cenpan_pro_jump_input.value=process_jump_input;
     //初始化打开小说的函数
     root_fun_open_novel.value=fun_open_novel;
@@ -251,10 +257,16 @@ function process_jump_input(key:string,value:string){
     if(novel_lines===undefined||to_line>novel_lines.length){
       return;
     }
+    fun_jump(to_line);
+    div_view.value.style.filter=""; //清除毛玻璃效果
+  }
+}
+
+function fun_jump(line:number){
     //清空
     novel_show_lines.value.splice(0);
     //开始渲染,最多两百行，不足则渲染最后所有
-    view_line=to_line;
+    view_line=line;
     let end=view_line+200>novel_lines.length?novel_lines.length:view_line+200;
     for(let i=view_line;i<end;i++){
       novel_show_lines.value.push(novel_lines[i]);
@@ -269,9 +281,8 @@ function process_jump_input(key:string,value:string){
       line:view_line+view_line,
       allLines:novel_lines.length
     });
-    div_view.value.style.filter=""; //清除毛玻璃效果
-  }
 }
+
 </script>
 
 <style scoped lang="less">
