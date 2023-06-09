@@ -9,6 +9,17 @@
 <script setup lang="ts">
 import { Ref, ref,onMounted, inject } from 'vue';
 import {dialog,fs, invoke} from '@tauri-apps/api';
+
+/**
+ * 自定义类型
+ */
+//目录类型
+type type_cata_obj={
+  name:string,
+  line:number
+};
+
+
 /*
 绑定标签
 */
@@ -37,6 +48,8 @@ const cenpan_show_loading=inject("cenpan_show_loading") as Ref<boolean>;
 const global_style=inject("global_style");
 //存放处理跳转jump组件的按键处理函数
 const cenpan_pro_jump_input=inject('cenpan_pro_jump_input') as Ref<Function>;
+//存放所有遍历到的小说目录
+const mainpan_novel_cata=inject("mainpan_novel_cata") as Ref<Array<type_cata_obj>>
 /*
 普通变量
 */
@@ -135,7 +148,10 @@ async function fun_open_novel(path:string){
       novel_lines=await invoke("open_novel",{filename:path});
       for(let i=0;i<novel_lines.length;i++){
         if(IsTitle(novel_lines[i])){
-          console.log(novel_lines[i]);
+          mainpan_novel_cata.value.push({
+            name:novel_lines[i],
+            line:i
+          });
         }
       }
       //获取该小说记录已经读到的行数（view_min,view_max）中的view_min
