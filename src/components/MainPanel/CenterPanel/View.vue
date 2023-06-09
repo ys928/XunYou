@@ -133,6 +133,11 @@ async function fun_open_novel(path:string){
       root_title.value=get_file_name(path);
       //打开文件进行展示
       novel_lines=await invoke("open_novel",{filename:path});
+      for(let i=0;i<novel_lines.length;i++){
+        if(IsTitle(novel_lines[i])){
+          console.log(novel_lines[i]);
+        }
+      }
       //获取该小说记录已经读到的行数（view_min,view_max）中的view_min
       view_line=await invoke("get_line",{path:path});
       //开始渲染,最多两百行，不足则渲染最后所有
@@ -144,6 +149,16 @@ async function fun_open_novel(path:string){
       root_novel_prog.value=view_line+"/"+novel_lines.length;
       cenpan_show_loading.value=false;
       // console.log(show_loading.value);
+}
+function IsTitle(line:string) {
+  const r1 =new RegExp(/^\s*开\s*篇.*\r?\n?/);
+  if(r1.test(line)){
+    return true;
+  }
+  const r2=new RegExp(/^\s*序\s*章.*\r?\n?/);
+  if(r2.test(line)) return true;
+  const r3=new RegExp(/^\s*第\s*[零一二三四五六七八九0-9]{1,7}\s*[章节幕卷集部回].*\r?\n?/);
+  return r3.test(line);
 }
 
 //处理鼠标滑轮滚动事件

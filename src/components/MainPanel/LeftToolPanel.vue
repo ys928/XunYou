@@ -3,6 +3,7 @@
  <Toolbar></Toolbar>
  <div class="content" v-show="show_divid" ref="div_content">
    <HistoryPanel></HistoryPanel>
+   <Catalogue></Catalogue>
  </div>
  <div v-show="show_divid" class="divid_line" ref="div_divid_line"></div>
 </div>
@@ -11,6 +12,7 @@
 <script setup lang="ts">
 import Toolbar from './LeftToolPanel/Toolbar.vue';
 import HistoryPanel from './LeftToolPanel/HistoryPanel.vue';
+import Catalogue from "./LeftToolPanel/Catalogue.vue"
 import { Ref, inject, onMounted, provide, reactive, ref,watch } from 'vue';
 
 /**
@@ -31,7 +33,8 @@ const div_left_panel=ref();
  * 提供给子组件公用
  */
  const all_panel=reactive({
-    'HistoryPanel':false
+   'HistoryPanel':false,
+    'Catalogue':false
  });
 provide("all_panel",all_panel);
 
