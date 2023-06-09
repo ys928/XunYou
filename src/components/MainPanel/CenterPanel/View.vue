@@ -101,11 +101,11 @@ onMounted(()=>{
     });
   //处理滑动
   var t:NodeJS.Timeout; //事件节流，防止频繁滚动导致界面卡顿
-  div_view.value.addEventListener("scroll",async (e: any)=>{
+  div_view.value.addEventListener("wheel",async (e: any)=>{
     //body的高度设置多些，能够触发onsroll事件
     clearTimeout(t);
     t = setTimeout(function() {
-      process_scroll(); //处理滑动条滚动事件
+      process_wheel(); //处理鼠标滑轮滚动事件
     }, 300)
   });
 
@@ -145,7 +145,9 @@ async function fun_open_novel(path:string){
       cenpan_show_loading.value=false;
       // console.log(show_loading.value);
 }
-async function process_scroll(){
+
+//处理鼠标滑轮滚动事件
+async function process_wheel(){
   let top=div_view.value.scrollTop;
     let buttom=top+div_view.value.clientHeight;
 
@@ -160,7 +162,8 @@ async function process_scroll(){
       }
     }
     //向前渲染最多20条，不足20条则渲染剩下的所有
-    if(cur_view_line===0){
+    //console.log(cur_view_line);
+    if(cur_view_line===0||cur_view_line===1){
       let num=view_line>20?20:view_line;
       for(let i=view_line-num;i<view_line;i++){
         //向前渲染
