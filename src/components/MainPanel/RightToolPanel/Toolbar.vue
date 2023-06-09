@@ -1,6 +1,6 @@
 <template>
 <div class="Toolbar" :class="global_style">
-    <img src="/src/assets/search.svg" @click="all_panel.SearchPanel=!all_panel.SearchPanel" >
+    <img src="/src/assets/search.svg" @click="all_panel.SearchPanel=!all_panel.SearchPanel" title="搜索小说" >
 </div>
 </template>
 

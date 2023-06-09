@@ -1,6 +1,7 @@
 <template>
 <div class="Toolbar" :class="global_style">
-    <img src="/src/assets/history.svg" @click="all_panel.HistoryPanel=!all_panel.HistoryPanel">
+    <img src="/src/assets/history.svg" title="历史记录" @click="switch_panel('HistoryPanel')">
+    <img src="/src/assets/catalogue.svg" title="目录" @click="switch_panel('Catalogue')">
 </div>
 </template>
 
@@ -8,13 +9,36 @@
 import { Ref, inject } from 'vue';
 //相关变量类型
 type all_pan_obj={
-    'HistoryPanel':boolean
+    'HistoryPanel':boolean,
+    'Catalogue':boolean
 }
 
 //全局主题样式
 const global_style=inject("global_style");
 //控制面板显示与否变量
-const all_panel=inject("all_panel") as Ref<all_pan_obj>;
+const all_panel=inject<all_pan_obj>("all_panel");
+
+function switch_panel(name:string){
+    for(let k in all_panel){
+        //console.log(k);
+        if(k===name){
+            // @ts-ignore
+            if(all_panel[k]){
+                // @ts-ignore
+                all_panel[k]=false;
+            }else{
+                // @ts-ignore
+                all_panel[k]=true;
+            }
+
+        }else{
+             // @ts-ignore
+            all_panel[k]=false;
+        }
+    }
+
+}
+
 
 </script>
 

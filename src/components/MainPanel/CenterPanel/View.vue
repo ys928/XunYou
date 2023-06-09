@@ -9,6 +9,17 @@
 <script setup lang="ts">
 import { Ref, ref,onMounted, inject } from 'vue';
 import {dialog,fs, invoke} from '@tauri-apps/api';
+
+/**
+ * 自定义类型
+ */
+//目录类型
+type type_cata_obj={
+  name:string,
+  line:number
+};
+
+
 /*
 绑定标签
 */
@@ -37,6 +48,11 @@ const cenpan_show_loading=inject("cenpan_show_loading") as Ref<boolean>;
 const global_style=inject("global_style");
 //存放处理跳转jump组件的按键处理函数
 const cenpan_pro_jump_input=inject('cenpan_pro_jump_input') as Ref<Function>;
+//存放所有遍历到的小说目录
+const mainpan_novel_cata=inject("mainpan_novel_cata") as Ref<Array<type_cata_obj>>
+//存放跳转函数
+const mainpan_nov_jump_fun=inject("mainpan_nov_jump_fun") as Ref<Function>;
+
 /*
 普通变量
 */
@@ -50,6 +66,9 @@ let cur_novel_path:string;
  * 初始化函数
  */
 onMounted(()=>{
+    //初始化跳转函数
+    mainpan_nov_jump_fun.value=fun_jump;
+    //初始化跳转组件的按键处理函数
     cenpan_pro_jump_input.value=process_jump_input;
     //初始化打开小说的函数
     root_fun_open_novel.value=fun_open_novel;
@@ -133,6 +152,14 @@ async function fun_open_novel(path:string){
       root_title.value=get_file_name(path);
       //打开文件进行展示
       novel_lines=await invoke("open_novel",{filename:path});
+      for(let i=0;i<novel_lines.length;i++){
+        if(IsTitle(novel_lines[i])){
+          mainpan_novel_cata.value.push({
+            name:novel_lines[i],
+            line:i
+          });
+        }
+      }
       //获取该小说记录已经读到的行数（view_min,view_max）中的view_min
       view_line=await invoke("get_line",{path:path});
       //开始渲染,最多两百行，不足则渲染最后所有
@@ -144,6 +171,16 @@ async function fun_open_novel(path:string){
       root_novel_prog.value=view_line+"/"+novel_lines.length;
       cenpan_show_loading.value=false;
       // console.log(show_loading.value);
+}
+function IsTitle(line:string) {
+  const r1 =new RegExp(/^\s*开\s*篇.*\r?\n?/);
+  if(r1.test(line)){
+    return true;
+  }
+  const r2=new RegExp(/^\s*序\s*章.*\r?\n?/);
+  if(r2.test(line)) return true;
+  const r3=new RegExp(/^\s*第\s*[零一二三四五六七八九0-9]{1,7}\s*[章节幕卷集部回].*\r?\n?/);
+  return r3.test(line);
 }
 
 //处理鼠标滑轮滚动事件
@@ -220,10 +257,16 @@ function process_jump_input(key:string,value:string){
     if(novel_lines===undefined||to_line>novel_lines.length){
       return;
     }
+    fun_jump(to_line);
+    div_view.value.style.filter=""; //清除毛玻璃效果
+  }
+}
+
+function fun_jump(line:number){
     //清空
     novel_show_lines.value.splice(0);
     //开始渲染,最多两百行，不足则渲染最后所有
-    view_line=to_line;
+    view_line=line;
     let end=view_line+200>novel_lines.length?novel_lines.length:view_line+200;
     for(let i=view_line;i<end;i++){
       novel_show_lines.value.push(novel_lines[i]);
@@ -238,9 +281,8 @@ function process_jump_input(key:string,value:string){
       line:view_line+view_line,
       allLines:novel_lines.length
     });
-    div_view.value.style.filter=""; //清除毛玻璃效果
-  }
 }
+
 </script>
 
 <style scoped lang="less">

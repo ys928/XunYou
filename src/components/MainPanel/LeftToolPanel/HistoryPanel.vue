@@ -115,7 +115,6 @@ function dclick_novel(index:number){
 }
 .HistoryPanel{
     height: 100%;
-    border-right: none;
     display: flex;
     flex-direction: column;
     .title{
