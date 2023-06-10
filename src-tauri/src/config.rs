@@ -22,7 +22,7 @@ pub struct Novel{
     all_line:u64, //小说总行数
 }
 
-#[derive(Serialize, Deserialize,Default)]
+#[derive(Serialize, Deserialize)]
 struct AppInfo{
     width:u32,  //软件宽度
     height:u32, //软件高度
@@ -32,10 +32,33 @@ struct AppInfo{
     novel_folder:String, //小说文件夹
 }
 
+impl Default for AppInfo {
+    fn default()->Self{
+        Self { width: 1200, height: 800, left_panel_status: false,
+             right_panel_status: false, theme: "dark".to_string(), 
+             novel_folder: "novels".to_string()
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct AppSet{
+    font_size:u32, //字体大小
+    font_weight:u32, //字体粗细
+    line_height:u32 //行高,除以10
+}
+impl Default for AppSet {
+    fn default()->Self{
+        Self { font_size: 16, font_weight: 400, line_height: 16 }
+    }
+}
+
+
 #[derive(Serialize, Deserialize,Default)]
 struct ConfigInfo{
     app:AppInfo,    //软件界面相关的配置信息
-    record:Vec<Novel> //最近打开过的小说
+    record:Vec<Novel>, //最近打开过的小说
+    appset:AppSet //相关的设置项
 }
 
 //获取历史小说文件记录
@@ -133,12 +156,8 @@ fn config_info()->ConfigInfo{
         panic!();
     });
     if !cfun::exist_file(p){
-        let mut c=ConfigInfo::default();
+        let c=ConfigInfo::default();
         //默认宽高
-        c.app.width=1200;
-        c.app.height=800;
-        c.app.theme="dark".to_string();
-        c.app.novel_folder="novels".to_string();
         let s=serde_json::to_string(&c).unwrap_or_else(|e|{
             warn!("serde_json failed:{}",e);
             panic!("");
@@ -155,9 +174,16 @@ fn config_info()->ConfigInfo{
     });
     let app_info:ConfigInfo=serde_json::from_str(&cfg_info).unwrap_or_else(|e|{
         warn!("serde_json failed:{}",e);
-        let mut t=ConfigInfo::default();
-        t.app.theme="dark".to_string();
-        t
+        let c=ConfigInfo::default();
+        let s=serde_json::to_string(&c).unwrap_or_else(|e|{
+            warn!("serde_json failed:{}",e);
+            panic!("");
+        });
+        std::fs::write(p, s).unwrap_or_else(|e|{
+            warn!("write config info failed:{}",e);
+            panic!("");
+        });
+        return c;
     });
     app_info
 }
@@ -206,4 +232,19 @@ pub fn set_novel_folder(folder:&str){
 pub fn get_novel_folder()->String{
     let cfg=config_info();
     cfg.app.novel_folder
+}
+
+#[tauri::command]
+pub fn get_setting() -> AppSet{
+    let cfg=config_info();
+    cfg.appset
+}
+
+#[tauri::command]
+pub fn set_setting(fs:u32,fw:u32,lh:u32){
+    let mut cfg=config_info();
+    cfg.appset.font_size=fs;
+    cfg.appset.font_weight=fw;
+    cfg.appset.line_height=lh;
+    record_config(cfg);
 }

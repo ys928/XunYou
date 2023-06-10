@@ -27,7 +27,9 @@ fn main() {
             config::get_theme,
             config::set_theme,
             config::set_novel_folder,
-            config::get_novel_folder
+            config::get_novel_folder,
+            config::get_setting,
+            config::set_setting
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

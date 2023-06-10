@@ -3,6 +3,7 @@
     <div v-show="show_divid" class="divid_line" ref="div_divid_line"></div>
     <div class="content" ref="div_content" v-show="show_divid">
         <SearchPanel></SearchPanel>
+        <Setting></Setting>
     </div>
     <Toolbar></Toolbar>
 </div>
@@ -11,6 +12,7 @@
 <script setup lang="ts">
 import Toolbar from './RightToolPanel/Toolbar.vue';
 import SearchPanel from './RightToolPanel/SearchPanel.vue';
+import Setting from './RightToolPanel/Setting.vue';
 import { Ref, inject, onMounted, provide, reactive, ref,watch } from 'vue';
 /**
  * ref变量
@@ -31,7 +33,8 @@ const app_cursor=inject("app_cursor") as Ref<string>;
  * 提供给子组件公用
  */
  const all_panel=reactive({
-    'SearchPanel':false
+    'SearchPanel':false,
+    'Setting':false
  });
 provide("all_panel",all_panel);
 /**
