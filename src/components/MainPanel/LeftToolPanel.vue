@@ -4,6 +4,7 @@
  <div class="content" v-show="show_divid" ref="div_content">
    <HistoryPanel></HistoryPanel>
    <Catalogue></Catalogue>
+   <Toolbox></Toolbox>
  </div>
  <div v-show="show_divid" class="divid_line" ref="div_divid_line"></div>
 </div>
@@ -13,6 +14,7 @@
 import Toolbar from './LeftToolPanel/Toolbar.vue';
 import HistoryPanel from './LeftToolPanel/HistoryPanel.vue';
 import Catalogue from "./LeftToolPanel/Catalogue.vue"
+import Toolbox from './LeftToolPanel/Toolbox.vue';
 import { Ref, inject, onMounted, provide, reactive, ref,watch } from 'vue';
 
 /**
@@ -34,7 +36,8 @@ const div_left_panel=ref();
  */
  const all_panel=reactive({
    'HistoryPanel':false,
-    'Catalogue':false
+    'Catalogue':false,
+    'Toolbox':false
  });
 provide("all_panel",all_panel);
 
@@ -54,11 +57,6 @@ provide("all_panel",all_panel);
    if(b){
       show_divid.value=false;
    }
-
-   // div_left_panel.value.addEventListener("mouseover",()=>{
-   //    console.log(1111);
-   //    app_cursor.value="default";
-   // });
 
  });
 

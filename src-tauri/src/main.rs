@@ -29,7 +29,8 @@ fn main() {
             config::set_novel_folder,
             config::get_novel_folder,
             config::get_setting,
-            config::set_setting
+            config::set_setting,
+            txt_to_bzip
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -52,4 +53,15 @@ fn open_novel(filename:&str) ->Vec<String>{
     }
     info!("complate read and return all data");
     ret
+}
+#[tauri::command]
+fn txt_to_bzip(txt:&str){
+    let v=cfun::cmpr_bzip2_file(&txt);
+    let mut name=cfun::file_name(&txt);
+    let p=std::path::Path::new(&txt);
+    let p=p.parent().unwrap();
+    name.drain(name.find('.').unwrap()..);
+    name=name+".novel";
+    let name=p.join(name);
+    std::fs::write(name, v).unwrap();
 }

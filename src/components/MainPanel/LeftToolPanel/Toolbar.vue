@@ -1,7 +1,12 @@
 <template>
 <div class="Toolbar" :class="global_style">
-    <img src="/src/assets/history.svg" title="历史记录" @click="switch_panel('HistoryPanel')">
-    <img src="/src/assets/catalogue.svg" title="目录" @click="switch_panel('Catalogue')">
+    <div class="top">
+        <img src="/src/assets/history.svg" title="历史记录" @click="switch_panel('HistoryPanel')">
+        <img src="/src/assets/catalogue.svg" title="目录" @click="switch_panel('Catalogue')">
+    </div>
+    <div class="bottom">
+        <img src="/src/assets/toolbox.svg" title="工具箱" @click="switch_panel('Toolbox')">
+    </div>
 </div>
 </template>
 
@@ -10,7 +15,8 @@ import { Ref, inject } from 'vue';
 //相关变量类型
 type all_pan_obj={
     'HistoryPanel':boolean,
-    'Catalogue':boolean
+    'Catalogue':boolean,
+    'Toolbox':boolean
 }
 
 //全局主题样式
@@ -64,11 +70,24 @@ function switch_panel(name:string){
 .Toolbar{
     width: 40px;
     padding: 5px;
-    img{
-        width: 30px;
-        height: 30px;
-        padding: 5px;
-        border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    .top{
+        img{
+            width: 30px;
+            height: 30px;
+            padding: 5px;
+            border-radius: 5px;
+        }
+    }
+    .bottom{
+        img{
+            width: 30px;
+            height: 30px;
+            padding: 5px;
+            border-radius: 5px;
+        }
     }
 }
 
