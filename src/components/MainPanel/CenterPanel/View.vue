@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
 import { Ref, ref,onMounted, inject } from 'vue';
-import {dialog,fs, invoke} from '@tauri-apps/api';
+import {dialog,event,fs, invoke} from '@tauri-apps/api';
 
 /**
  * 自定义类型
@@ -139,6 +139,11 @@ onMounted(()=>{
     }, 300)
   });
 
+  //处理文件拖拽
+  event.listen<Array<string>>("tauri://file-drop",(e)=>{
+    let file=e.payload[0];
+    fun_open_novel(file);
+  })
 });
 
 
