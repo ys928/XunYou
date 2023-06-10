@@ -17,7 +17,7 @@
         <div class="line_height">
             行高:
             <span class="button" :class="global_style" @click="sub_line_height">-</span>
-            <span class="height" :class="global_style">{{ mainpan_line_height.toFixed(1) }}</span>
+            <span class="height" :class="global_style">{{ mainpan_line_height/10}}</span>
             <span class="button" :class="global_style" @click="add_line_height">+</span>
         </div>
     </div>
@@ -25,6 +25,7 @@
 </template>
 
 <script setup lang="ts">
+import { invoke } from '@tauri-apps/api';
 import { Ref, inject } from 'vue';
 
 /**
@@ -56,33 +57,48 @@ const mainpan_line_height=inject("mainpan_line_height") as Ref<number>;
 function add_fontsize(){
     if(mainpan_font_size.value>=25) return;
     mainpan_font_size.value+=1;
+    save_setting();
 }
 //字体大小减小
 function sub_fontsize(){
     if(mainpan_font_size.value<=10) return;
     mainpan_font_size.value-=1;
+    save_setting();
 }
 
 //字体粗细增加
 function add_font_weight(){
     if(mainpan_font_weight.value>=900) return;
     mainpan_font_weight.value+=100;
+    save_setting();
 }
 //字体粗细减小
 function sub_font_weight(){
     if(mainpan_font_weight.value<=100) return;
     mainpan_font_weight.value-=100;
+    save_setting();
 }
 //行高增加
 function add_line_height(){
-    if(mainpan_line_height.value>=2.5) return;
-    mainpan_line_height.value+=0.1;
+    if(mainpan_line_height.value>=25) return;
+    mainpan_line_height.value+=1;
+    save_setting();
 }
 //行高减小
 function sub_line_height(){
-    if(mainpan_line_height.value<=1) return;
-    mainpan_line_height.value-=0.1;
+    if(mainpan_line_height.value<=10) return;
+    mainpan_line_height.value-=1;
+    save_setting();
 }
+
+function save_setting(){
+    invoke("set_setting",{
+        fs:mainpan_font_size.value,
+        fw:mainpan_font_weight.value,
+        lh:mainpan_line_height.value
+    });
+}
+
 </script>
 
 <style scoped lang="less">

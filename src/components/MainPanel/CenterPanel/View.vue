@@ -3,8 +3,8 @@
     <p v-for="(item,index) in novel_show_lines" class="novel_line" :style="{
                                                                           'font-size':mainpan_font_size+'px',
                                                                           'font-weight':mainpan_font_weight,
-                                                                          'line-height':mainpan_line_height+'em',
-                                                                          'background-size':'15px '+mainpan_line_height+'em',
+                                                                          'line-height':mainpan_line_height/10+'em',
+                                                                          'background-size':'15px '+mainpan_line_height/10+'em',
                                                                           }"
                                                                           >
     {{item}}
