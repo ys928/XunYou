@@ -155,9 +155,21 @@ fn config_info()->ConfigInfo{
     });
     let app_info:ConfigInfo=serde_json::from_str(&cfg_info).unwrap_or_else(|e|{
         warn!("serde_json failed:{}",e);
-        let mut t=ConfigInfo::default();
-        t.app.theme="dark".to_string();
-        t
+        let mut c=ConfigInfo::default();
+        //默认宽高
+        c.app.width=1200;
+        c.app.height=800;
+        c.app.theme="dark".to_string();
+        c.app.novel_folder="novels".to_string();
+        let s=serde_json::to_string(&c).unwrap_or_else(|e|{
+            warn!("serde_json failed:{}",e);
+            panic!("");
+        });
+        std::fs::write(p, s).unwrap_or_else(|e|{
+            warn!("write config info failed:{}",e);
+            panic!("");
+        });
+        return c;
     });
     app_info
 }
