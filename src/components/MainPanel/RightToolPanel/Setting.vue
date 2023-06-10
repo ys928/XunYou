@@ -14,6 +14,12 @@
             <span class="weight" :class="global_style">{{mainpan_font_weight}}</span>
             <span class="button" :class="global_style" @click="add_font_weight">+</span>
         </div>
+        <div class="line_height">
+            行高:
+            <span class="button" :class="global_style" @click="sub_line_height">-</span>
+            <span class="height" :class="global_style">{{ mainpan_line_height.toFixed(1) }}</span>
+            <span class="button" :class="global_style" @click="add_line_height">+</span>
+        </div>
     </div>
 </div>
 </template>
@@ -40,6 +46,8 @@ const global_style=inject("global_style");
 const mainpan_font_size=inject('mainpan_font_size') as Ref<number>;
 //字体粗细
 const mainpan_font_weight=inject("mainpan_font_weight") as Ref<number>
+//行高
+const mainpan_line_height=inject("mainpan_line_height") as Ref<number>;
 /**
  * 函数
  */
@@ -64,6 +72,16 @@ function add_font_weight(){
 function sub_font_weight(){
     if(mainpan_font_weight.value<=100) return;
     mainpan_font_weight.value-=100;
+}
+//行高增加
+function add_line_height(){
+    if(mainpan_line_height.value>=2.5) return;
+    mainpan_line_height.value+=0.1;
+}
+//行高减小
+function sub_line_height(){
+    if(mainpan_line_height.value<=1) return;
+    mainpan_line_height.value-=0.1;
 }
 </script>
 
@@ -146,6 +164,49 @@ function sub_font_weight(){
             .weight{
                 display: inline-block;
                 margin: 0 5px;
+                border-radius: 5px;
+                width: 40px;
+                height: 20px;
+                line-height: 20px;
+                text-align: center;
+            }
+            .button.dark{
+                color: #ccc;
+                background-color: #3e3e3e;
+                &:hover{
+                    background-color: #5e5e5e;
+                }
+            }
+            .button.white{
+                color: #ccc;
+                background-color: #7f7f7f;
+                &:hover{
+                    background-color: #555;
+                }
+            }
+            .button{
+                border-radius: 5px;
+                display: inline-block;
+                width: 25px;
+                height: 20px;
+                line-height: 20px;
+                text-align: center;
+            }
+        }
+        .line_height{
+            margin: 10px 0;
+            .height.dark{
+                background-color: #bbb;
+                color: #757575;
+            }
+            .height.white{
+                background-color: #aaa;
+                color: #eee;
+            }
+            .height{
+                display: inline-block;
+                margin: 0 5px;
+                
                 border-radius: 5px;
                 width: 40px;
                 height: 20px;

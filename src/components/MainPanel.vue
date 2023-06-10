@@ -30,7 +30,9 @@ provide("mainpan_font_size",mainpan_font_size);
 //字体粗细
 const mainpan_font_weight=ref(400);
 provide("mainpan_font_weight",mainpan_font_weight);
-
+//行高
+const mainpan_line_height=ref(1.8);
+provide("mainpan_line_height",mainpan_line_height);
 </script>
 
 <style scoped lang="less">
