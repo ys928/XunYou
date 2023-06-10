@@ -24,6 +24,10 @@ provide("mainpan_novel_cata",mainpan_novel_cata);
 const mainpan_nov_jump_fun=ref();
 provide("mainpan_nov_jump_fun",mainpan_nov_jump_fun);
 
+//字体大小
+const mainpan_font_size=ref(14);
+provide("mainpan_font_size",mainpan_font_size);
+
 </script>
 
 <style scoped lang="less">

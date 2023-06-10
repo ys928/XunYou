@@ -1,6 +1,6 @@
 <template>
 <div class="View" ref="div_view" :class="global_style">
-    <p v-for="(item,index) in novel_show_lines" class="novel_line">
+    <p v-for="(item,index) in novel_show_lines" class="novel_line" :style="{'font-size':mainpan_font_size+'px'}">
     {{item}}
   </p>
 </div>
@@ -52,7 +52,8 @@ const cenpan_pro_jump_input=inject('cenpan_pro_jump_input') as Ref<Function>;
 const mainpan_novel_cata=inject("mainpan_novel_cata") as Ref<Array<type_cata_obj>>
 //存放跳转函数
 const mainpan_nov_jump_fun=inject("mainpan_nov_jump_fun") as Ref<Function>;
-
+//字体大小
+const mainpan_font_size=inject('mainpan_font_size') as Ref<number>;
 /*
 普通变量
 */
