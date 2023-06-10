@@ -1,6 +1,11 @@
 <template>
 <div class="Toolbar" :class="global_style">
-    <img src="/src/assets/search.svg" @click="all_panel.SearchPanel=!all_panel.SearchPanel" title="搜索小说" >
+    <div class="top">
+        <img src="/src/assets/search.svg" @click="switch_panel('SearchPanel')" title="搜索小说" >
+    </div>
+    <div class="bottom">
+        <img src="/src/assets/setting.svg" title="设置" @click="switch_panel('Setting')">
+    </div>
 </div>
 </template>
 
@@ -8,13 +13,36 @@
 import { inject,Ref } from 'vue';
 //相关变量类型
 type all_pan_obj={
-    'SearchPanel':boolean
+    'SearchPanel':boolean,
+    'Setting':boolean
 }
 
 //全局主题样式
 const global_style=inject("global_style");
 //控制面板显示与否变量
 const all_panel=inject("all_panel") as Ref<all_pan_obj>;
+
+function switch_panel(name:string){
+    for(let k in all_panel){
+        //console.log(k);
+        if(k===name){
+            // @ts-ignore
+            if(all_panel[k]){
+                // @ts-ignore
+                all_panel[k]=false;
+            }else{
+                // @ts-ignore
+                all_panel[k]=true;
+            }
+
+        }else{
+            // @ts-ignore
+            all_panel[k]=false;
+        }
+    }
+
+}
+
 </script>
 
 <style scoped lang="less">
@@ -39,12 +67,26 @@ const all_panel=inject("all_panel") as Ref<all_pan_obj>;
 .Toolbar{
     width: 40px;
     padding: 5px;
-    img{
-        width: 30px;
-        height:30px;
-        padding: 3px;
-        border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    .top{
+        img{
+            width: 30px;
+            height:30px;
+            padding: 3px;
+            border-radius: 5px;
+        }
     }
+    .bottom{
+        img{
+            width: 30px;
+            height:30px;
+            padding: 3px;
+            border-radius: 5px;
+        }
+    }
+
 }
 
 </style>

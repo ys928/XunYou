@@ -129,7 +129,6 @@ function dclick_novel(index:number){
     background-color: #202020;
 }
 .SearchPanel{
-    border-left: none;
     display: flex;
     flex-direction: column;
     height: 100%;
