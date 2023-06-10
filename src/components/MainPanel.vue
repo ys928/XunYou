@@ -25,8 +25,11 @@ const mainpan_nov_jump_fun=ref();
 provide("mainpan_nov_jump_fun",mainpan_nov_jump_fun);
 
 //字体大小
-const mainpan_font_size=ref(14);
+const mainpan_font_size=ref(16);
 provide("mainpan_font_size",mainpan_font_size);
+//字体粗细
+const mainpan_font_weight=ref(400);
+provide("mainpan_font_weight",mainpan_font_weight);
 
 </script>
 

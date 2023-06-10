@@ -8,6 +8,12 @@
             <span class="size" :class="global_style">{{ mainpan_font_size }}</span>
             <span class="button" @click="add_fontsize" :class="global_style">+</span>
         </div>
+        <div class="font_weight" :class="global_style">
+            字体粗细:
+            <span class="button" :class="global_style" @click="sub_font_weight">-</span>
+            <span class="weight" :class="global_style">{{mainpan_font_weight}}</span>
+            <span class="button" :class="global_style" @click="add_font_weight">+</span>
+        </div>
     </div>
 </div>
 </template>
@@ -32,7 +38,8 @@ const all_panel=inject("all_panel") as Ref<all_pan_obj>;
 const global_style=inject("global_style");
 //字体大小
 const mainpan_font_size=inject('mainpan_font_size') as Ref<number>;
-
+//字体粗细
+const mainpan_font_weight=inject("mainpan_font_weight") as Ref<number>
 /**
  * 函数
  */
@@ -46,6 +53,17 @@ function add_fontsize(){
 function sub_fontsize(){
     if(mainpan_font_size.value<=10) return;
     mainpan_font_size.value-=1;
+}
+
+//字体粗细增加
+function add_font_weight(){
+    if(mainpan_font_weight.value>=900) return;
+    mainpan_font_weight.value+=100;
+}
+//字体粗细减小
+function sub_font_weight(){
+    if(mainpan_font_weight.value<=100) return;
+    mainpan_font_weight.value-=100;
 }
 </script>
 
@@ -70,9 +88,11 @@ function sub_fontsize(){
     .set_item{
         display: flex;
         flex-direction: column;
+
         color: #757575;
+        padding: 10px;
         .font_size{
-            padding-left: 10px;
+            margin: 10px 0;
             .size.dark{
                 background-color: #bbb;
                 color: #757575;
@@ -82,6 +102,48 @@ function sub_fontsize(){
                 color: #eee;
             }
             .size{
+                display: inline-block;
+                margin: 0 5px;
+                border-radius: 5px;
+                width: 40px;
+                height: 20px;
+                line-height: 20px;
+                text-align: center;
+            }
+            .button.dark{
+                color: #ccc;
+                background-color: #3e3e3e;
+                &:hover{
+                    background-color: #5e5e5e;
+                }
+            }
+            .button.white{
+                color: #ccc;
+                background-color: #7f7f7f;
+                &:hover{
+                    background-color: #555;
+                }
+            }
+            .button{
+                border-radius: 5px;
+                display: inline-block;
+                width: 25px;
+                height: 20px;
+                line-height: 20px;
+                text-align: center;
+            }
+        }
+        .font_weight{
+            margin: 10px 0;
+            .weight.dark{
+                background-color: #bbb;
+                color: #757575;
+            }
+            .weight.white{
+                background-color: #aaa;
+                color: #eee;
+            }
+            .weight{
                 display: inline-block;
                 margin: 0 5px;
                 border-radius: 5px;

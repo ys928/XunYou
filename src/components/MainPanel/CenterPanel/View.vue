@@ -1,6 +1,9 @@
 <template>
 <div class="View" ref="div_view" :class="global_style">
-    <p v-for="(item,index) in novel_show_lines" class="novel_line" :style="{'font-size':mainpan_font_size+'px'}">
+    <p v-for="(item,index) in novel_show_lines" class="novel_line" :style="{
+                                                                          'font-size':mainpan_font_size+'px',
+                                                                          'font-weight':mainpan_font_weight}"
+                                                                          >
     {{item}}
   </p>
 </div>
@@ -54,6 +57,8 @@ const mainpan_novel_cata=inject("mainpan_novel_cata") as Ref<Array<type_cata_obj
 const mainpan_nov_jump_fun=inject("mainpan_nov_jump_fun") as Ref<Function>;
 //字体大小
 const mainpan_font_size=inject('mainpan_font_size') as Ref<number>;
+//字体粗细
+const mainpan_font_weight=inject("mainpan_font_weight") as Ref<number>
 /*
 普通变量
 */
