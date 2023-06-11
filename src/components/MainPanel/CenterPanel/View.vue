@@ -1,14 +1,17 @@
 <template>
 <div class="View" ref="div_view" :class="global_style">
-    <p v-for="(item,index) in novel_show_lines" class="novel_line" :style="{
-                                                                          'font-size':mainpan_font_size+'px',
-                                                                          'font-weight':mainpan_font_weight,
-                                                                          'line-height':mainpan_line_height/10+'em',
-                                                                          'background-size':'15px '+mainpan_line_height/10+'em',
-                                                                          }"
-                                                                          >
-    {{item}}
-  </p>
+  <div class="one_line" v-for="(item,index) in novel_show_lines">
+    <div v-if="IsTitle(item)" class="title">{{item}}</div>
+    <div v-else class="paragraph" :style="{'font-size':mainpan_font_size+'px',
+                                    'font-weight':mainpan_font_weight,
+                                    'line-height':mainpan_line_height/10+'em',
+                                    'background-size':'15px '+mainpan_line_height/10+'em',
+                                    }">
+        {{item}}
+      </div>
+
+  </div>
+
 </div>
 </template>
 
@@ -189,7 +192,7 @@ async function fun_open_novel(path:string){
       // console.log(show_loading.value);
 }
 function IsTitle(line:string) {
-  const r1 =new RegExp(/^\s*开\s*篇.*\r?\n?/);
+  const r1 =new RegExp(/^\s*开\s*篇.*\r?\n?/); 
   if(r1.test(line)){
     return true;
   }
@@ -204,7 +207,7 @@ async function process_wheel(){
   let top=div_view.value.scrollTop;
     let buttom=top+div_view.value.clientHeight;
 
-    let all_p=div_view.value.querySelectorAll('p');
+    let all_p=div_view.value.querySelectorAll('.one_line');
     let np=all_p.length; //当前渲染的个数
     //获得视图窗口第一行在小说novel_lines中的位置
     let cur_view_line=0;
@@ -215,7 +218,8 @@ async function process_wheel(){
       }
     }
     //向前渲染最多20条，不足20条则渲染剩下的所有
-    //console.log(cur_view_line);
+    // console.log(cur_view_line);
+    // console.log(all_p);
     if(cur_view_line===0||cur_view_line===1){
       let num=view_line>20?20:view_line;
       for(let i=view_line-num;i<view_line;i++){
@@ -225,7 +229,7 @@ async function process_wheel(){
         novel_show_lines.value.pop();
       }
       view_line-=num;
-      all_p=div_view.value.querySelectorAll('p');
+      all_p=div_view.value.querySelectorAll('.one_line');
       div_view.value.scrollTop=all_p[num].offsetTop;
     }else if(all_p[np-2].offsetTop<=buttom){ //倒数第2个元素已经显示出来，需要增加
       //向后渲染50条，不足50条则渲染剩下所有
@@ -239,7 +243,7 @@ async function process_wheel(){
         novel_show_lines.value.shift();
       }
       view_line+=(end-view_line-np);
-      all_p=div_view.value.querySelectorAll('p');
+      all_p=div_view.value.querySelectorAll('.one_line');
       div_view.value.scrollTop=all_p[cur_view_line-num].offsetTop;
     }
     //每次滑动都要记录一下数据
@@ -279,8 +283,10 @@ function process_jump_input(key:string,value:string){
 }
 
 function fun_jump(line:number){
+    //console.log(line);
     //清空
     novel_show_lines.value.splice(0);
+    //console.log(novel_show_lines.value.length);
     //开始渲染,最多两百行，不足则渲染最后所有
     view_line=line;
     let end=view_line+200>novel_lines.length?novel_lines.length:view_line+200;
@@ -290,7 +296,8 @@ function fun_jump(line:number){
     //进度，按行显示
     //nov_prog.value=view_line+"/"+novel_lines.length;
     cenpan_show_loading.value=false;
-
+    //滑动到第一个元素的位置
+    div_view.value.scrollTop=div_view.value.firstChild.offsetTop;
     //每次跳转都要记录一下数据
     invoke("set_line",{
       path:cur_novel_path,
@@ -333,15 +340,23 @@ function fun_jump(line:number){
     &::-webkit-scrollbar{
         width: 10px;
     }
-    .novel_line{
-      word-break: break-all;
-      background-image:url("/src/assets/line.svg");
-      //background-repeat: repeat;
-      color: #7F7F7F;
-      user-select: text;
-      &::selection {
-          background:#f5eccf;
-          opacity: 0.5;
+    .one_line{
+      .title{
+        font-size: 25px;
+        color: #7F7F7F;
+        text-align: center;
+        margin: 15px 0;
+      }
+      .paragraph{
+        word-break: break-all;
+        background-image:url("/src/assets/line.svg");
+        //background-repeat: repeat;
+        color: #7F7F7F;
+        user-select: text;
+        &::selection {
+            background:#f5eccf;
+            opacity: 0.5;
+        }
       }
     }
 }
