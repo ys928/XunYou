@@ -11,6 +11,9 @@
             </span>
         </div>
     </div>
+    <div class="opt_menu" ref="dev_menu" v-show="is_show_menu" :class="global_style">
+        <div class="item" @click="del_record">删除</div>
+    </div>
 </div>
 </template>
 
@@ -46,6 +49,7 @@ const all_panel=inject("all_panel") as Ref<type_all_pan_obj>;
  */
 
 const div_record=ref();
+const dev_menu=ref();
 
 /**
  * vue变量
@@ -53,7 +57,14 @@ const div_record=ref();
 
 //记录所有打开过的小说
 const records_novel=ref([]) as Ref<Array<type_record_novel>>;
+//是否显示右键菜单
+const is_show_menu=ref(false);
 
+/**
+ * 普通变量
+ */
+//记录当前右键点击的历史项
+let cur_index:number;
 
 /**
  * 双击打开某个记录
@@ -78,31 +89,38 @@ function dclick_novel(index:number){
     div_record.value.oncontextmenu=(e:MouseEvent)=>{
         let index=-1;
         let all_history_item=div_record.value.querySelectorAll("div");
-        // for(let i =0;i<all_history_item.length;i++){
-        //     if(all_history_item[i].contains(e.target)){
-        //         opt_menu.value.style.left=e.pageX+"px";
-        //         opt_menu.value.style.top=e.pageY+"px";
-        //         show_menu.value=true;
-        //         index=i;
-        //     }
-        // }
+        for(let i =0;i<all_history_item.length;i++){
+            if(all_history_item[i].contains(e.target)){
+                dev_menu.value.style.left=e.pageX+"px";
+                dev_menu.value.style.top=e.pageY+"px";
+                is_show_menu.value=true;
+                index=i;
+            }
+        }
         //没有点击到任何一个历史记录项中，则要隐藏菜单
-        // if(index===-1){
-        //     cur_index===-1;
-        //     show_menu.value=false;
-        // }else{
-        //     cur_index=index;
-        // }
-
+        if(index===-1){
+            cur_index===-1;
+            is_show_menu.value=false;
+        }else{
+            cur_index=index;
+        }
     }
-    // document.addEventListener("click",e=>{
-    //     if(opt_menu.value!==undefined&&opt_menu.value!==null&& !opt_menu.value.contains(e.target)){
-    //         show_menu.value=false;
-    //     }
-    // })
+    document.addEventListener("click",e=>{
+        if(dev_menu.value!==undefined&&dev_menu.value!==null&& !dev_menu.value.contains(e.target)){
+            is_show_menu.value=false;
+        }
+    })
 });
 
+//删除一个记录项，
+async function del_record(){
+    await invoke("del_record",{
+        path:records_novel.value[cur_index].path
+    });
 
+    records_novel.value.splice(cur_index,1);
+    is_show_menu.value=false;
+}
 
 </script>
 
@@ -193,6 +211,34 @@ function dclick_novel(index:number){
                 border-radius: 5px;
             }
         }
+    }
+    .opt_menu.dark{
+        background-color: #4a4a4a;
+        color: #999;
+        .item{
+            &:hover{
+                background-color: #5f5f5f;
+            }
         }
+    }
+    .opt_menu.white{
+        background-color: #b4b3ad;
+        color: #2e2e2e;
+        .item{
+            &:hover{
+                background-color: #aaa;
+            }
+        }
+    }
+    .opt_menu{
+        position: fixed;
+        border-radius: 5px;
+        padding: 3px 5px;
+        width: 100px;
+        .item{
+            padding: 2px 10px;
+            border-radius: 5px;
+        }
+    }
 }
 </style>
