@@ -2,7 +2,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod config;
-use tauri::{Manager, Size, PhysicalSize};
+use tauri::{Manager, Size, PhysicalSize, api::file};
 use log::{info,warn};
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
@@ -19,6 +19,7 @@ fn main() {
         })
         .invoke_handler(tauri::generate_handler![
             open_novel,
+            open_novel_txt,
             config::set_line,
             config::get_line,
             config::get_record,
@@ -36,6 +37,22 @@ fn main() {
         .expect("error while running tauri application");
 }
 
+
+#[tauri::command]
+fn open_novel_txt(filename:&str) ->Vec<String>{
+    let str=std::fs::read_to_string(filename).unwrap_or_else(|e|{
+        warn!("error to write config info to file,{}",e);
+        panic!("error");
+    });
+    let str=str.replace("\r", "");
+    let v:Vec<&str>=str.split("\n").collect();
+    let mut ret=Vec::new();
+    for i in v{
+        ret.push(i.to_string());
+    }
+    ret
+}
+
 #[tauri::command]
 fn open_novel(filename:&str) ->Vec<String>{
     info!("read file and begin decompress:{}",filename);
@@ -45,8 +62,9 @@ fn open_novel(filename:&str) ->Vec<String>{
         warn!("error to write config info to file,{}",e);
         panic!("error");
     });
+    let s=s.replace("\r", "");
     info!("begin splite by \\r\\n");
-    let v:Vec<&str>=s.split("\r\n").collect();
+    let v:Vec<&str>=s.split("\n").collect();
     let mut ret=Vec::new();
     for i in v{
         ret.push(i.to_string());

@@ -169,8 +169,17 @@ async function fun_open_novel(path:string){
       cur_novel_path=path;
       //更新文件名
       root_title.value=get_file_name(path);
-      //打开文件进行展示
-      novel_lines=await invoke("open_novel",{filename:path});
+      if(path.endsWith(".novel")){
+        //打开文件进行展示
+        novel_lines=await invoke("open_novel",{filename:path});
+      }else if(path.endsWith(".txt")){
+        //打开文件进行展示
+        novel_lines=await invoke("open_novel_txt",{filename:path});
+      }else{
+        await dialog.message('不支持该类型文件！', { title: '打开失败', type: 'warning' });
+        return;
+      }
+
       for(let i=0;i<novel_lines.length;i++){
         if(IsTitle(novel_lines[i])){
           mainpan_novel_cata.value.push({
