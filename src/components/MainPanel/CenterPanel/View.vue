@@ -76,6 +76,9 @@ let novel_lines:Array<string>;
 let view_line:number;
 //存放当前打开的小说的路径
 let cur_novel_path:string;
+//存放当前阅读到的章节
+let cur_capter_index:number;
+
 /**
  * 初始化函数
  */
@@ -132,6 +135,21 @@ onMounted(()=>{
       }
     }
     });
+    document.addEventListener("keyup",e=>{
+      if(e.key==="PageUp"){
+        if(cur_capter_index<mainpan_novel_cata.value.length){
+          cur_capter_index++;
+        }
+      }else if(e.key==='PageDown'){
+        if(cur_capter_index>0){
+          cur_capter_index--;
+        }
+      }else if(e.key==='ArrowUp'){
+
+      }else if(e.key==='ArrowDown'){
+
+      }
+    })
   //处理滑动
   var t:NodeJS.Timeout; //事件节流，防止频繁滚动导致界面卡顿
   div_view.value.addEventListener("wheel",async (e: any)=>{
@@ -286,12 +304,15 @@ function process_jump_input(key:string,value:string){
     if(novel_lines===undefined||to_line>novel_lines.length){
       return;
     }
-    fun_jump(to_line);
+    fun_jump(-1,to_line);
     div_view.value.style.filter=""; //清除毛玻璃效果
   }
 }
 
-function fun_jump(line:number){
+function fun_jump(index:number,line:number){
+    if(index !==-1){
+      cur_capter_index=index;
+    }
     //console.log(line);
     //清空
     novel_show_lines.value.splice(0);

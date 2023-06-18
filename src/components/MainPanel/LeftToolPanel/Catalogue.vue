@@ -38,7 +38,7 @@ const mainpan_nov_jump_fun=inject("mainpan_nov_jump_fun") as Ref<Function>;
  * 函数
  */
 function dclick_cata_item(index:number){
-    mainpan_nov_jump_fun.value(mainpan_novel_cata.value[index].line);
+    mainpan_nov_jump_fun.value(index,mainpan_novel_cata.value[index].line);
 }
 </script>
 

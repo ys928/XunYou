@@ -2,8 +2,8 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod config;
-use tauri::{Manager, Size, PhysicalSize, api::file};
-use log::{info,warn};
+mod tool;
+use tauri::{Manager, Size, PhysicalSize};
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 fn main() {
@@ -18,8 +18,9 @@ fn main() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
-            open_novel,
-            open_novel_txt,
+            tool::open_novel,
+            tool::open_novel_txt,
+            tool::txt_to_bzip,
             config::set_line,
             config::get_line,
             config::get_record,
@@ -31,55 +32,7 @@ fn main() {
             config::get_novel_folder,
             config::get_setting,
             config::set_setting,
-            txt_to_bzip
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
-}
-
-
-#[tauri::command]
-fn open_novel_txt(filename:&str) ->Vec<String>{
-    let str=std::fs::read_to_string(filename).unwrap_or_else(|e|{
-        warn!("error to write config info to file,{}",e);
-        panic!("error");
-    });
-    let str=str.replace("\r", "");
-    let v:Vec<&str>=str.split("\n").collect();
-    let mut ret=Vec::new();
-    for i in v{
-        ret.push(i.to_string());
-    }
-    ret
-}
-
-#[tauri::command]
-fn open_novel(filename:&str) ->Vec<String>{
-    info!("read file and begin decompress:{}",filename);
-    let v=cfun::decmpr_bzip2_file(filename);
-    info!("completed decompress and convert it to string");
-    let s=String::from_utf8(v).unwrap_or_else(|e|{
-        warn!("error to write config info to file,{}",e);
-        panic!("error");
-    });
-    let s=s.replace("\r", "");
-    info!("begin splite by \\r\\n");
-    let v:Vec<&str>=s.split("\n").collect();
-    let mut ret=Vec::new();
-    for i in v{
-        ret.push(i.to_string());
-    }
-    info!("complate read and return all data");
-    ret
-}
-#[tauri::command]
-fn txt_to_bzip(txt:&str){
-    let v=cfun::cmpr_bzip2_file(&txt);
-    let mut name=cfun::file_name(&txt);
-    let p=std::path::Path::new(&txt);
-    let p=p.parent().unwrap();
-    name.drain(name.find('.').unwrap()..);
-    name=name+".novel";
-    let name=p.join(name);
-    std::fs::write(name, v).unwrap();
 }
