@@ -39,9 +39,6 @@ const global_style=inject("global_style");
 let show_novel_list=ref([]) as Ref<Array<FileEntry>>;
 //控制加载图标是否显示
 const show_loading=ref(false);
-
-//搜索框中的值
-const search_value=ref("") as Ref<string>;
 /**
  * 绑定相关标签的变量
  */
