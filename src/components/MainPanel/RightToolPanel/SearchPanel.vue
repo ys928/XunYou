@@ -2,7 +2,7 @@
 <div class="SearchPanel" v-show="all_panel.SearchPanel" :class="global_style">
     <div class="title">搜索栏</div>
     <div class="top_pos">
-        <input type="text" ref="input_search" @input="search_fun" class="search" :class="global_style" placeholder="搜小说">
+        <n-input size="tiny" round @input="search_fun" placeholder="搜小说"></n-input>
         <n-icon class="icon" size="20" color="#585858" :component="Folder20Filled" @click="choose_dir"></n-icon>
     </div>
     <div class="novel_list" ref="novel_list" :class="global_style">
@@ -19,7 +19,7 @@ import { Ref,ref, inject, onMounted } from 'vue';
 import { FileEntry, readDir } from '@tauri-apps/api/fs';
 import { dialog, invoke } from '@tauri-apps/api';
 import { fs } from '@tauri-apps/api';
-import {NIcon} from "naive-ui"
+import {NIcon,NInput} from "naive-ui"
 import {Folder20Filled} from "@vicons/fluent"
 /**
  * 相关变量类型
@@ -39,12 +39,13 @@ const global_style=inject("global_style");
 let show_novel_list=ref([]) as Ref<Array<FileEntry>>;
 //控制加载图标是否显示
 const show_loading=ref(false);
+
+//搜索框中的值
+const search_value=ref("") as Ref<string>;
 /**
  * 绑定相关标签的变量
  */
 
-//搜索框 
-const input_search=ref();
 
 /**
  * 普通变量
@@ -61,8 +62,8 @@ let all_novel:Array<FileEntry>=[];
 //取出存放打开小说的函数变量，本组件用来使用该函数
 const root_fun_open_novel=inject('root_fun_open_novel') as Ref<Function>;
 
-async function search_fun() {
-    if(input_search.value.value.length===0){ //为空，直接展示前一百条
+async function search_fun(v:string) {
+    if(v.length===0){ //为空，直接展示前一百条
         show_novel_list.value.splice(0); //先清空
         //优化性能，最多展示前100项
         let max=100<all_novel.length?100:all_novel.length;
@@ -72,7 +73,7 @@ async function search_fun() {
         
     }else{
         show_novel_list.value.splice(0); //先清空
-        let search_result=all_novel.filter(e => e.name!.includes(input_search.value.value) );
+        let search_result=all_novel.filter(e => e.name!.includes(v) );
         for(let i=0;i<search_result.length;i++){
             show_novel_list.value.push(search_result[i]);
         }
@@ -154,40 +155,16 @@ function dclick_novel(index:number){
         justify-content: center;
         margin-bottom: 15px;
         padding: 0 30px;
+    }
+    .icon{
+        width: 24px;
         height: 20px;
-        .search.white{
-            background-color: #eee;
-            &:focus{
-                background-color: #fff;
-                border: #666 solid 1px;
-            }
-        }
-        .search.dark{
-            background-color: #3e3e3e;
-            &:focus{
-                background-color: #333;
-                border: #666 solid 1px;
-            }
-        }
-        .search{
-            outline: none;
-            border: 0px;
-            border-radius: 5px;
-            flex-grow: 1;
-            color: #757575;
-            padding: 0 5px;
-            height: 20px;
-            width: 120px;
-        }
-        }
-        .icon{
-            width: 24px;
-            height: 20px;
-            display: inline;
-            line-height: 20px;
-            border-radius: 5px;
-            margin-left: 3px;
-        }
+        display: inline;
+        line-height: 20px;
+        border-radius: 5px;
+        margin-left: 3px;
+    }
+    
     .novel_list.dark{
         border: 2px solid #3e3e3e;
         background-color: #2c2c2c;

@@ -53,12 +53,12 @@ const message = useMessage();
 function switch_sty(){
     style_switch.value=!style_switch.value;
     if(global_style.value==="dark"){
-        message.info("已切换为日照模式");
+        message.info("白日模式");
         global_style.value="white";
         invoke("set_theme",{theme:'white'});
     }else{
         global_style.value="dark";
-        message.info("切换为黑夜模式");
+        message.info("黑夜模式");
         invoke("set_theme",{theme:'dark'});
     }
 }
