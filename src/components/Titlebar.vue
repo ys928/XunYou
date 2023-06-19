@@ -3,12 +3,14 @@
     <Icon></Icon>
     <div data-tauri-drag-region class="novel_name">{{root_title}}</div>
     <div class="right">
-        <div class="switch" ref="div_switch">
-            <span>暗</span>
-            <img v-if="!style_switch" src="/src/assets/switch-off.svg">
-            <img v-if="style_switch" src="/src/assets/switch-on.svg">
-            <span>亮</span>
-        </div>
+        <n-switch :value="style_switch" @click="switch_sty">
+            <template #checked-icon>
+                <n-icon :component="SunnyOutline"/>
+            </template>
+            <template #unchecked-icon>
+                <n-icon :component="Moon"/>
+            </template>
+        </n-switch>
         <MMC></MMC>
     </div>
 </div>
@@ -19,12 +21,12 @@ import MMC from "./Titlebar/MMC.vue";
 import Icon from "./Titlebar/Icon.vue"
 import { Ref, inject, onMounted, ref } from "vue";
 import { invoke } from "@tauri-apps/api";
-
+import {NSwitch,NIcon} from "naive-ui"
+import {Moon,SunnyOutline} from "@vicons/ionicons5"
 /**
  * 绑定相关标签的变量
  */
 //开关标签
-const div_switch=ref();
 const div_titlebar=ref();
 /**
  * ref变量
@@ -42,18 +44,22 @@ const global_style=inject("global_style") as Ref<string>;
 const root_title=inject("root_title");
 //鼠标样式
 const app_cursor=inject("app_cursor") as Ref<string>;
-onMounted(async ()=>{
-    div_switch.value.addEventListener("click",()=>{
-        style_switch.value=!style_switch.value;
-        if(global_style.value==="dark"){
-            global_style.value="white";
-            invoke("set_theme",{theme:'white'});
-        }else{
-            global_style.value="dark";
-            invoke("set_theme",{theme:'dark'});
-        }
-    });
 
+/**
+ * 普通函数
+ */
+function switch_sty(){
+    style_switch.value=!style_switch.value;
+    if(global_style.value==="dark"){
+        global_style.value="white";
+        invoke("set_theme",{theme:'white'});
+    }else{
+        global_style.value="dark";
+        invoke("set_theme",{theme:'dark'});
+    }
+}
+
+onMounted(async ()=>{
     div_titlebar.value.addEventListener("mouseenter",()=>{
         app_cursor.value="default";
     })
@@ -94,18 +100,8 @@ onMounted(async ()=>{
     }
     .right{
         display: flex;
-        .switch{
-            margin: 0 25px;
-            display: flex;
-            img{
-                width: 30px;
-                height: 30px;
-                margin: 0 5px;
-            }
-            span{
-                font-size: 12px;
-                color: #777;
-            }
+        .n-switch{
+            margin: 3px 25px;
         }
     }
 }
