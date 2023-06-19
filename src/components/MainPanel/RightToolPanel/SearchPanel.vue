@@ -5,12 +5,12 @@
         <n-input size="tiny" round @input="search_fun" placeholder="搜小说"></n-input>
         <n-icon class="icon" size="20" color="#585858" :component="Folder20Filled" @click="choose_dir"></n-icon>
     </div>
-    <div class="novel_list" ref="novel_list" :class="global_style">
+    <n-scrollbar class="novel_list">
         <div v-for="(item,index) in show_novel_list" class="novel_item" :class="global_style">
             <span @dblclick="dclick_novel(index)">{{item.name!.substring(0,item.name!.lastIndexOf('.'))}}</span>
         </div>
         <n-spin class="loading" size="medium" v-show="show_loading"></n-spin>
-    </div>
+    </n-scrollbar>
 </div>
 </template>
 
@@ -19,7 +19,7 @@ import { Ref,ref, inject, onMounted } from 'vue';
 import { FileEntry, readDir } from '@tauri-apps/api/fs';
 import { dialog, invoke } from '@tauri-apps/api';
 import { fs } from '@tauri-apps/api';
-import {NIcon,NInput,NSpin} from "naive-ui"
+import {NIcon,NInput,NSpin,NScrollbar} from "naive-ui"
 import {Folder20Filled} from "@vicons/fluent"
 /**
  * 相关变量类型
@@ -142,6 +142,7 @@ function dclick_novel(index:number){
     display: flex;
     flex-direction: column;
     height: 100%;
+    padding: 0 10px;
     .title{
         font-size: 16px;
         margin: 5px 0;
@@ -163,43 +164,10 @@ function dclick_novel(index:number){
         border-radius: 5px;
         margin-left: 3px;
     }
-    
-    .novel_list.dark{
-        border: 2px solid #3e3e3e;
-        background-color: #2c2c2c;
-        border-bottom: none;
-        &::-webkit-scrollbar-thumb{
-            background-color: #959595;
-            border-radius: 3px;
-        }
-        &::-webkit-scrollbar-track{
-            background-color: #333;
-        }
-    }
-    .novel_list.white{
-        background-color: #f4f3ed;
-        border: 2px solid #e7e7e7;
-        border-bottom: none;
-        &::-webkit-scrollbar-thumb{
-            background-color: #ddd;
-            border-radius: 3px;
-        }
-        &::-webkit-scrollbar-track{
-            background-color: #eee;
-        }
-    }
     .novel_list{
         font-size: 14px;
-        overflow: auto;
         flex-grow: 1;
-        text-align: left;
-        padding: 0px 10px;
         border-radius: 5px;
-        margin: 0 5px;
-        position: relative;
-        &::-webkit-scrollbar{
-            width: 10px;
-        }
         .novel_item.dark{
             background-color: #2e2e2e;
             border-bottom: #666 solid 2px;
