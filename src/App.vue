@@ -1,13 +1,13 @@
 <template>
-<n-message-provider>
-  <n-config-provider :theme="app_style">
-      <div class="MainWindow" ref="div_main_window">
-        <Titlebar></Titlebar>
-        <MainPanel></MainPanel>
-        <Statusbar></Statusbar>
-      </div>
-  </n-config-provider>
-</n-message-provider>
+<n-config-provider :theme="app_style">
+  <n-message-provider>
+    <div class="MainWindow" ref="div_main_window">
+      <Titlebar></Titlebar>
+      <MainPanel></MainPanel>
+      <Statusbar></Statusbar>
+    </div>
+  </n-message-provider>
+</n-config-provider>
 </template>
 
 <script setup lang="ts">
