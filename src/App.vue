@@ -1,9 +1,11 @@
 <template>
-<div class="MainWindow" ref="div_main_window">
-  <Titlebar></Titlebar>
-  <MainPanel></MainPanel>
-  <Statusbar></Statusbar>
-</div>
+<n-config-provider :theme="darkTheme">
+  <div class="MainWindow" ref="div_main_window">
+    <Titlebar></Titlebar>
+    <MainPanel></MainPanel>
+    <Statusbar></Statusbar>
+  </div>
+</n-config-provider>
 </template>
 
 <script setup lang="ts">
@@ -12,6 +14,7 @@ import MainPanel from './components/MainPanel.vue';
 import Statusbar from './components/Statusbar.vue';
 import { onMounted, provide, ref,watch } from 'vue';
 import { event, invoke,window } from '@tauri-apps/api';
+import { darkTheme } from 'naive-ui'
 //dark:黑色主题
 //white:白色主题
 const global_style=ref("dark");

@@ -1,17 +1,21 @@
 <template>
 <div class="Toolbar" :class="global_style">
     <div class="top">
-        <img src="/src/assets/history.svg" title="历史记录" @click="switch_panel('HistoryPanel')">
-        <img src="/src/assets/catalogue.svg" title="目录" @click="switch_panel('Catalogue')">
+        <n-icon class="icon" size="18" :component="History" title="历史记录" @click="switch_panel('HistoryPanel')" color="#585858"></n-icon>
+        <n-icon class="icon" size="23" :component="List16Filled" title="目录"  @click="switch_panel('Catalogue')" color="#585858"></n-icon>
     </div>
     <div class="bottom">
-        <img src="/src/assets/toolbox.svg" title="工具箱" @click="switch_panel('Toolbox')">
+        <n-icon class="icon" size="20" :component="Toolbox20Regular" title="工具箱" @click="switch_panel('Toolbox')" color="#585858"></n-icon>
     </div>
 </div>
 </template>
 
 <script setup lang="ts">
 import { Ref, inject } from 'vue';
+import {History} from "@vicons/fa"
+import {List16Filled,Toolbox20Regular} from "@vicons/fluent"
+import { NIcon } from 'naive-ui';
+
 //相关变量类型
 type all_pan_obj={
     'HistoryPanel':boolean,
@@ -52,7 +56,7 @@ function switch_panel(name:string){
 .Toolbar.dark{
     border-right: #1d1d1d solid 2px;
     background-color: #202020;
-    img{
+    .icon{
         &:hover{
             background-color: #444;
         }
@@ -61,7 +65,7 @@ function switch_panel(name:string){
 .Toolbar.white{
     background-color: #fff;
     border-right: 2px #e7e7e7 solid;
-    img{
+    .icon{
         &:hover{
             background-color: #ddd;
         }
@@ -73,21 +77,11 @@ function switch_panel(name:string){
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    .top{
-        img{
-            width: 30px;
-            height: 30px;
-            padding: 5px;
-            border-radius: 5px;
-        }
-    }
-    .bottom{
-        img{
-            width: 30px;
-            height: 30px;
-            padding: 5px;
-            border-radius: 5px;
-        }
+    .icon{
+        width: 30px;
+        height: 30px;
+        padding: 5px;
+        border-radius: 5px;
     }
 }
 
