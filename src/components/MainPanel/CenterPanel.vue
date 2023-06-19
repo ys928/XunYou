@@ -2,7 +2,7 @@
 <div class="CenterPanel" ref="div_center_panel" :class="global_style">
     <View></View>
     <ShowInfo></ShowInfo>
-    <img v-show="cenpan_show_loading" class="loading" src="../../assets/search_load.gif" alt="">
+    <n-spin class="loading" size="medium" v-show="cenpan_show_loading"></n-spin>
     <Jump></Jump>
 </div>
 </template>
@@ -12,6 +12,7 @@ import View from './CenterPanel/View.vue';
 import ShowInfo from './CenterPanel/ShowInfo.vue';
 import Jump from './CenterPanel/Jump.vue';
 import { Ref, provide, ref,onMounted,inject } from 'vue';
+import {NSpin} from "naive-ui"
 /**
  * 绑定标签
  */
@@ -56,8 +57,6 @@ onMounted(()=>{
     flex-grow: 1;
     height: 100%;
     .loading{
-        width: 80px;
-        height: 80px;
         position: absolute;
         left: 50%;
         top: 50%;

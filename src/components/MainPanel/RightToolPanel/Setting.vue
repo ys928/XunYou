@@ -2,15 +2,15 @@
 <div class="Setting" v-show="all_panel.Setting" :class="global_style">
     <div class="title">设置</div>
     <div class="set_item">
-        <div class="font_size">
+        <div>
             <n-tag :bordered="false" size="small">字体大小:</n-tag>
             <n-input-number v-model:value="font_size" :min="10" :max="25" button-placement="both" size="tiny"></n-input-number>
         </div>
-        <div class="font_weight">
+        <div>
             <n-tag :bordered="false" size="small">字体粗细:</n-tag>
             <n-input-number v-model:value="font_weight" :min="100" :max="900" :step="100" button-placement="both" size="tiny"></n-input-number>
         </div>
-        <div class="line_height">
+        <div>
             <n-tag :bordered="false" size="small">行高:</n-tag>
             <n-input-number v-model:value="line_height" :min="1" :max="2.5" :step="0.1" button-placement="both" size="tiny"></n-input-number>
         </div>
@@ -101,23 +101,12 @@ onMounted(()=>{
     .set_item{
         display: flex;
         flex-direction: column;
-
         color: #757575;
         padding: 10px;
         .n-tag{
             margin-right: 5px;
         }
-        .font_size{
-            margin: 10px 0;
-            display: flex;
-            white-space: nowrap;
-        }
-        .font_weight{
-            margin: 10px 0;
-            display: flex;
-            white-space: nowrap;
-        }
-        .line_height{
+        & > div{
             margin: 10px 0;
             display: flex;
             white-space: nowrap;

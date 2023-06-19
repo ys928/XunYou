@@ -9,7 +9,7 @@
         <div v-for="(item,index) in show_novel_list" class="novel_item" :class="global_style">
             <span @dblclick="dclick_novel(index)">{{item.name!.substring(0,item.name!.lastIndexOf('.'))}}</span>
         </div>
-        <img v-show="show_loading" class="loading" src="/src/assets/search_load.gif" alt="">
+        <n-spin class="loading" size="medium" v-show="show_loading"></n-spin>
     </div>
 </div>
 </template>
@@ -19,7 +19,7 @@ import { Ref,ref, inject, onMounted } from 'vue';
 import { FileEntry, readDir } from '@tauri-apps/api/fs';
 import { dialog, invoke } from '@tauri-apps/api';
 import { fs } from '@tauri-apps/api';
-import {NIcon,NInput} from "naive-ui"
+import {NIcon,NInput,NSpin} from "naive-ui"
 import {Folder20Filled} from "@vicons/fluent"
 /**
  * 相关变量类型
@@ -125,7 +125,9 @@ function dclick_novel(index:number){
 .SearchPanel.white{
     background-color: #fff;
     .icon{
-        background-color: #ddd;
+        &:hover{
+            background-color: #ddd;
+        }
     }
 }
 .SearchPanel.dark{
