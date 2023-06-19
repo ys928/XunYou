@@ -2,14 +2,13 @@
 
 这是一个非常小巧、美观的PC端小说阅读器。
 
-同时为了节约空间，软件所使用的小说文件格式为：txt文本经bzip2算法压缩得到的文件。
+目前支持两种格式：TxT文本，以及由Txt文本经过bzip2算法压缩得到的文件。
 
-> 注：可以通过软件左下角中的工具箱工具，将txt文本转换为对应的格式（警告：txt文本必须为utf-8编码，CRLF作为换行符）
+> 注：可以通过软件左下角中的工具箱工具，将txt文本转换为对应的格式（警告：txt文本必须为utf-8编码）
 
 这可以从window记事本的右下角查看：
 
-![image](https://github.com/ys928/XunYou/assets/80371119/9a317b7b-c303-4ae7-a709-29566593a482)
-
+![image](https://github.com/ys928/XunYou/assets/80371119/574faf70-b61f-4d0f-9149-17e1c15cad2d)
 
 暂时只支持window，未来看情况支持linux、mac、android等等
 
