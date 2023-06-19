@@ -3,7 +3,7 @@
     <div class="title">搜索栏</div>
     <div class="top_pos">
         <input type="text" ref="input_search" @input="search_fun" class="search" :class="global_style" placeholder="搜小说">
-        <img :class="global_style" @click="choose_dir" src="/src/assets/folder.svg" srcset="">
+        <n-icon class="icon" size="20" color="#585858" :component="Folder20Filled" @click="choose_dir"></n-icon>
     </div>
     <div class="novel_list" ref="novel_list" :class="global_style">
         <div v-for="(item,index) in show_novel_list" class="novel_item" :class="global_style">
@@ -19,6 +19,8 @@ import { Ref,ref, inject, onMounted } from 'vue';
 import { FileEntry, readDir } from '@tauri-apps/api/fs';
 import { dialog, invoke } from '@tauri-apps/api';
 import { fs } from '@tauri-apps/api';
+import {NIcon} from "naive-ui"
+import {Folder20Filled} from "@vicons/fluent"
 /**
  * 相关变量类型
  */
@@ -124,9 +126,17 @@ function dclick_novel(index:number){
 <style scoped lang="less">
 .SearchPanel.white{
     background-color: #fff;
+    .icon{
+        background-color: #ddd;
+    }
 }
 .SearchPanel.dark{
     background-color: #202020;
+    .icon{
+        &:hover{
+            background-color: #444;
+        }
+    }
 }
 .SearchPanel{
     display: flex;
@@ -169,26 +179,15 @@ function dclick_novel(index:number){
             height: 20px;
             width: 120px;
         }
-        img.dark{
-            &:hover{
-                background-color: #555;
-            }
         }
-        img.white{
-            &:hover{
-                background-color: #ddd;
-            }
-        }
-        img{
+        .icon{
             width: 24px;
             height: 20px;
             display: inline;
             line-height: 20px;
             border-radius: 5px;
             margin-left: 3px;
-
         }
-    }
     .novel_list.dark{
         border: 2px solid #3e3e3e;
         background-color: #2c2c2c;
