@@ -21,7 +21,7 @@ import MMC from "./Titlebar/MMC.vue";
 import Icon from "./Titlebar/Icon.vue"
 import { Ref, inject, onMounted, ref } from "vue";
 import { invoke } from "@tauri-apps/api";
-import {NSwitch,NIcon} from "naive-ui"
+import {NSwitch,NIcon,useMessage} from "naive-ui"
 import {Moon,SunnyOutline} from "@vicons/ionicons5"
 /**
  * 绑定相关标签的变量
@@ -45,16 +45,20 @@ const root_title=inject("root_title");
 //鼠标样式
 const app_cursor=inject("app_cursor") as Ref<string>;
 
+const message = useMessage();
+
 /**
  * 普通函数
  */
 function switch_sty(){
     style_switch.value=!style_switch.value;
     if(global_style.value==="dark"){
+        message.info("已切换为日照模式");
         global_style.value="white";
         invoke("set_theme",{theme:'white'});
     }else{
         global_style.value="dark";
+        message.info("切换为黑夜模式");
         invoke("set_theme",{theme:'dark'});
     }
 }
