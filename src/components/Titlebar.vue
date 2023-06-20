@@ -5,9 +5,9 @@
             <n-image width="25" src="/src/assets/app-icon.png"></n-image>
             <n-el data-tauri-drag-region tag="span" style="color: var(--primary-color);">寻幽</n-el>
         </div>
-        <div class="app_title">
+        <n-el class="app_title" style="color:var(--text-color-3)">
             {{root_title}}
-        </div>
+        </n-el>
         <div class="app_opt">
             <n-switch :value="style_switch" @click="switch_sty">
                 <template #checked-icon>
@@ -28,11 +28,10 @@
 </template>
 
 <script setup lang="ts">
-import MMC from "./Titlebar/MMC.vue";
 import { Ref, inject, onMounted, reactive, ref } from "vue";
 import { appWindow } from "@tauri-apps/api/window";
 import { invoke } from "@tauri-apps/api";
-import {NSwitch,NIcon,useMessage, GlobalTheme,darkTheme,NImage,useThemeVars,NEl} from "naive-ui"
+import {NSwitch,NIcon,useMessage, GlobalTheme,darkTheme,NImage,NEl} from "naive-ui"
 import {Moon,SunnyOutline,Close} from "@vicons/ionicons5"
 import {Maximize16Regular} from "@vicons/fluent"
 import {MinusOutlined} from "@vicons/antd"

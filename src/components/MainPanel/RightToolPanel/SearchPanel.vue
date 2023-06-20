@@ -1,17 +1,17 @@
 <template>
-<div class="SearchPanel" v-show="all_panel.SearchPanel" :class="global_style">
+<n-el class="SearchPanel" v-show="all_panel.SearchPanel" style="background-color:var(--base-color)">
     <div class="title">搜索栏</div>
     <div class="top_pos">
         <n-input size="tiny" round @input="search_fun" placeholder="搜小说"></n-input>
         <n-icon class="icon" size="20" color="#585858" :component="Folder20Filled" @click="choose_dir"></n-icon>
     </div>
     <n-scrollbar class="novel_list">
-        <div v-for="(item,index) in show_novel_list" class="novel_item" :class="global_style">
-            <span @dblclick="dclick_novel(index)">{{item.name!.substring(0,item.name!.lastIndexOf('.'))}}</span>
-        </div>
+        <n-button round v-for="(item,index) in show_novel_list" class="novel_item" @dblclick="dclick_novel(index)">
+            {{item.name!.substring(0,item.name!.lastIndexOf('.'))}}
+        </n-button>
         <n-spin class="loading" size="medium" v-show="show_loading"></n-spin>
     </n-scrollbar>
-</div>
+</n-el>
 </template>
 
 <script setup lang="ts">
@@ -19,7 +19,7 @@ import { Ref,ref, inject, onMounted } from 'vue';
 import { FileEntry, readDir } from '@tauri-apps/api/fs';
 import { dialog, invoke } from '@tauri-apps/api';
 import { fs } from '@tauri-apps/api';
-import {NIcon,NInput,NSpin,NScrollbar} from "naive-ui"
+import {NIcon,NInput,NSpin,NScrollbar,NEl,NButton} from "naive-ui"
 import {Folder20Filled} from "@vicons/fluent"
 /**
  * 相关变量类型
@@ -33,8 +33,6 @@ type all_pan_obj={
 
 //控制面板显示与否变量
 const all_panel=inject("all_panel") as Ref<all_pan_obj>;
-//全局主题样式
-const global_style=inject("global_style");
 //控制要显示的小说列表项
 let show_novel_list=ref([]) as Ref<Array<FileEntry>>;
 //控制加载图标是否显示
@@ -168,19 +166,6 @@ function dclick_novel(index:number){
         font-size: 14px;
         flex-grow: 1;
         border-radius: 5px;
-        .novel_item.dark{
-            background-color: #2e2e2e;
-            border-bottom: #666 solid 2px;
-            &:hover{
-                background-color: #3f3f3f;
-            }
-        }
-        .novel_item.white{
-            border-bottom: #999 solid 2px;
-            &:hover{
-                background-color: #cfcfcf;
-            }
-        }
         .novel_item{
             margin: 5px 0;
             padding: 0 5px;

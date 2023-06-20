@@ -1,18 +1,19 @@
 <template>
-<div class="Toolbar" :class="global_style">
+<n-el class="Toolbar" style="background-color:var(--base-color)">
     <div class="top">
         <n-icon class="icon" size="25" color="#585858" :component="CalendarSearch20Regular" title="搜索小说" @click="switch_panel('SearchPanel')"></n-icon>
     </div>
     <div class="bottom">
         <n-icon class="icon" size="25" color="#585858" :component="Settings24Regular" title="设置" @click="switch_panel('Setting')"></n-icon>
     </div>
-</div>
+</n-el>
 </template>
 
 <script setup lang="ts">
 import { inject,Ref } from 'vue';
-import { NIcon } from 'naive-ui';
+import { NIcon,NEl } from 'naive-ui';
 import {CalendarSearch20Regular,Settings24Regular} from "@vicons/fluent"
+
 //相关变量类型
 type all_pan_obj={
     'SearchPanel':boolean,

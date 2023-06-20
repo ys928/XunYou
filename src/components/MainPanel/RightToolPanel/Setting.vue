@@ -1,5 +1,5 @@
 <template>
-<div class="Setting" v-show="all_panel.Setting" :class="global_style">
+<n-el class="Setting" v-show="all_panel.Setting" style="background-color:var(--base-color)">
     <div class="title">设置</div>
     <div class="set_item">
         <div>
@@ -15,13 +15,13 @@
             <n-input-number v-model:value="line_height" :min="1" :max="2.5" :step="0.1" button-placement="both" size="tiny"></n-input-number>
         </div>
     </div>
-</div>
+</n-el>
 </template>
 
 <script setup lang="ts">
 import { invoke } from '@tauri-apps/api';
 import { Ref, inject, onMounted, ref,watch } from 'vue';
-import {NInputNumber,NTag} from "naive-ui"
+import {NInputNumber,NTag,NEl} from "naive-ui"
 /**
  * 相关变量类型
  */
@@ -38,8 +38,6 @@ const line_height=ref(1.7);
 
 //控制面板显示与否变量
 const all_panel=inject("all_panel") as Ref<all_pan_obj>;
-//全局主题样式
-const global_style=inject("global_style");
 //字体大小
 const mainpan_font_size=inject('mainpan_font_size') as Ref<number>;
 //字体粗细

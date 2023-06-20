@@ -1,5 +1,5 @@
 <template>
-<div class="Toolbar" :class="global_style">
+<n-el class="Toolbar" style="background-color:var(--base-color)">
     <div class="top">
         <n-icon class="icon" size="18" :component="History" title="历史记录" @click="switch_panel('HistoryPanel')" color="#585858"></n-icon>
         <n-icon class="icon" size="23" :component="List16Filled" title="目录"  @click="switch_panel('Catalogue')" color="#585858"></n-icon>
@@ -7,14 +7,14 @@
     <div class="bottom">
         <n-icon class="icon" size="20" :component="Toolbox20Regular" title="工具箱" @click="switch_panel('Toolbox')" color="#585858"></n-icon>
     </div>
-</div>
+</n-el>
 </template>
 
 <script setup lang="ts">
 import { Ref, inject } from 'vue';
 import {History} from "@vicons/fa"
 import {List16Filled,Toolbox20Regular} from "@vicons/fluent"
-import { NIcon } from 'naive-ui';
+import { NIcon,NEl } from 'naive-ui';
 
 //相关变量类型
 type all_pan_obj={
@@ -53,24 +53,6 @@ function switch_panel(name:string){
 </script>
 
 <style scoped lang="less">
-.Toolbar.dark{
-    border-right: #1d1d1d solid 2px;
-    background-color: #202020;
-    .icon{
-        &:hover{
-            background-color: #444;
-        }
-    }
-}
-.Toolbar.white{
-    background-color: #fff;
-    border-right: 2px #e7e7e7 solid;
-    .icon{
-        &:hover{
-            background-color: #ddd;
-        }
-    }
-}
 .Toolbar{
     width: 40px;
     padding: 5px;
