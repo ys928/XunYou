@@ -1,5 +1,5 @@
 <template>
-<n-el class="Toolbar" style="background-color:var(--base-color)">
+<n-el class="Toolbar">
     <div class="top">
         <n-icon class="icon" size="18" :component="History" title="历史记录" @click="switch_panel('HistoryPanel')" color="#585858"></n-icon>
         <n-icon class="icon" size="23" :component="List16Filled" title="目录"  @click="switch_panel('Catalogue')" color="#585858"></n-icon>
@@ -22,9 +22,6 @@ type all_pan_obj={
     'Catalogue':boolean,
     'Toolbox':boolean
 }
-
-//全局主题样式
-const global_style=inject("global_style");
 //控制面板显示与否变量
 const all_panel=inject<all_pan_obj>("all_panel");
 
@@ -57,6 +54,8 @@ function switch_panel(name:string){
     width: 40px;
     padding: 5px;
     display: flex;
+    border-right: var(--border-color) 2px solid;
+    background-color:var(--base-color);
     flex-direction: column;
     justify-content: space-between;
     .icon{

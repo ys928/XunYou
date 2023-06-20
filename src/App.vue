@@ -1,5 +1,5 @@
 <template>
-<n-config-provider :theme="app_style">
+<n-config-provider :theme="app_style" :theme-overrides="app_style===null?lightThemeOverrides : darkThemeOverrides">
   <n-message-provider>
     <div class="MainWindow" ref="div_main_window">
       <Titlebar></Titlebar>
@@ -16,7 +16,7 @@ import MainPanel from './components/MainPanel.vue';
 import Statusbar from './components/Statusbar.vue';
 import { onMounted, provide, ref,watch } from 'vue';
 import { event, invoke,window } from '@tauri-apps/api';
-import { darkTheme,NMessageProvider,NConfigProvider, GlobalTheme } from 'naive-ui'
+import { darkTheme,NMessageProvider,NConfigProvider, GlobalTheme,GlobalThemeOverrides } from 'naive-ui'
 //dark:黑色主题
 //white:白色主题
 const global_style=ref("dark");
@@ -48,6 +48,17 @@ watch(app_cursor,(newv,oldv)=>{
   div_main_window.value.style.cursor=newv;
 });
 
+const lightThemeOverrides = {
+  common: {
+    baseColor: '#fff'
+  }
+}
+
+const darkThemeOverrides = {
+  common: {
+    baseColor: '#202020'
+  }
+}
 //初始化
 onMounted(()=>{
   document.oncontextmenu=()=>{

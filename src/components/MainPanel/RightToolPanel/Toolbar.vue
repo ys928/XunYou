@@ -1,5 +1,5 @@
 <template>
-<n-el class="Toolbar" style="background-color:var(--base-color)">
+<n-el class="Toolbar">
     <div class="top">
         <n-icon class="icon" size="25" color="#585858" :component="CalendarSearch20Regular" title="搜索小说" @click="switch_panel('SearchPanel')"></n-icon>
     </div>
@@ -49,30 +49,14 @@ function switch_panel(name:string){
 </script>
 
 <style scoped lang="less">
-.Toolbar.dark{
-    border-left: #1d1d1d solid 2px;
-    background-color: #202020;
-    .icon{
-        &:hover{
-            background-color: #444;
-        }
-    }
-}
-.Toolbar.white{
-    background-color: #fff;
-    border-left: 2px #e7e7e7 solid;
-    .icon{
-        &:hover{
-            background-color: #ddd;
-        }
-    }
-}
 .Toolbar{
     width: 40px;
     padding: 5px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    border-left: var(--border-color) 2px solid;
+    background-color:var(--base-color);
     .icon{
         width: 30px;
             height:30px;

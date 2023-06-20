@@ -3,7 +3,7 @@
     <div class="title">搜索栏</div>
     <div class="top_pos">
         <n-input size="tiny" round @input="search_fun" placeholder="搜小说"></n-input>
-        <n-icon class="icon" size="20" color="#585858" :component="Folder20Filled" @click="choose_dir"></n-icon>
+        <n-icon class="icon" size="20" color="#787878" :component="Folder20Filled" @click="choose_dir"></n-icon>
     </div>
     <n-scrollbar class="novel_list">
         <n-button round v-for="(item,index) in show_novel_list" class="novel_item" @dblclick="dclick_novel(index)">
@@ -152,7 +152,7 @@ function dclick_novel(index:number){
         display: flex;
         justify-content: center;
         margin-bottom: 15px;
-        padding: 0 30px;
+        padding: 0 20px;
     }
     .icon{
         width: 24px;
