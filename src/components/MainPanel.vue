@@ -10,7 +10,7 @@
 import LeftToolPanel from './MainPanel/LeftToolPanel.vue';
 import CenterPanel from './MainPanel/CenterPanel.vue';
 import RightToolPanel from './MainPanel/RightToolPanel.vue';
-import { inject,onMounted,onUnmounted,provide,ref } from 'vue';
+import { inject,onMounted,onBeforeMount,onUnmounted,provide,ref } from 'vue';
 import { invoke,event, dialog } from '@tauri-apps/api';
 
 /**
@@ -47,7 +47,7 @@ provide("mainpan_line_height",mainpan_line_height);
  * 初始化操作
  */
 
- onMounted(async ()=>{
+ onBeforeMount(async ()=>{
     //取得配置文件中的设置信息
     let setting=await invoke<app_setting>("get_setting",{});
     mainpan_font_size.value=setting.font_size;

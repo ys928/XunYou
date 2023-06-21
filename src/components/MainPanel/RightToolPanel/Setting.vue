@@ -4,15 +4,15 @@
     <div class="set_item">
         <div>
             <n-tag :bordered="false" size="small">字体大小:</n-tag>
-            <n-input-number v-model:value="font_size" :min="10" :max="25" button-placement="both" size="tiny"></n-input-number>
+            <n-input-number v-model:value="mainpan_font_size" :min="10" :max="25" button-placement="both" size="tiny"></n-input-number>
         </div>
         <div>
             <n-tag :bordered="false" size="small">字体粗细:</n-tag>
-            <n-input-number v-model:value="font_weight" :min="100" :max="900" :step="100" button-placement="both" size="tiny"></n-input-number>
+            <n-input-number v-model:value="mainpan_font_weight" :min="100" :max="900" :step="100" button-placement="both" size="tiny"></n-input-number>
         </div>
         <div>
             <n-tag :bordered="false" size="small">行高:</n-tag>
-            <n-input-number v-model:value="line_height" :min="1" :max="2.5" :step="0.1" button-placement="both" size="tiny"></n-input-number>
+            <n-input-number v-model:value="mainpan_line_height" :min="10" :max="25" :step="1" button-placement="both" size="tiny"></n-input-number>
         </div>
     </div>
 </n-el>
@@ -32,9 +32,6 @@ import {NInputNumber,NTag,NEl} from "naive-ui"
 /**
  * vue变量
  */
-const font_size=ref(17);
-const font_weight=ref(500);
-const line_height=ref(1.7);
 
 //控制面板显示与否变量
 const all_panel=inject("all_panel") as Ref<all_pan_obj>;
@@ -47,34 +44,24 @@ const mainpan_line_height=inject("mainpan_line_height") as Ref<number>;
 /**
  * 函数
  */
-watch(font_size,()=>{
-    mainpan_font_size.value = font_size.value;
+watch(mainpan_font_size,()=>{
     save_setting();
-});
-
-watch(font_weight,()=>{
-    mainpan_font_weight.value = font_weight.value;
+})
+watch(mainpan_font_weight,()=>{
     save_setting();
-});
-
-watch(line_height,()=>{
-    mainpan_line_height.value = Number((line_height.value*10).toFixed(0));
+})
+watch(mainpan_line_height,()=>{
     save_setting();
-});
+})
 function save_setting(){
     invoke("set_setting",{
-        fs:font_size.value,
-        fw:font_weight.value,
-        lh:Number((line_height.value*10).toFixed(0))
+        fs:mainpan_font_size.value,
+        fw:mainpan_font_weight.value,
+        lh:mainpan_line_height.value
     });
 }
 
-onMounted(()=>{
-    //初始化
-    font_size.value=mainpan_font_size.value;
-    font_weight.value=mainpan_font_weight.value;
-    line_height.value=Number((mainpan_line_height.value/10).toFixed(1));
-});
+
 
 </script>
 
