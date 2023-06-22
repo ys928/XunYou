@@ -2,7 +2,7 @@
 <div @mouseenter="app_cursor='default'">
     <n-el tag="div"  data-tauri-drag-region justify="space-between" class="Titlebar" style="background-color:var(--base-color)">
         <div class="app_info">
-            <n-image preview-disabled width="25" src="/src/assets/app-icon.png"></n-image>
+            <img src="/src/assets/app-icon.png" alt="app-icon">
             <n-el data-tauri-drag-region tag="span" style="color: var(--primary-color);">寻幽</n-el>
         </div>
         <n-el class="app_title" style="color:var(--text-color-3)">
@@ -112,6 +112,10 @@ async function WinTogMax(){
     justify-content: space-between;
     .app_info{
         display: flex;
+        img{
+            width: 25px;
+            height: 25px;
+        }
         span {
             text-align: center;
             height: 25px;
