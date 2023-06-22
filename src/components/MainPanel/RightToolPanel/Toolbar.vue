@@ -59,9 +59,12 @@ function switch_panel(name:string){
     background-color:var(--base-color);
     .icon{
         width: 30px;
-            height:30px;
-            padding: 3px;
-            border-radius: 5px;
+        height:30px;
+        padding: 3px;
+        border-radius: 5px;
+        &:hover{
+            background-color: var(--info-color-hover);
+        }
     }
 }
 

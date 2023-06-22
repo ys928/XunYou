@@ -52,7 +52,7 @@ const lightThemeOverrides = {
   common: {
     baseColor: '#fff',
     errorColorHover:"#f00",
-    infoColorHover:"#eee"
+    infoColorHover:"#bfbfbf"
   }
 }
 

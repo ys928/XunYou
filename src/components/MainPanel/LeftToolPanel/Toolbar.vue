@@ -63,6 +63,9 @@ function switch_panel(name:string){
         height: 30px;
         padding: 5px;
         border-radius: 5px;
+        &:hover{
+            background-color: var(--info-color-hover);
+        }
     }
 }
 
