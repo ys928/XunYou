@@ -14,7 +14,7 @@
 
 其中novels文件夹中为几本测试小说，均为网络收集，如有侵权，可联系我进行删除
 
-软件下载链接：[点击这里](https://github.com/ys928/XunYou/releases/tag/1.0)
+软件下载链接：[点击这里](https://github.com/ys928/XunYou/releases/tag/latest)
 
 # 软件界面
 
