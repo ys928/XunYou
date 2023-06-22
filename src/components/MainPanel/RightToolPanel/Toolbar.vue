@@ -1,16 +1,19 @@
 <template>
-<div class="Toolbar" :class="global_style">
+<n-el class="Toolbar">
     <div class="top">
-        <img src="/src/assets/search.svg" @click="switch_panel('SearchPanel')" title="搜索小说" >
+        <n-icon class="icon" size="25" color="#585858" :component="CalendarSearch20Regular" title="搜索小说" @click="switch_panel('SearchPanel')"></n-icon>
     </div>
     <div class="bottom">
-        <img src="/src/assets/setting.svg" title="设置" @click="switch_panel('Setting')">
+        <n-icon class="icon" size="25" color="#585858" :component="Settings24Regular" title="设置" @click="switch_panel('Setting')"></n-icon>
     </div>
-</div>
+</n-el>
 </template>
 
 <script setup lang="ts">
 import { inject,Ref } from 'vue';
+import { NIcon,NEl } from 'naive-ui';
+import {CalendarSearch20Regular,Settings24Regular} from "@vicons/fluent"
+
 //相关变量类型
 type all_pan_obj={
     'SearchPanel':boolean,
@@ -46,47 +49,20 @@ function switch_panel(name:string){
 </script>
 
 <style scoped lang="less">
-.Toolbar.dark{
-    border-left: #1d1d1d solid 2px;
-    background-color: #202020;
-    img{
-        &:hover{
-            background-color: #444;
-        }
-    }
-}
-.Toolbar.white{
-    background-color: #fff;
-    border-left: 2px #e7e7e7 solid;
-    img{
-        &:hover{
-            background-color: #ddd;
-        }
-    }
-}
 .Toolbar{
     width: 40px;
     padding: 5px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    .top{
-        img{
-            width: 30px;
+    border-left: var(--border-color) 2px solid;
+    background-color:var(--base-color);
+    .icon{
+        width: 30px;
             height:30px;
             padding: 3px;
             border-radius: 5px;
-        }
     }
-    .bottom{
-        img{
-            width: 30px;
-            height:30px;
-            padding: 3px;
-            border-radius: 5px;
-        }
-    }
-
 }
 
 </style>

@@ -1,9 +1,13 @@
 <template>
-<div class="MainWindow" ref="div_main_window">
-  <Titlebar></Titlebar>
-  <MainPanel></MainPanel>
-  <Statusbar></Statusbar>
-</div>
+<n-config-provider :theme="app_style" :theme-overrides="app_style===null?lightThemeOverrides : darkThemeOverrides">
+  <n-message-provider>
+    <div class="MainWindow" ref="div_main_window">
+      <Titlebar></Titlebar>
+      <MainPanel></MainPanel>
+      <Statusbar></Statusbar>
+    </div>
+  </n-message-provider>
+</n-config-provider>
 </template>
 
 <script setup lang="ts">
@@ -12,6 +16,7 @@ import MainPanel from './components/MainPanel.vue';
 import Statusbar from './components/Statusbar.vue';
 import { onMounted, provide, ref,watch } from 'vue';
 import { event, invoke,window } from '@tauri-apps/api';
+import { darkTheme,NMessageProvider,NConfigProvider, GlobalTheme,GlobalThemeOverrides, } from 'naive-ui'
 //dark:黑色主题
 //white:白色主题
 const global_style=ref("dark");
@@ -28,6 +33,9 @@ provide("root_novel_prog",root_novel_prog);
 //用于控制当前鼠标样式
 const app_cursor=ref("none");
 provide("app_cursor",app_cursor);
+//全局应用样式
+const app_style=ref<GlobalTheme | null>(darkTheme);
+provide("app_style",app_style);
 
 /**
  * 绑定标签
@@ -40,6 +48,21 @@ watch(app_cursor,(newv,oldv)=>{
   div_main_window.value.style.cursor=newv;
 });
 
+const lightThemeOverrides = {
+  common: {
+    baseColor: '#fff',
+    errorColorHover:"#f00",
+    infoColorHover:"#eee"
+  }
+}
+
+const darkThemeOverrides = {
+  common: {
+    baseColor: '#202020',
+    errorColorHover:"#f00",
+    infoColorHover:"#3e3e3e"
+  }
+}
 //初始化
 onMounted(()=>{
   document.oncontextmenu=()=>{

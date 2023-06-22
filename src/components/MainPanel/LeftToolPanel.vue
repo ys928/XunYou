@@ -16,7 +16,6 @@ import HistoryPanel from './LeftToolPanel/HistoryPanel.vue';
 import Catalogue from "./LeftToolPanel/Catalogue.vue"
 import Toolbox from './LeftToolPanel/Toolbox.vue';
 import { Ref, inject, onMounted, provide, reactive, ref,watch } from 'vue';
-
 /**
  * ref变量
  */

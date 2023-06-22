@@ -2,7 +2,7 @@
 <div class="Toolbox" v-show="all_panel.Toolbox" :class="global_style">
     <div class="title">工具箱</div>
     <div class="tools">
-        <div class="item" :class="global_style" @click="fun_txt_to_bzip2">txt转换</div>
+        <n-button @click="fun_txt_to_bzip2">txt转换</n-button>
     </div>
 </div>
 </template>
@@ -10,7 +10,7 @@
 <script setup lang="ts">
 import { dialog, invoke } from '@tauri-apps/api';
 import { Ref, inject } from 'vue';
-
+import { NButton } from 'naive-ui';
 //相关变量类型
 type type_all_pan_obj={
     'Toolbox':boolean

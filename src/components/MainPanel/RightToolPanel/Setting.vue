@@ -1,33 +1,27 @@
 <template>
-<div class="Setting" v-show="all_panel.Setting" :class="global_style">
+<n-el class="Setting" v-show="all_panel.Setting" style="background-color:var(--base-color)">
     <div class="title">设置</div>
     <div class="set_item">
-        <div class="font_size" :class="global_style">
-            字体大小:
-            <span class="button" @click="sub_fontsize" :class="global_style">-</span>
-            <span class="size" :class="global_style">{{ mainpan_font_size }}</span>
-            <span class="button" @click="add_fontsize" :class="global_style">+</span>
+        <div>
+            <n-tag :bordered="false" size="small">字体大小:</n-tag>
+            <n-input-number v-model:value="mainpan_font_size" :min="10" :max="25" button-placement="both" size="tiny"></n-input-number>
         </div>
-        <div class="font_weight" :class="global_style">
-            字体粗细:
-            <span class="button" :class="global_style" @click="sub_font_weight">-</span>
-            <span class="weight" :class="global_style">{{mainpan_font_weight}}</span>
-            <span class="button" :class="global_style" @click="add_font_weight">+</span>
+        <div>
+            <n-tag :bordered="false" size="small">字体粗细:</n-tag>
+            <n-input-number v-model:value="mainpan_font_weight" :min="100" :max="900" :step="100" button-placement="both" size="tiny"></n-input-number>
         </div>
-        <div class="line_height">
-            行高:
-            <span class="button" :class="global_style" @click="sub_line_height">-</span>
-            <span class="height" :class="global_style">{{ mainpan_line_height/10}}</span>
-            <span class="button" :class="global_style" @click="add_line_height">+</span>
+        <div>
+            <n-tag :bordered="false" size="small">字体行高:</n-tag>
+            <n-input-number v-model:value="mainpan_line_height" :min="10" :max="25" :step="1" button-placement="both" size="tiny"></n-input-number>
         </div>
     </div>
-</div>
+</n-el>
 </template>
 
 <script setup lang="ts">
 import { invoke } from '@tauri-apps/api';
-import { Ref, inject } from 'vue';
-
+import { Ref, inject, onMounted, ref,watch } from 'vue';
+import {NInputNumber,NTag,NEl} from "naive-ui"
 /**
  * 相关变量类型
  */
@@ -41,8 +35,6 @@ import { Ref, inject } from 'vue';
 
 //控制面板显示与否变量
 const all_panel=inject("all_panel") as Ref<all_pan_obj>;
-//全局主题样式
-const global_style=inject("global_style");
 //字体大小
 const mainpan_font_size=inject('mainpan_font_size') as Ref<number>;
 //字体粗细
@@ -52,45 +44,15 @@ const mainpan_line_height=inject("mainpan_line_height") as Ref<number>;
 /**
  * 函数
  */
-
-//字体大小增加
-function add_fontsize(){
-    if(mainpan_font_size.value>=25) return;
-    mainpan_font_size.value+=1;
+watch(mainpan_font_size,()=>{
     save_setting();
-}
-//字体大小减小
-function sub_fontsize(){
-    if(mainpan_font_size.value<=10) return;
-    mainpan_font_size.value-=1;
+})
+watch(mainpan_font_weight,()=>{
     save_setting();
-}
-
-//字体粗细增加
-function add_font_weight(){
-    if(mainpan_font_weight.value>=900) return;
-    mainpan_font_weight.value+=100;
+})
+watch(mainpan_line_height,()=>{
     save_setting();
-}
-//字体粗细减小
-function sub_font_weight(){
-    if(mainpan_font_weight.value<=100) return;
-    mainpan_font_weight.value-=100;
-    save_setting();
-}
-//行高增加
-function add_line_height(){
-    if(mainpan_line_height.value>=25) return;
-    mainpan_line_height.value+=1;
-    save_setting();
-}
-//行高减小
-function sub_line_height(){
-    if(mainpan_line_height.value<=10) return;
-    mainpan_line_height.value-=1;
-    save_setting();
-}
-
+})
 function save_setting(){
     invoke("set_setting",{
         fs:mainpan_font_size.value,
@@ -98,6 +60,8 @@ function save_setting(){
         lh:mainpan_line_height.value
     });
 }
+
+
 
 </script>
 
@@ -122,135 +86,15 @@ function save_setting(){
     .set_item{
         display: flex;
         flex-direction: column;
-
         color: #757575;
         padding: 10px;
-        .font_size{
-            margin: 10px 0;
-            .size.dark{
-                background-color: #bbb;
-                color: #757575;
-            }
-            .size.white{
-                background-color: #aaa;
-                color: #eee;
-            }
-            .size{
-                display: inline-block;
-                margin: 0 5px;
-                border-radius: 5px;
-                width: 40px;
-                height: 20px;
-                line-height: 20px;
-                text-align: center;
-            }
-            .button.dark{
-                color: #ccc;
-                background-color: #3e3e3e;
-                &:hover{
-                    background-color: #5e5e5e;
-                }
-            }
-            .button.white{
-                color: #ccc;
-                background-color: #7f7f7f;
-                &:hover{
-                    background-color: #555;
-                }
-            }
-            .button{
-                border-radius: 5px;
-                display: inline-block;
-                width: 25px;
-                height: 20px;
-                line-height: 20px;
-                text-align: center;
-            }
+        .n-tag{
+            margin-right: 5px;
         }
-        .font_weight{
+        & > div{
             margin: 10px 0;
-            .weight.dark{
-                background-color: #bbb;
-                color: #757575;
-            }
-            .weight.white{
-                background-color: #aaa;
-                color: #eee;
-            }
-            .weight{
-                display: inline-block;
-                margin: 0 5px;
-                border-radius: 5px;
-                width: 40px;
-                height: 20px;
-                line-height: 20px;
-                text-align: center;
-            }
-            .button.dark{
-                color: #ccc;
-                background-color: #3e3e3e;
-                &:hover{
-                    background-color: #5e5e5e;
-                }
-            }
-            .button.white{
-                color: #ccc;
-                background-color: #7f7f7f;
-                &:hover{
-                    background-color: #555;
-                }
-            }
-            .button{
-                border-radius: 5px;
-                display: inline-block;
-                width: 25px;
-                height: 20px;
-                line-height: 20px;
-                text-align: center;
-            }
-        }
-        .line_height{
-            margin: 10px 0;
-            .height.dark{
-                background-color: #bbb;
-                color: #757575;
-            }
-            .height.white{
-                background-color: #aaa;
-                color: #eee;
-            }
-            .height{
-                display: inline-block;
-                margin: 0 5px;
-                
-                border-radius: 5px;
-                width: 40px;
-                height: 20px;
-                line-height: 20px;
-                text-align: center;
-            }
-            .button.dark{
-                color: #ccc;
-                background-color: #3e3e3e;
-                &:hover{
-                    background-color: #5e5e5e;
-                }
-            }
-            .button.white{
-                color: #ccc;
-                background-color: #7f7f7f;
-                &:hover{
-                    background-color: #555;
-                }
-            }
-            .button{
-                border-radius: 5px;
-                display: inline-block;
-                width: 25px;
-                height: 20px;
-                line-height: 20px;
-                text-align: center;
-            }
+            display: flex;
+            white-space: nowrap;
         }
     }
 }

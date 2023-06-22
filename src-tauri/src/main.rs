@@ -7,7 +7,7 @@ use tauri::{Manager, Size, PhysicalSize};
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 fn main() {
-    config::init_log();
+    //config::init_log();
     tauri::Builder::default()
         .setup(move |app|{
             let window = app.get_window("MainWindow").unwrap();

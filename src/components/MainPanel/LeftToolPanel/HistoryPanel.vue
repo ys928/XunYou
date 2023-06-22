@@ -1,5 +1,5 @@
 <template>
-<div class="HistoryPanel" v-show="all_panel.HistoryPanel" :class="global_style">
+<n-el class="HistoryPanel" v-show="all_panel.HistoryPanel" style="background-color:var(--base-color)">
     <div class="title">历史记录</div>
     <div class="novels" ref="div_record" :class="global_style">
         <div v-for="(item,index) in records_novel" class="novel_item" :class="global_style" @dblclick="dclick_novel(index)">
@@ -14,13 +14,13 @@
     <div class="opt_menu" ref="dev_menu" v-show="is_show_menu" :class="global_style">
         <div class="item" @click="del_record">删除</div>
     </div>
-</div>
+</n-el>
 </template>
 
 <script setup lang="ts">
 import { invoke } from '@tauri-apps/api';
 import { Ref, inject, onMounted, ref } from 'vue';
-
+import {NEl} from "naive-ui"
 //相关变量类型
 type type_all_pan_obj={
     'HistoryPanel':boolean

@@ -1,16 +1,17 @@
 <template>
-<div class="Catalogue" v-show="all_panel.Catalogue" :class="global_style">
+<n-el class="Catalogue" v-show="all_panel.Catalogue" style="background-color:var(--base-color)">
     <div class="title">目录</div>
     <div class="catal" :class="global_style">
         <div v-for="(item,index) in mainpan_novel_cata" class="cata_item" :class="global_style" @dblclick="dclick_cata_item(index)">
             {{item.name}}
         </div>
     </div>
-</div>
+</n-el>
 </template>
 
-<script setup lang="ts">import { Ref, inject } from 'vue';
-
+<script setup lang="ts">
+import { Ref, inject } from 'vue';
+import {NEl} from "naive-ui"
 //相关变量类型
 type type_all_pan_obj={
     'HistoryPanel':boolean,

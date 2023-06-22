@@ -177,7 +177,7 @@ async function fun_open_novel(path:string){
       }
       //清空
       novel_show_lines.value.splice(0);
-      
+      mainpan_novel_cata.value.splice(0);
       //关闭显示提示信息
       cenpan_show_prompt.value=false; 
       
