@@ -2,7 +2,7 @@
 <div @mouseenter="app_cursor='default'">
     <n-el tag="div"  data-tauri-drag-region justify="space-between" class="Titlebar" style="background-color:var(--base-color)">
         <div class="app_info">
-            <n-image width="25" src="/src/assets/app-icon.png"></n-image>
+            <n-image preview-disabled width="25" src="/src/assets/app-icon.png"></n-image>
             <n-el data-tauri-drag-region tag="span" style="color: var(--primary-color);">寻幽</n-el>
         </div>
         <n-el class="app_title" style="color:var(--text-color-3)">
@@ -135,17 +135,12 @@ async function WinTogMax(){
             }
             .max,.min{
                 &:hover{
-                    background-color: #3e3e3e;
-                }
-            }
-            .max.white,.min.white{
-                &:hover{
-                    background-color: #eee;
+                    background-color: var(--info-color-hover);
                 }
             }
             .close{
                 &:hover{
-                    background-color: #dd0000;
+                    background-color: var(--error-color-hover);
                 }
             }
         }

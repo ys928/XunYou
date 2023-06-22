@@ -11,7 +11,7 @@
             <n-input-number v-model:value="mainpan_font_weight" :min="100" :max="900" :step="100" button-placement="both" size="tiny"></n-input-number>
         </div>
         <div>
-            <n-tag :bordered="false" size="small">行高:</n-tag>
+            <n-tag :bordered="false" size="small">字体行高:</n-tag>
             <n-input-number v-model:value="mainpan_line_height" :min="10" :max="25" :step="1" button-placement="both" size="tiny"></n-input-number>
         </div>
     </div>

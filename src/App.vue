@@ -16,7 +16,7 @@ import MainPanel from './components/MainPanel.vue';
 import Statusbar from './components/Statusbar.vue';
 import { onMounted, provide, ref,watch } from 'vue';
 import { event, invoke,window } from '@tauri-apps/api';
-import { darkTheme,NMessageProvider,NConfigProvider, GlobalTheme,GlobalThemeOverrides } from 'naive-ui'
+import { darkTheme,NMessageProvider,NConfigProvider, GlobalTheme,GlobalThemeOverrides, } from 'naive-ui'
 //dark:黑色主题
 //white:白色主题
 const global_style=ref("dark");
@@ -50,13 +50,17 @@ watch(app_cursor,(newv,oldv)=>{
 
 const lightThemeOverrides = {
   common: {
-    baseColor: '#fff'
+    baseColor: '#fff',
+    errorColorHover:"#f00",
+    infoColorHover:"#eee"
   }
 }
 
 const darkThemeOverrides = {
   common: {
-    baseColor: '#202020'
+    baseColor: '#202020',
+    errorColorHover:"#f00",
+    infoColorHover:"#3e3e3e"
   }
 }
 //初始化

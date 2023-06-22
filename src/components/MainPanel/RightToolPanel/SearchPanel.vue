@@ -6,7 +6,7 @@
         <n-icon class="icon" size="20" color="#787878" :component="Folder20Filled" @click="choose_dir"></n-icon>
     </div>
     <n-scrollbar class="novel_list">
-        <n-button round v-for="(item,index) in show_novel_list" class="novel_item" @dblclick="dclick_novel(index)">
+        <n-button v-for="(item,index) in show_novel_list" class="novel_item" @dblclick="dclick_novel(index)">
             {{item.name!.substring(0,item.name!.lastIndexOf('.'))}}
         </n-button>
         <n-spin class="loading" size="medium" v-show="show_loading"></n-spin>
@@ -104,7 +104,7 @@ async function choose_dir(){
     all_novel.splice(0); //清空
     show_novel_list.value.splice(0);
     all_novel=await readDir(p as string); //重新获取数据
-    all_novel=all_novel.filter(e => e.name!.endsWith(".novel") );
+    all_novel=all_novel.filter(e => e.name!.endsWith(".novel")|| e.name!.endsWith(".txt") );
     show_loading.value=false;
     //优化性能，最多展示前100项
     let max=100<all_novel.length?100:all_novel.length;
@@ -120,22 +120,7 @@ function dclick_novel(index:number){
 </script>
 
 <style scoped lang="less">
-.SearchPanel.white{
-    background-color: #fff;
-    .icon{
-        &:hover{
-            background-color: #ddd;
-        }
-    }
-}
-.SearchPanel.dark{
-    background-color: #202020;
-    .icon{
-        &:hover{
-            background-color: #444;
-        }
-    }
-}
+
 .SearchPanel{
     display: flex;
     flex-direction: column;
@@ -161,18 +146,17 @@ function dclick_novel(index:number){
         line-height: 20px;
         border-radius: 5px;
         margin-left: 3px;
+        &:hover{
+            background-color: var(--info-color-hover);
+        }
     }
     .novel_list{
         font-size: 14px;
         flex-grow: 1;
         border-radius: 5px;
         .novel_item{
-            margin: 5px 0;
-            padding: 0 5px;
-            white-space: nowrap;
-            overflow-x: hidden;
-            color: #7f7f7f;
-            border-radius: 5px;
+            margin: 5px 5px;
+            border-radius: 8px;
         }
         .loading{
             width: 50px;
