@@ -1,5 +1,5 @@
 <template>
-<div class="CenterPanel" ref="div_center_panel" :class="global_style">
+<div class="CenterPanel" ref="div_center_panel" :class="self_style">
     <View></View>
     <ShowInfo></ShowInfo>
     <n-spin class="loading" size="medium" v-show="cenpan_show_loading"></n-spin>
@@ -11,20 +11,36 @@
 import View from './CenterPanel/View.vue';
 import ShowInfo from './CenterPanel/ShowInfo.vue';
 import Jump from './CenterPanel/Jump.vue';
-import { Ref, provide, ref,onMounted,inject } from 'vue';
-import {NSpin} from "naive-ui"
+import { Ref, provide, ref,onMounted,inject,watch } from 'vue';
+import {GlobalTheme, NSpin} from "naive-ui"
+import { invoke } from '@tauri-apps/api';
 /**
  * 绑定标签
  */
 const div_center_panel=ref();
+/**
+ * 取得父变量
+ */
+//程序样式
+const app_style=inject("app_style") as Ref<GlobalTheme | null>;
+
+watch(app_style,()=>{
+    if(app_style.value===null){
+        self_style.value="white";
+    }else{
+        self_style.value="dark";
+    }
+})
+
+
 /**
  * 传递个子组件的变量
  */
 //用于控制在未打开小说时面板上的提示消息
 const cenpan_show_prompt=ref(true);
 provide('cenpan_show_prompt',cenpan_show_prompt);
-//用于控制全局样式
-const global_style=ref() as Ref<string>;
+//当前使用的样式
+const self_style=ref() as Ref<string>;
 //用于控制是否显示加载图标
 const cenpan_show_loading=ref(false);
 provide('cenpan_show_loading',cenpan_show_loading);
@@ -35,10 +51,12 @@ provide('cenpan_pro_jump_input',cenpan_pro_jump_input);
 const cenpan_show_jump=ref(false);
 provide('cenpan_show_jump',cenpan_show_jump);
 
+
+
 //鼠标样式
 const app_cursor=inject("app_cursor") as Ref<string>;
 
-onMounted(()=>{
+onMounted(async ()=>{
     div_center_panel.value.addEventListener("mouseenter",()=>{
         app_cursor.value="text";
     })
@@ -47,11 +65,18 @@ onMounted(()=>{
             cenpan_show_jump.value=true;
         }
     })
+    self_style.value=await invoke("get_theme",{});
 });
 
 </script>
 
 <style scoped lang="less">
+.CenterPanel.dark{
+    background-color: #2c2c2c;
+}
+.CenterPanel.white{
+  background-color: #f4f3ed;
+}
 .CenterPanel{
     position: relative;
     flex-grow: 1;

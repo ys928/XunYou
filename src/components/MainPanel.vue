@@ -1,5 +1,5 @@
 <template>
-<div class="MainPanel" :class="global_style">
+<div class="MainPanel" :class="mainpan_style">
     <LeftToolPanel></LeftToolPanel>
     <CenterPanel></CenterPanel>
     <RightToolPanel></RightToolPanel>
@@ -10,7 +10,7 @@
 import LeftToolPanel from './MainPanel/LeftToolPanel.vue';
 import CenterPanel from './MainPanel/CenterPanel.vue';
 import RightToolPanel from './MainPanel/RightToolPanel.vue';
-import { inject,onMounted,onBeforeMount,onUnmounted,provide,ref } from 'vue';
+import { inject,onMounted,onBeforeMount,onUnmounted,provide,ref, Ref } from 'vue';
 import { invoke,event, dialog } from '@tauri-apps/api';
 import {NLayout,NLayoutSider,NLayoutContent} from "naive-ui"
 /**
@@ -23,7 +23,7 @@ type app_setting={
 }
 
 //全局主题样式
-const global_style=inject("global_style");
+const mainpan_style=ref() as Ref<string>;
 
 //存放小说目录
 const mainpan_novel_cata=ref([]);

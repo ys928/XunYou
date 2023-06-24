@@ -1,8 +1,8 @@
 <template>
 <n-el class="Catalogue" v-show="all_panel.Catalogue" style="background-color:var(--base-color)">
     <div class="title">目录</div>
-    <div class="catal" :class="global_style">
-        <div v-for="(item,index) in mainpan_novel_cata" class="cata_item" :class="global_style" @dblclick="dclick_cata_item(index)">
+    <div class="catal" :class="self_style">
+        <div v-for="(item,index) in mainpan_novel_cata" class="cata_item" :class="self_style" @dblclick="dclick_cata_item(index)">
             {{item.name}}
         </div>
     </div>
@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import { Ref, inject } from 'vue';
+import { Ref, inject, ref } from 'vue';
 import {NEl} from "naive-ui"
 //相关变量类型
 type type_all_pan_obj={
@@ -27,7 +27,7 @@ type type_cata_obj={
  */
 
 //全局主题样式
-const global_style=inject("global_style");
+const self_style=ref() as Ref<string>;
 //控制面板显示与否变量
 const all_panel=inject("all_panel") as Ref<type_all_pan_obj>;
 //存放所有遍历到的小说目录

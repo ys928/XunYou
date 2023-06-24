@@ -1,7 +1,7 @@
 <template>
     <div class="Jump" ref="div_jump">
         <input v-if="cenpan_show_jump" v-focus @keydown="process_input($event)" 
-ref="m_jump" type="text" :class="global_style" placeholder="输入跳转行数">
+ref="m_jump" type="text" :class="self_style" placeholder="输入跳转行数">
     </div>
 </template>
 
@@ -16,7 +16,7 @@ const cenpan_show_jump=inject("cenpan_show_jump") as Ref<boolean>;
 //存放处理跳转jump组件的按键处理函数
 const cenpan_pro_jump_input=inject('cenpan_pro_jump_input') as Ref<Function>;
 //用于控制全局样式
-const global_style=inject('global_style') as Ref<string>;
+const self_style=ref() as Ref<string>;
 //让input显示时聚焦
 const vFocus={
   mounted: (el:HTMLInputElement) => el.focus()

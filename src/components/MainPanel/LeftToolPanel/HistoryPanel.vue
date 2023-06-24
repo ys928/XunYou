@@ -1,8 +1,8 @@
 <template>
 <n-el class="HistoryPanel" v-show="all_panel.HistoryPanel" style="background-color:var(--base-color)">
     <div class="title">历史记录</div>
-    <div class="novels" ref="div_record" :class="global_style">
-        <div v-for="(item,index) in records_novel" class="novel_item" :class="global_style" @dblclick="dclick_novel(index)">
+    <div class="novels" ref="div_record" :class="self_style">
+        <div v-for="(item,index) in records_novel" class="novel_item" :class="self_style" @dblclick="dclick_novel(index)">
             <span @dblclick="dclick_novel(index)"  class="novel_name">
                 {{item.name.substring(0,item.name.lastIndexOf('.'))}}
             </span> 
@@ -11,7 +11,7 @@
             </span>
         </div>
     </div>
-    <div class="opt_menu" ref="dev_menu" v-show="is_show_menu" :class="global_style">
+    <div class="opt_menu" ref="dev_menu" v-show="is_show_menu" :class="self_style">
         <div class="item" @click="del_record">删除</div>
     </div>
 </n-el>
@@ -19,8 +19,8 @@
 
 <script setup lang="ts">
 import { invoke } from '@tauri-apps/api';
-import { Ref, inject, onMounted, ref } from 'vue';
-import {NEl} from "naive-ui"
+import { Ref, inject, onMounted, ref, watch } from 'vue';
+import {GlobalTheme, NEl} from "naive-ui"
 //相关变量类型
 type type_all_pan_obj={
     'HistoryPanel':boolean
@@ -40,9 +40,22 @@ type type_record_novel={
 //取出存放打开小说的函数变量，本组件用来使用该函数
 const root_fun_open_novel=inject('root_fun_open_novel') as Ref<Function>;
 //全局主题样式
-const global_style=inject("global_style");
+const self_style=ref() as Ref<string>;
 //控制面板显示与否变量
 const all_panel=inject("all_panel") as Ref<type_all_pan_obj>;
+/**
+ * 取得父变量
+ */
+//程序样式
+const app_style=inject("app_style") as Ref<GlobalTheme | null>;
+
+watch(app_style,()=>{
+    if(app_style.value===null){
+        self_style.value="white";
+    }else{
+        self_style.value="dark";
+    }
+})
 
 /**
  * vue 绑定标签变量

@@ -17,10 +17,6 @@ import Statusbar from './components/Statusbar.vue';
 import { onMounted, provide, ref,watch } from 'vue';
 import { event, invoke,window } from '@tauri-apps/api';
 import { darkTheme,NMessageProvider,NConfigProvider, GlobalTheme,GlobalThemeOverrides, } from 'naive-ui'
-//dark:黑色主题
-//white:白色主题
-const global_style=ref("dark");
-provide("global_style",global_style);
 //用与打开文件显示在页面的函数,在view组件中为其赋值，然后给其它组件调用
 const root_fun_open_novel=ref();
 provide("root_fun_open_novel",root_fun_open_novel);

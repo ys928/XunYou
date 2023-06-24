@@ -48,8 +48,6 @@ const style_switch=ref(false);
  * 取出父组件传递下来的变量
  */
 
-//全局样式
-const global_style=inject("global_style") as Ref<string>;
 //当前打开的小说名称
 const root_title=inject("root_title");
 //鼠标样式
@@ -64,18 +62,12 @@ function switch_sty(){
     style_switch.value=!style_switch.value;
     if(app_style.value===null){
         app_style.value=darkTheme;
+        invoke("set_theme",{theme:'dark'});
+        message.info("黑夜模式");
     }else{
         app_style.value=null;
-    }
-
-    if(global_style.value==="dark"){
         message.info("白日模式");
-        global_style.value="white";
         invoke("set_theme",{theme:'white'});
-    }else{
-        global_style.value="dark";
-        message.info("黑夜模式");
-        invoke("set_theme",{theme:'dark'});
     }
 }
 
@@ -83,10 +75,10 @@ onMounted(async ()=>{
     let theme=await invoke("get_theme",{});
     if(theme==='dark'){
         style_switch.value=false;
-        global_style.value="dark";
+        app_style.value=darkTheme;
     }else{
         style_switch.value=true;
-        global_style.value="white";
+        app_style.value=null;
     }
 });
 

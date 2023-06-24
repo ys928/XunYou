@@ -1,16 +1,16 @@
 <template>
-<div class="Toolbox" v-show="all_panel.Toolbox" :class="global_style">
+<n-el class="Toolbox" v-show="all_panel.Toolbox">
     <div class="title">工具箱</div>
     <div class="tools">
         <n-button @click="fun_txt_to_bzip2">txt转换</n-button>
     </div>
-</div>
+</n-el>
 </template>
 
 <script setup lang="ts">
 import { dialog, invoke } from '@tauri-apps/api';
-import { Ref, inject } from 'vue';
-import { NButton } from 'naive-ui';
+import { Ref, inject, ref } from 'vue';
+import { NButton,NEl } from 'naive-ui';
 //相关变量类型
 type type_all_pan_obj={
     'Toolbox':boolean
@@ -19,7 +19,7 @@ type type_all_pan_obj={
  * 从父组件取出的变量
  */
 //全局主题样式
-const global_style=inject("global_style");
+const self_style=ref() as Ref<string>;
 //控制面板显示与否变量
 const all_panel=inject("all_panel") as Ref<type_all_pan_obj>;
 
@@ -40,16 +40,11 @@ async function fun_txt_to_bzip2(){
 </script>
 
 <style scoped lang="less">
-.Toolbox.dark{
-    background-color: #202020;
-}
-.Toolbox.white{
-    background-color: #fff;
-}
 .Toolbox{
     height: 100%;
     display: flex;
     flex-direction: column;
+    background-color: var(--base-color);
     .title{
         width: 100%;
         text-align: center;

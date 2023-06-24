@@ -3,7 +3,8 @@ use core::panic;
 use log::{warn};
 use serde::{Serialize, Deserialize};
 //初始化日志文件
-pub fn init_log(){
+#[allow(dead_code)]
+fn init_log(){
     //构建日志文件路径
     let logfile=cfun::now("%Y_%m_%d.log");
     let cfpath=cfun::config_dir("XunYou");

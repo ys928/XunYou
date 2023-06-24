@@ -1,5 +1,5 @@
 <template>
-<div class="View" ref="div_view" :class="global_style">
+<div class="View" ref="div_view" :class="self_style">
   <div class="one_line" v-for="(item,index) in novel_show_lines">
     <div v-if="IsTitle(item)" class="title">{{item}}</div>
     <div v-else class="paragraph" :style="{'font-size':mainpan_font_size+'px',
@@ -16,8 +16,9 @@
 </template>
 
 <script setup lang="ts">
-import { Ref, ref,onMounted, inject } from 'vue';
+import { Ref, ref,onMounted, inject, watch } from 'vue';
 import {dialog,event,fs, invoke} from '@tauri-apps/api';
+import { GlobalTheme } from 'naive-ui';
 
 /**
  * 自定义类型
@@ -54,7 +55,7 @@ const cenpan_show_prompt=inject("cenpan_show_prompt") as Ref<boolean>;
 //用于控制是否显示加载图标
 const cenpan_show_loading=inject("cenpan_show_loading") as Ref<boolean>;
   //全局主题样式
-const global_style=inject("global_style");
+const self_style=ref() as Ref<string>;
 //存放处理跳转jump组件的按键处理函数
 const cenpan_pro_jump_input=inject('cenpan_pro_jump_input') as Ref<Function>;
 //存放所有遍历到的小说目录
@@ -67,6 +68,18 @@ const mainpan_font_size=inject('mainpan_font_size') as Ref<number>;
 const mainpan_font_weight=inject("mainpan_font_weight") as Ref<number>
 //行高
 const mainpan_line_height=inject("mainpan_line_height") as Ref<number>;
+
+//程序样式
+const app_style=inject("app_style") as Ref<GlobalTheme | null>;
+
+watch(app_style,()=>{
+    if(app_style.value===null){
+        self_style.value="white";
+    }else{
+        self_style.value="dark";
+    }
+})
+
 /*
 普通变量
 */
@@ -82,7 +95,8 @@ let cur_capter_index:number;
 /**
  * 初始化函数
  */
-onMounted(()=>{
+onMounted(async ()=>{
+    self_style.value=await invoke("get_theme",{});
     //初始化跳转函数
     mainpan_nov_jump_fun.value=fun_jump;
     //初始化跳转组件的按键处理函数

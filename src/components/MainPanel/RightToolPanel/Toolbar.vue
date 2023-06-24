@@ -20,8 +20,6 @@ type all_pan_obj={
     'Setting':boolean
 }
 
-//全局主题样式
-const global_style=inject("global_style");
 //控制面板显示与否变量
 const all_panel=inject("all_panel") as Ref<all_pan_obj>;
 
