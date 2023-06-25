@@ -105,3 +105,12 @@ onMounted(()=>{
   width: 100vw;
 }
 </style>
+
+<style lang="less">
+:root {
+  --sbase-bgc:#202020; //主题基础背景色 
+  --sbase-color:#7f7f7f; //主题基础文本颜色
+  --sbase1-bgc:#2e2e2e; //主题基础背景色1号
+  --sbase1-color:#7f7f7f; //主题基础文本颜色1号
+}
+</style>

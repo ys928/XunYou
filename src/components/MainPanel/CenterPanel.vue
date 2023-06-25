@@ -1,5 +1,5 @@
 <template>
-<div class="CenterPanel" ref="div_center_panel" :class="self_style">
+<div class="CenterPanel" ref="div_center_panel" style="background-color: var(--sbase1-bgc);">
     <View></View>
     <ShowInfo></ShowInfo>
     <n-spin class="loading" size="medium" v-show="cenpan_show_loading"></n-spin>

@@ -61,10 +61,12 @@ const message = useMessage();
 function switch_sty(){
     style_switch.value=!style_switch.value;
     if(app_style.value===null){
+        document.documentElement.style.setProperty('--sbase1-bgc', '#2c2c2c');
         app_style.value=darkTheme;
         invoke("set_theme",{theme:'dark'});
         message.info("黑夜模式");
     }else{
+        document.documentElement.style.setProperty('--sbase1-bgc', '#f4f3ed');
         app_style.value=null;
         message.info("白日模式");
         invoke("set_theme",{theme:'white'});
