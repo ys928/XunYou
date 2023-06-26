@@ -106,6 +106,7 @@ function left_panel_mo(){
     }
     .divid_line{
         width: 5px;
+        background-color: var(--sbase-bgc);
         &:hover{
             cursor: ew-resize;
         }

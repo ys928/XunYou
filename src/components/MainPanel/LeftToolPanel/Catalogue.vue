@@ -1,8 +1,8 @@
 <template>
-<n-el class="Catalogue" v-show="all_panel.Catalogue" style="background-color:var(--base-color)">
+<n-el class="Catalogue" v-show="all_panel.Catalogue">
     <div class="title">目录</div>
-    <div class="catal" :class="self_style">
-        <div v-for="(item,index) in mainpan_novel_cata" class="cata_item" :class="self_style" @dblclick="dclick_cata_item(index)">
+    <div class="catal">
+        <div v-for="(item,index) in mainpan_novel_cata" class="cata_item"  @dblclick="dclick_cata_item(index)">
             {{item.name}}
         </div>
     </div>
@@ -26,8 +26,6 @@ type type_cata_obj={
  * 从父组件取出的变量
  */
 
-//全局主题样式
-const self_style=ref() as Ref<string>;
 //控制面板显示与否变量
 const all_panel=inject("all_panel") as Ref<type_all_pan_obj>;
 //存放所有遍历到的小说目录
@@ -44,47 +42,17 @@ function dclick_cata_item(index:number){
 </script>
 
 <style scoped lang="less">
-.Catalogue.dark{
-    background-color: #202020;
-}
-.Catalogue.white{
-    background-color: #fff;
-}
 .Catalogue{
     height: 100%;
     display: flex;
     flex-direction: column;
+    background-color: var(--sbase-bgc);
     .title{
         width: 100%;
         text-align: center;
         font-size: 16px;
         margin: 10px 0;
         color: #aaa;
-    }
-    .catal.dark{
-        background-color: #2c2c2c;
-        border: #3e3e3e solid 2px;
-        border-bottom: none;
-        &::-webkit-scrollbar-thumb{
-            background-color: #959595;
-            border-radius: 3px;
-        }
-        &::-webkit-scrollbar-track{
-            background-color: #333;
-        }
-    }
-
-    .catal.white{
-        background-color: #f4f3ed;
-        border: #e7e7e7 solid 2px;
-        border-bottom: none;
-        &::-webkit-scrollbar-thumb{
-            background-color: #ddd;
-            border-radius: 3px;
-        }
-        &::-webkit-scrollbar-track{
-            background-color: #eee;
-        }
     }
     .catal{
         padding: 0 5px;
@@ -93,20 +61,19 @@ function dclick_cata_item(index:number){
         flex-grow: 1;
         border-radius: 5px;
         color: #7f7f7f;
+        background: var(--sbase1-bgc);
         overflow-x: hidden;
+        border-bottom: none;
+        border: solid 2px var(--sborder-color);
         &::-webkit-scrollbar{
             width: 5px;
         }
-        .cata_item.dark{
-            &:hover{
-                background-color: #3f3f3f;
-            }
+        &::-webkit-scrollbar-thumb{
+            background-color: var(--ssb-thumb-color);
+            border-radius: 3px;
         }
-        .cata_item.white{
-            background-color: #eee;
-            &:hover{
-                background-color: #cfcfcf;
-            }
+        &::-webkit-scrollbar-track{
+            background-color: var(--ssb-track-color);
         }
         .cata_item{
             display: flex;
@@ -120,6 +87,9 @@ function dclick_cata_item(index:number){
             height: 25px;
             line-height: 25px;
             padding-left: 5px;
+            &:hover{
+                background-color: var(--shover-color);
+            }
         }
     }
 }

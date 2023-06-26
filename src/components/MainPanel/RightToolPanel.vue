@@ -103,6 +103,7 @@ onMounted(()=>{
       height: 100%;
     }
     .divid_line{
+        background-color: var(--sbase-bgc);
         width: 5px;
     }
 }

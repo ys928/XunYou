@@ -61,12 +61,23 @@ const message = useMessage();
 function switch_sty(){
     style_switch.value=!style_switch.value;
     if(app_style.value===null){
+        document.documentElement.style.setProperty('--sbase-bgc', '#202020');
         document.documentElement.style.setProperty('--sbase1-bgc', '#2c2c2c');
+        document.documentElement.style.setProperty('--ssb-thumb-color', '#959595');
+        document.documentElement.style.setProperty('--ssb-track-color', '#333');
+        document.documentElement.style.setProperty('--sborder-color', '#3e3e3e');
+        document.documentElement.style.setProperty('--shover-color', '#3f3f3f');
         app_style.value=darkTheme;
         invoke("set_theme",{theme:'dark'});
         message.info("黑夜模式");
     }else{
+        document.documentElement.style.setProperty('--sbase-bgc', '#fff');
         document.documentElement.style.setProperty('--sbase1-bgc', '#f4f3ed');
+        document.documentElement.style.setProperty('--ssb-thumb-color', '#ddd');
+        document.documentElement.style.setProperty('--ssb-track-color', '#eee');
+        document.documentElement.style.setProperty('--sborder-color', '#e7e7e7');
+        document.documentElement.style.setProperty('--shover-color', '#cfcfcf');
+
         app_style.value=null;
         message.info("白日模式");
         invoke("set_theme",{theme:'white'});

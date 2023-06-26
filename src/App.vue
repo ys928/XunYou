@@ -110,7 +110,11 @@ onMounted(()=>{
 :root {
   --sbase-bgc:#202020; //主题基础背景色 
   --sbase-color:#7f7f7f; //主题基础文本颜色
-  --sbase1-bgc:#2e2e2e; //主题基础背景色1号
+  --sbase1-bgc:#2c2c2c; //主题基础背景色1号
   --sbase1-color:#7f7f7f; //主题基础文本颜色1号
+  --ssb-thumb-color:#959595; //滑块颜色
+  --ssb-track-color:#333; //滑动条颜色
+  --sborder-color:#3e3e3e; //边框颜色
+  --shover-color:#3f3f3f; //鼠标经过颜色
 }
 </style>
