@@ -18,8 +18,6 @@ type type_all_pan_obj={
 /**
  * 从父组件取出的变量
  */
-//全局主题样式
-const self_style=ref() as Ref<string>;
 //控制面板显示与否变量
 const all_panel=inject("all_panel") as Ref<type_all_pan_obj>;
 
@@ -52,58 +50,10 @@ async function fun_txt_to_bzip2(){
         margin: 10px 0;
         color: #aaa;
     }
-    .tools.dark{
-        background-color: #2c2c2c;
-        border: #3e3e3e solid 2px;
-        border-bottom: none;
-        &::-webkit-scrollbar-thumb{
-            background-color: #959595;
-            border-radius: 3px;
-        }
-        &::-webkit-scrollbar-track{
-            background-color: #333;
-        }
-    }
-
-    .tools.white{
-        background-color: #f4f3ed;
-        border: #e7e7e7 solid 2px;
-        border-bottom: none;
-        &::-webkit-scrollbar-thumb{
-            background-color: #ddd;
-            border-radius: 3px;
-        }
-        &::-webkit-scrollbar-track{
-            background-color: #eee;
-        }
-    }
     .tools{
         padding: 0 5px;
         margin: 0 5px;
-        overflow-y: auto;
-        flex-grow: 1;
-        border-radius: 5px;
-        color: #7f7f7f;
         display: flex;
-        .item.dark{
-            background-color: #2f2f2f;
-            &:hover{
-                background-color: #3f3f3f;
-            }
-        }
-        .item.white{
-            background-color: #eee;
-            &:hover{
-                background-color: #cfcfcf;
-            }
-        }
-        .item{
-            padding: 5px;
-            margin: 5px;
-            height: 25px;
-            text-align: center;
-            border-radius: 5px;
-        }
     }
 }
 </style>
