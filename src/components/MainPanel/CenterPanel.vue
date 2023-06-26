@@ -1,5 +1,5 @@
 <template>
-<div class="CenterPanel" ref="div_center_panel" style="background-color: var(--sbase1-bgc);">
+<div class="CenterPanel" ref="div_center_panel">
     <View></View>
     <ShowInfo></ShowInfo>
     <n-spin class="loading" size="medium" v-show="cenpan_show_loading"></n-spin>
@@ -71,16 +71,11 @@ onMounted(async ()=>{
 </script>
 
 <style scoped lang="less">
-.CenterPanel.dark{
-    background-color: #2c2c2c;
-}
-.CenterPanel.white{
-  background-color: #f4f3ed;
-}
 .CenterPanel{
     position: relative;
     flex-grow: 1;
     height: 100%;
+    background-color: var(--sbase1-bgc);
     .loading{
         position: absolute;
         left: 50%;

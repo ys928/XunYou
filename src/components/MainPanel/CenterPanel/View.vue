@@ -1,5 +1,5 @@
 <template>
-<div class="View" ref="div_view" :class="self_style">
+<div class="View" ref="div_view">
   <div class="one_line" v-for="(item,index) in novel_show_lines">
     <div v-if="IsTitle(item)" class="title">{{item}}</div>
     <div v-else class="paragraph" :style="{'font-size':mainpan_font_size+'px',
@@ -54,8 +54,6 @@ const root_novel_prog=inject("root_novel_prog") as Ref<string>;
 const cenpan_show_prompt=inject("cenpan_show_prompt") as Ref<boolean>;
 //用于控制是否显示加载图标
 const cenpan_show_loading=inject("cenpan_show_loading") as Ref<boolean>;
-  //全局主题样式
-const self_style=ref() as Ref<string>;
 //存放处理跳转jump组件的按键处理函数
 const cenpan_pro_jump_input=inject('cenpan_pro_jump_input') as Ref<Function>;
 //存放所有遍历到的小说目录
@@ -69,16 +67,6 @@ const mainpan_font_weight=inject("mainpan_font_weight") as Ref<number>
 //行高
 const mainpan_line_height=inject("mainpan_line_height") as Ref<number>;
 
-//程序样式
-const app_style=inject("app_style") as Ref<GlobalTheme | null>;
-
-watch(app_style,()=>{
-    if(app_style.value===null){
-        self_style.value="white";
-    }else{
-        self_style.value="dark";
-    }
-})
 
 /*
 普通变量
@@ -96,7 +84,6 @@ let cur_capter_index:number;
  * 初始化函数
  */
 onMounted(async ()=>{
-    self_style.value=await invoke("get_theme",{});
     //初始化跳转函数
     mainpan_nov_jump_fun.value=fun_jump;
     //初始化跳转组件的按键处理函数
@@ -354,7 +341,6 @@ function fun_jump(index:number,line:number){
 
 <style scoped lang="less">
 .View.dark{
-  background-color: #2c2c2c;
   &::-webkit-scrollbar-thumb{
       background-color: #959595;
       border-radius: 3px;
@@ -364,7 +350,6 @@ function fun_jump(index:number,line:number){
   }
 }
 .View.white{
-  background-color: #f4f3ed;
   &::-webkit-scrollbar-thumb{
       background-color: #ddd;
       border-radius: 3px;
@@ -376,13 +361,20 @@ function fun_jump(index:number,line:number){
 
 .View{
     height: 100%;
-    background-color: #21201a;
+    background-color: var(--sbase1-bgc);
     overflow-y: auto;
     overflow-x: hidden;
     margin: 0 15px;
     padding: 0 5px;
     &::-webkit-scrollbar{
         width: 10px;
+    }
+    &::-webkit-scrollbar-thumb{
+        background-color: var(--ssb-thumb-color);
+        border-radius: 3px;
+    }
+    &::-webkit-scrollbar-track{
+        background-color: var(--ssb-track-color);
     }
     .one_line{
       .title{

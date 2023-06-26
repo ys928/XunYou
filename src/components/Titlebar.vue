@@ -61,23 +61,12 @@ const message = useMessage();
 function switch_sty(){
     style_switch.value=!style_switch.value;
     if(app_style.value===null){
-        document.documentElement.style.setProperty('--sbase-bgc', '#202020');
-        document.documentElement.style.setProperty('--sbase1-bgc', '#2c2c2c');
-        document.documentElement.style.setProperty('--ssb-thumb-color', '#959595');
-        document.documentElement.style.setProperty('--ssb-track-color', '#333');
-        document.documentElement.style.setProperty('--sborder-color', '#3e3e3e');
-        document.documentElement.style.setProperty('--shover-color', '#3f3f3f');
+        dark_theme();
         app_style.value=darkTheme;
         invoke("set_theme",{theme:'dark'});
         message.info("黑夜模式");
     }else{
-        document.documentElement.style.setProperty('--sbase-bgc', '#fff');
-        document.documentElement.style.setProperty('--sbase1-bgc', '#f4f3ed');
-        document.documentElement.style.setProperty('--ssb-thumb-color', '#ddd');
-        document.documentElement.style.setProperty('--ssb-track-color', '#eee');
-        document.documentElement.style.setProperty('--sborder-color', '#e7e7e7');
-        document.documentElement.style.setProperty('--shover-color', '#cfcfcf');
-
+        sun_theme();
         app_style.value=null;
         message.info("白日模式");
         invoke("set_theme",{theme:'white'});
@@ -87,14 +76,32 @@ function switch_sty(){
 onMounted(async ()=>{
     let theme=await invoke("get_theme",{});
     if(theme==='dark'){
+        dark_theme();
         style_switch.value=false;
         app_style.value=darkTheme;
     }else{
+        sun_theme();
         style_switch.value=true;
         app_style.value=null;
     }
 });
 
+function dark_theme(){
+    document.documentElement.style.setProperty('--sbase-bgc', '#202020');
+    document.documentElement.style.setProperty('--sbase1-bgc', '#2c2c2c');
+    document.documentElement.style.setProperty('--ssb-thumb-color', '#959595');
+    document.documentElement.style.setProperty('--ssb-track-color', '#333');
+    document.documentElement.style.setProperty('--sborder-color', '#3e3e3e');
+    document.documentElement.style.setProperty('--shover-color', '#3f3f3f');
+}
+function sun_theme(){
+    document.documentElement.style.setProperty('--sbase-bgc', '#fff');
+    document.documentElement.style.setProperty('--sbase1-bgc', '#f4f3ed');
+    document.documentElement.style.setProperty('--ssb-thumb-color', '#ddd');
+    document.documentElement.style.setProperty('--ssb-track-color', '#eee');
+    document.documentElement.style.setProperty('--sborder-color', '#e7e7e7');
+    document.documentElement.style.setProperty('--shover-color', '#cfcfcf');
+}
 //处理程序退出时的情况
 async function WinClose() {
     appWindow.close();
