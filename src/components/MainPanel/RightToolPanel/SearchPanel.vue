@@ -1,5 +1,5 @@
 <template>
-<n-el class="SearchPanel" v-show="all_panel.SearchPanel" style="background-color:var(--base-color)">
+<div class="SearchPanel" v-show="all_panel.SearchPanel">
     <div class="title">搜索栏</div>
     <div class="top_pos">
         <n-input size="tiny" round @input="search_fun" placeholder="搜小说"></n-input>
@@ -11,7 +11,7 @@
         </n-button>
         <n-spin class="loading" size="medium" v-show="show_loading"></n-spin>
     </n-scrollbar>
-</n-el>
+</div>
 </template>
 
 <script setup lang="ts">
@@ -126,6 +126,7 @@ function dclick_novel(index:number){
     flex-direction: column;
     height: 100%;
     padding: 0 10px;
+    background-color: var(--sbase-bgc);
     .title{
         font-size: 16px;
         margin: 5px 0;

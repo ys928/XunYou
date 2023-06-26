@@ -1,5 +1,5 @@
 <template>
-<n-el class="Setting" v-show="all_panel.Setting" style="background-color:var(--base-color)">
+<div class="Setting" v-show="all_panel.Setting">
     <div class="title">设置</div>
     <div class="set_item">
         <div>
@@ -15,7 +15,7 @@
             <n-input-number v-model:value="mainpan_line_height" :min="10" :max="25" :step="1" button-placement="both" size="tiny"></n-input-number>
         </div>
     </div>
-</n-el>
+</div>
 </template>
 
 <script setup lang="ts">
@@ -61,21 +61,14 @@ function save_setting(){
     });
 }
 
-
-
 </script>
 
 <style scoped lang="less">
-.Setting.white{
-    background-color: #fff;
-}
-.Setting.dark{
-    background-color: #202020;
-}
 .Setting{
     display: flex;
     flex-direction: column;
     height: 100%;
+    background-color: var(--sbase-bgc);
     .title{
         font-size: 16px;
         margin: 5px 0;
