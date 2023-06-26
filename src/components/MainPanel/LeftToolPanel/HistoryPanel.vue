@@ -1,8 +1,8 @@
 <template>
-<n-el class="HistoryPanel" v-show="all_panel.HistoryPanel" style="background-color:var(--base-color)">
+<n-el class="HistoryPanel" v-show="all_panel.HistoryPanel">
     <div class="title">历史记录</div>
-    <div class="novels" ref="div_record" :class="self_style">
-        <div v-for="(item,index) in records_novel" class="novel_item" :class="self_style" @dblclick="dclick_novel(index)">
+    <div class="novels" ref="div_record">
+        <div v-for="(item,index) in records_novel" class="novel_item" @dblclick="dclick_novel(index)">
             <span @dblclick="dclick_novel(index)"  class="novel_name">
                 {{item.name.substring(0,item.name.lastIndexOf('.'))}}
             </span> 
@@ -11,7 +11,7 @@
             </span>
         </div>
     </div>
-    <div class="opt_menu" ref="dev_menu" v-show="is_show_menu" :class="self_style">
+    <div class="opt_menu" ref="dev_menu" v-show="is_show_menu" >
         <div class="item" @click="del_record">删除</div>
     </div>
 </n-el>
@@ -39,23 +39,12 @@ type type_record_novel={
 
 //取出存放打开小说的函数变量，本组件用来使用该函数
 const root_fun_open_novel=inject('root_fun_open_novel') as Ref<Function>;
-//全局主题样式
-const self_style=ref() as Ref<string>;
 //控制面板显示与否变量
 const all_panel=inject("all_panel") as Ref<type_all_pan_obj>;
 /**
  * 取得父变量
  */
-//程序样式
-const app_style=inject("app_style") as Ref<GlobalTheme | null>;
 
-watch(app_style,()=>{
-    if(app_style.value===null){
-        self_style.value="white";
-    }else{
-        self_style.value="dark";
-    }
-})
 
 /**
  * vue 绑定标签变量
@@ -138,47 +127,17 @@ async function del_record(){
 </script>
 
 <style scoped lang="less">
-.HistoryPanel.dark{
-    background-color: #202020;
-}
-.HistoryPanel.white{
-    background-color: #fff;
-}
 .HistoryPanel{
     height: 100%;
     display: flex;
     flex-direction: column;
+    background-color:var(--sbase-bgc);
     .title{
         width: 100%;
         text-align: center;
         font-size: 16px;
         margin: 10px 0;
         color: #aaa;
-    }
-    .novels.dark{
-        background-color: #2c2c2c;
-        border: #3e3e3e solid 2px;
-        border-bottom: none;
-        &::-webkit-scrollbar-thumb{
-            background-color: #959595;
-            border-radius: 3px;
-        }
-        &::-webkit-scrollbar-track{
-            background-color: #333;
-        }
-    }
-
-    .novels.white{
-        background-color: #f4f3ed;
-        border: #e7e7e7 solid 2px;
-        border-bottom: none;
-        &::-webkit-scrollbar-thumb{
-            background-color: #ddd;
-            border-radius: 3px;
-        }
-        &::-webkit-scrollbar-track{
-            background-color: #eee;
-        }
     }
     .novels{
         padding: 0 5px;
@@ -187,19 +146,18 @@ async function del_record(){
         flex-grow: 1;
         border-radius: 5px;
         color: #7f7f7f;
+        border-bottom: none;
+        background-color: var(--sbase1-bgc);
+        border: var(--sborder-color) solid 2px;
         &::-webkit-scrollbar{
             width: 5px;
         }
-        .novel_item.dark{
-            &:hover{
-                background-color: #3f3f3f;
-            }
+        &::-webkit-scrollbar-thumb{
+            background-color: var(--ssb-thumb-color);
+            border-radius: 3px;
         }
-        .novel_item.white{
-            background-color: #eee;
-            &:hover{
-                background-color: #cfcfcf;
-            }
+        &::-webkit-scrollbar-track{
+            background-color: var(--ssb-track-color);
         }
         .novel_item{
             display: flex;
@@ -213,7 +171,9 @@ async function del_record(){
             height: 25px;
             line-height: 25px;
             padding-left: 5px;
-
+            &:hover{
+                background-color: var(--shover-color);
+            }
             .novel_name{
                 overflow: hidden;
             }
