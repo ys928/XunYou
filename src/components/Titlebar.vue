@@ -93,6 +93,12 @@ function dark_theme(){
     document.documentElement.style.setProperty('--ssb-track-color', '#333');
     document.documentElement.style.setProperty('--sborder-color', '#3e3e3e');
     document.documentElement.style.setProperty('--shover-color', '#3f3f3f');
+    document.documentElement.style.setProperty('--smenu-bgc', '#4a4a4a');
+    document.documentElement.style.setProperty('--smenu-color', '#999');
+    document.documentElement.style.setProperty('--smenu-item-hover-bgc', '#5f5f5f');
+
+
+
 }
 function sun_theme(){
     document.documentElement.style.setProperty('--sbase-bgc', '#fff');
@@ -101,6 +107,9 @@ function sun_theme(){
     document.documentElement.style.setProperty('--ssb-track-color', '#eee');
     document.documentElement.style.setProperty('--sborder-color', '#e7e7e7');
     document.documentElement.style.setProperty('--shover-color', '#cfcfcf');
+    document.documentElement.style.setProperty('--smenu-bgc', '#b4b3bd');
+    document.documentElement.style.setProperty('--smenu-color', '#2e2e2e');
+    document.documentElement.style.setProperty('--smenu-item-hover-bgc', '#aaa');
 }
 //处理程序退出时的情况
 async function WinClose() {

@@ -185,32 +185,19 @@ async function del_record(){
             }
         }
     }
-    .opt_menu.dark{
-        background-color: #4a4a4a;
-        color: #999;
-        .item{
-            &:hover{
-                background-color: #5f5f5f;
-            }
-        }
-    }
-    .opt_menu.white{
-        background-color: #b4b3ad;
-        color: #2e2e2e;
-        .item{
-            &:hover{
-                background-color: #aaa;
-            }
-        }
-    }
     .opt_menu{
         position: fixed;
         border-radius: 5px;
         padding: 3px 5px;
         width: 100px;
+        background-color: var(--smenu-bgc);
+        color: var(--smenu-color);
         .item{
             padding: 2px 10px;
             border-radius: 5px;
+            &:hover{
+                background-color: var(--smenu-item-hover-bgc);
+            }
         }
     }
 }

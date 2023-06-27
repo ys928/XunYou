@@ -116,5 +116,8 @@ onMounted(()=>{
   --ssb-track-color:#333; //滑动条颜色
   --sborder-color:#3e3e3e; //边框颜色
   --shover-color:#3f3f3f; //鼠标经过颜色
+  --smenu-bgc:#4a4a4a; //菜单颜色
+  --smenu-color:#999; //菜单字体颜色
+  --smenu-item-hover-bgc:#5f5f5f;
 }
 </style>
