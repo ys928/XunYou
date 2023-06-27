@@ -18,17 +18,15 @@
 
 # 软件界面
 
-<img width="781" alt="Snipaste_2023-06-10_20-57-02" src="https://github.com/ys928/XunYou/assets/80371119/a5b5753e-f511-4e83-8858-7eddae03cf49">
+<img width="798" alt="1687827326418" src="https://github.com/ys928/XunYou/assets/80371119/0d2c17a8-a3c7-4c94-aa1e-e3883a0c3584">
 
 
 ## 暗色调主题：
 
-<img width="781" alt="Snipaste_2023-06-10_20-56-26" src="https://github.com/ys928/XunYou/assets/80371119/5531d80d-33b4-407d-960f-e65b51dcec5f">
+<img width="798" alt="1687827268047" src="https://github.com/ys928/XunYou/assets/80371119/c53a99e8-81b8-4ec8-8c44-3d9a96ac8f45">
 
 
 ## 亮色调主题：
 
-<img width="781" alt="Snipaste_2023-06-10_20-56-38" src="https://github.com/ys928/XunYou/assets/80371119/cae51f9f-672f-4563-b457-1969e49c9790">
-
-
+<img width="798" alt="1687827298628" src="https://github.com/ys928/XunYou/assets/80371119/3a27cd31-b68e-484c-bd6f-19fda12f1643">
 
