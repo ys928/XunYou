@@ -3,7 +3,7 @@
     <div class="title">搜索栏</div>
     <div class="top_pos">
         <n-input size="tiny" round @input="search_fun" placeholder="搜小说"></n-input>
-        <n-icon class="icon" size="20" color="#787878" :component="Folder20Filled" @click="choose_dir"></n-icon>
+        <n-icon class="icon" size="20" color="#787878" :component="FolderMinus" @click="choose_dir"></n-icon>
     </div>
     <n-scrollbar class="novel_list">
         <n-button v-for="(item,index) in show_novel_list" class="novel_item" @dblclick="dclick_novel(index)">
@@ -20,7 +20,7 @@ import { FileEntry, readDir } from '@tauri-apps/api/fs';
 import { dialog, invoke } from '@tauri-apps/api';
 import { fs } from '@tauri-apps/api';
 import {NIcon,NInput,NSpin,NScrollbar,NEl,NButton} from "naive-ui"
-import {Folder20Filled} from "@vicons/fluent"
+import {FolderMinus} from "@vicons/tabler"
 /**
  * 相关变量类型
  */
@@ -83,7 +83,7 @@ onMounted(async ()=>{
         all_novel.splice(0); //清空
         show_novel_list.value.splice(0);
         all_novel=await readDir(p as string); //重新获取数据
-        all_novel=all_novel.filter(e => e.name!.endsWith(".novel") );
+        all_novel=all_novel.filter(e => e.name!.endsWith(".novel") || e.name!.endsWith(".txt") );
         show_loading.value=false;
         //优化性能，最多展示前100项
         let max=100<all_novel.length?100:all_novel.length;
@@ -148,7 +148,7 @@ function dclick_novel(index:number){
         border-radius: 5px;
         margin-left: 3px;
         &:hover{
-            background-color: var(--info-color-hover);
+            background-color: var(--shover-color);
         }
     }
     .novel_list{
