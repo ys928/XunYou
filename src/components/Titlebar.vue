@@ -89,6 +89,8 @@ onMounted(async ()=>{
 function dark_theme(){
     document.documentElement.style.setProperty('--sbase-bgc', '#202020');
     document.documentElement.style.setProperty('--sbase1-bgc', '#2c2c2c');
+    document.documentElement.style.setProperty('--sbase2-bgc', '#222222');
+    document.documentElement.style.setProperty('--sbase2-color', '#fff');
     document.documentElement.style.setProperty('--ssb-thumb-color', '#959595');
     document.documentElement.style.setProperty('--ssb-track-color', '#333');
     document.documentElement.style.setProperty('--sborder-color', '#3e3e3e');
@@ -96,6 +98,7 @@ function dark_theme(){
     document.documentElement.style.setProperty('--smenu-bgc', '#4a4a4a');
     document.documentElement.style.setProperty('--smenu-color', '#999');
     document.documentElement.style.setProperty('--smenu-item-hover-bgc', '#5f5f5f');
+    
 
 
 
@@ -103,6 +106,8 @@ function dark_theme(){
 function sun_theme(){
     document.documentElement.style.setProperty('--sbase-bgc', '#fff');
     document.documentElement.style.setProperty('--sbase1-bgc', '#f4f3ed');
+    document.documentElement.style.setProperty('--sbase2-bgc', '#eee');
+    document.documentElement.style.setProperty('--sbase2-color', '#333');
     document.documentElement.style.setProperty('--ssb-thumb-color', '#ddd');
     document.documentElement.style.setProperty('--ssb-track-color', '#eee');
     document.documentElement.style.setProperty('--sborder-color', '#e7e7e7');
