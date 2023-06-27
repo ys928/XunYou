@@ -21,16 +21,7 @@ const div_center_panel=ref();
 /**
  * 取得父变量
  */
-//程序样式
-const app_style=inject("app_style") as Ref<GlobalTheme | null>;
 
-watch(app_style,()=>{
-    if(app_style.value===null){
-        self_style.value="white";
-    }else{
-        self_style.value="dark";
-    }
-})
 
 
 /**
@@ -39,8 +30,6 @@ watch(app_style,()=>{
 //用于控制在未打开小说时面板上的提示消息
 const cenpan_show_prompt=ref(true);
 provide('cenpan_show_prompt',cenpan_show_prompt);
-//当前使用的样式
-const self_style=ref() as Ref<string>;
 //用于控制是否显示加载图标
 const cenpan_show_loading=ref(false);
 provide('cenpan_show_loading',cenpan_show_loading);
@@ -65,7 +54,6 @@ onMounted(async ()=>{
             cenpan_show_jump.value=true;
         }
     })
-    self_style.value=await invoke("get_theme",{});
 });
 
 </script>
