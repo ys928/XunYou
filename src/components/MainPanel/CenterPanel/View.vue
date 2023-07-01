@@ -59,7 +59,7 @@ const cenpan_pro_jump_input=inject('cenpan_pro_jump_input') as Ref<Function>;
 //存放所有遍历到的小说目录
 const mainpan_novel_cata=inject("mainpan_novel_cata") as Ref<Array<type_cata_obj>>
 //存放跳转函数
-const mainpan_nov_jump_fun=inject("mainpan_nov_jump_fun") as Ref<Function>;
+//const mainpan_nov_jump_fun=inject("mainpan_nov_jump_fun") as Ref<Function>;
 //字体大小
 const mainpan_font_size=inject('mainpan_font_size') as Ref<number>;
 //字体粗细
@@ -73,6 +73,10 @@ const mainpan_line_height=inject("mainpan_line_height") as Ref<number>;
 */
 //存放读取到的所有小说内容
 let novel_lines:Array<string>;
+//存放读取到的小说所有内容，并按章节划分存放，每章第一节为标题。
+let novel_chapter:Array<Array<string>>=[];
+//当前阅读章节
+let cur_chap_num:number;
 //存放视图显示出来的第一行占原小说的具体行数
 let view_line:number;
 //存放当前打开的小说的路径
@@ -84,10 +88,10 @@ let cur_capter_index:number;
  * 初始化函数
  */
 onMounted(async ()=>{
-    //初始化跳转函数
-    mainpan_nov_jump_fun.value=fun_jump;
-    //初始化跳转组件的按键处理函数
-    cenpan_pro_jump_input.value=process_jump_input;
+    // //初始化跳转函数
+    // mainpan_nov_jump_fun.value=fun_jump;
+    // //初始化跳转组件的按键处理函数
+    // cenpan_pro_jump_input.value=process_jump_input;
     //初始化打开小说的函数
     root_fun_open_novel.value=fun_open_novel;
     //监听鼠标点击事件
@@ -151,15 +155,6 @@ onMounted(async ()=>{
 
       }
     })
-  //处理滑动
-  var t:NodeJS.Timeout; //事件节流，防止频繁滚动导致界面卡顿
-  div_view.value.addEventListener("wheel",async (e: any)=>{
-    //body的高度设置多些，能够触发onsroll事件
-    clearTimeout(t);
-    t = setTimeout(function() {
-      process_wheel(); //处理鼠标滑轮滚动事件
-    }, 300)
-  });
 
   //处理文件拖拽
   event.listen<Array<string>>("tauri://file-drop",(e)=>{
@@ -198,26 +193,23 @@ async function fun_open_novel(path:string){
         await dialog.message('不支持该类型文件！', { title: '打开失败', type: 'warning' });
         return;
       }
-
+      let chap_num=0;
+      novel_chapter.push([])
       for(let i=0;i<novel_lines.length;i++){
         if(IsTitle(novel_lines[i])){
-          mainpan_novel_cata.value.push({
-            name:novel_lines[i],
-            line:i
-          });
+          console.log(novel_chapter)
+          chap_num++;
+          novel_chapter.push([]);
         }
+        novel_chapter[chap_num].push(novel_lines[i]);
       }
-      //获取该小说记录已经读到的行数（view_min,view_max）中的view_min
-      view_line=await invoke("get_line",{path:path});
-      //开始渲染,最多两百行，不足则渲染最后所有
-      let end=view_line+200>novel_lines.length?novel_lines.length:view_line+200;
-      for(let i=view_line;i<end;i++){
-        novel_show_lines.value.push(novel_lines[i]);
+      cur_chap_num=0;
+      let cur_chapter=novel_chapter[cur_chap_num];
+      for(let i=0;i<cur_chapter.length;i++){
+        novel_show_lines.value.push(cur_chapter[i]);
       }
-      //进度，按行显示
-      root_novel_prog.value=view_line+"/"+novel_lines.length;
+      // //进度，按行显示
       cenpan_show_loading.value=false;
-      // console.log(show_loading.value);
 }
 function IsTitle(line:string) {
   const r1 =new RegExp(/^\s*开\s*篇.*\r?\n?/); 
@@ -229,62 +221,6 @@ function IsTitle(line:string) {
   const r3=new RegExp(/^\s*第\s*[零一二三四五六七八九0-9]{1,7}\s*[章节幕卷集部回].*\r?\n?/);
   return r3.test(line);
 }
-
-//处理鼠标滑轮滚动事件
-async function process_wheel(){
-  let top=div_view.value.scrollTop;
-    let buttom=top+div_view.value.clientHeight;
-
-    let all_p=div_view.value.querySelectorAll('.one_line');
-    let np=all_p.length; //当前渲染的个数
-    //获得视图窗口第一行在小说novel_lines中的位置
-    let cur_view_line=0;
-    for(let i = 0;i<all_p.length;i++){
-      if(all_p[i].offsetTop>top){
-        cur_view_line=i;
-        break;
-      }
-    }
-    //向前渲染最多20条，不足20条则渲染剩下的所有
-    // console.log(cur_view_line);
-    // console.log(all_p);
-    if(cur_view_line===0||cur_view_line===1){
-      let num=view_line>20?20:view_line;
-      for(let i=view_line-num;i<view_line;i++){
-        //向前渲染
-        novel_show_lines.value.unshift(novel_lines[i]);
-        //向后删除对应多的数据
-        novel_show_lines.value.pop();
-      }
-      view_line-=num;
-      all_p=div_view.value.querySelectorAll('.one_line');
-      div_view.value.scrollTop=all_p[num].offsetTop;
-    }else if(all_p[np-2].offsetTop<=buttom){ //倒数第2个元素已经显示出来，需要增加
-      //向后渲染50条，不足50条则渲染剩下所有
-      let num=view_line+np+50>novel_lines.length?novel_lines.length-view_line+np:50;
-      let end=view_line+np+num;
-      //end为所有小说内容的索引
-      for(let i=view_line+np;i<end;i++){
-        //向后渲染
-        novel_show_lines.value.push(novel_lines[i]);
-        //向前删除对应多的数据
-        novel_show_lines.value.shift();
-      }
-      view_line+=(end-view_line-np);
-      all_p=div_view.value.querySelectorAll('.one_line');
-      div_view.value.scrollTop=all_p[cur_view_line-num].offsetTop;
-    }
-    //每次滑动都要记录一下数据
-    await invoke("set_line",{
-      path:cur_novel_path,
-      line:view_line+cur_view_line,
-      allLines:novel_lines.length
-    });
-
-    //同时更新状态栏
-    root_novel_prog.value=(view_line+cur_view_line)+"/"+novel_lines.length;
-} 
-
 //获取文件名
 function get_file_name(path:string) {
   var idx = path.lastIndexOf('\\');
@@ -296,46 +232,46 @@ function get_file_name(path:string) {
   return path.substring(0,path.lastIndexOf('.'));
 }
 //处理跳转对话框按键的函数
-function process_jump_input(key:string,value:string){
-  if(key==='Escape'){
-    div_view.value.style.filter=""; //清除毛玻璃效果
-  }
-  if(key==='Enter'){ //按下Enter键，开启跳转
-    let to_line=Number(value);
-    if(novel_lines===undefined||to_line>novel_lines.length){
-      return;
-    }
-    fun_jump(-1,to_line);
-    div_view.value.style.filter=""; //清除毛玻璃效果
-  }
-}
+// function process_jump_input(key:string,value:string){
+//   if(key==='Escape'){
+//     div_view.value.style.filter=""; //清除毛玻璃效果
+//   }
+//   if(key==='Enter'){ //按下Enter键，开启跳转
+//     let to_line=Number(value);
+//     if(novel_lines===undefined||to_line>novel_lines.length){
+//       return;
+//     }
+//     fun_jump(-1,to_line);
+//     div_view.value.style.filter=""; //清除毛玻璃效果
+//   }
+// }
 
-function fun_jump(index:number,line:number){
-    if(index !==-1){
-      cur_capter_index=index;
-    }
-    //console.log(line);
-    //清空
-    novel_show_lines.value.splice(0);
-    //console.log(novel_show_lines.value.length);
-    //开始渲染,最多两百行，不足则渲染最后所有
-    view_line=line;
-    let end=view_line+200>novel_lines.length?novel_lines.length:view_line+200;
-    for(let i=view_line;i<end;i++){
-      novel_show_lines.value.push(novel_lines[i]);
-    }
-    //进度，按行显示
-    //nov_prog.value=view_line+"/"+novel_lines.length;
-    cenpan_show_loading.value=false;
-    //滑动到第一个元素的位置
-    div_view.value.scrollTop=div_view.value.firstChild.offsetTop;
-    //每次跳转都要记录一下数据
-    invoke("set_line",{
-      path:cur_novel_path,
-      line:view_line+view_line,
-      allLines:novel_lines.length
-    });
-}
+// function fun_jump(index:number,line:number){
+//     if(index !==-1){
+//       cur_capter_index=index;
+//     }
+//     //console.log(line);
+//     //清空
+//     novel_show_lines.value.splice(0);
+//     //console.log(novel_show_lines.value.length);
+//     //开始渲染,最多两百行，不足则渲染最后所有
+//     view_line=line;
+//     let end=view_line+200>novel_lines.length?novel_lines.length:view_line+200;
+//     for(let i=view_line;i<end;i++){
+//       novel_show_lines.value.push(novel_lines[i]);
+//     }
+//     //进度，按行显示
+//     //nov_prog.value=view_line+"/"+novel_lines.length;
+//     cenpan_show_loading.value=false;
+//     //滑动到第一个元素的位置
+//     div_view.value.scrollTop=div_view.value.firstChild.offsetTop;
+//     //每次跳转都要记录一下数据
+//     invoke("set_line",{
+//       path:cur_novel_path,
+//       line:view_line+view_line,
+//       cur_chapter:
+//     });
+// }
 
 </script>
 

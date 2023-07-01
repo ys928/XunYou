@@ -77,14 +77,48 @@ onMounted(async ()=>{
     let theme=await invoke("get_theme",{});
     if(theme==='dark'){
         dark_theme();
+        change_theme(light);
         style_switch.value=false;
         app_style.value=darkTheme;
     }else{
         sun_theme();
+        change_theme(dark);
         style_switch.value=true;
         app_style.value=null;
     }
 });
+let dark={
+    '--base-bgc':'#202020',
+    '--base-bgc1':'#2c2c2c',
+    '--base-bgc2':'#222',
+    '--txt-color':'#fff',
+    '--thumb-color':'#959595',
+    '--track-color':'#333',
+    '--border-color':'#3e3e3e',
+    '--hover-color':'#3f3f3f',
+    '--menu-bgc':'#4a4a4a',
+    '--menu-color':'#999',
+    '--mih-color':'#5f5f5f'
+}
+let light={
+    '--base-bgc':'#fff',
+    '--base-bgc1':'#f4f3ed',
+    '--base-bgc2':'#eee',
+    '--txt-color':'#3e3e3e',
+    '--thumb-color':'#ddd',
+    '--track-color':'#eee',
+    '--border-color':'#e7e7e7',
+    '--hover-color':'#cfcfcf',
+    '--menu-bgc':'#b4b3bd',
+    '--menu-color':'#2e2e2e',
+    '--mih-color':'#aaa'
+}
+
+function change_theme(theme:Object) {
+    for (const [key, value] of Object.entries(theme)) {
+        document.documentElement.style.setProperty(key, value);
+    }
+}
 
 function dark_theme(){
     document.documentElement.style.setProperty('--sbase-bgc', '#202020');
@@ -98,10 +132,6 @@ function dark_theme(){
     document.documentElement.style.setProperty('--smenu-bgc', '#4a4a4a');
     document.documentElement.style.setProperty('--smenu-color', '#999');
     document.documentElement.style.setProperty('--smenu-item-hover-bgc', '#5f5f5f');
-    
-
-
-
 }
 function sun_theme(){
     document.documentElement.style.setProperty('--sbase-bgc', '#fff');

@@ -19,8 +19,8 @@ pub struct Novel{
     name:String, //小说名字
     path:String, //小说文件路径
     md5:String, //小说md5值校验
-    cur_line:u64, //当前读到的行数
-    all_line:u64, //小说总行数
+    cur_chapter:u64, //当前章节（从0开始）
+    cur_line:u64, //当前章节中读到的行数
 }
 
 #[derive(Serialize, Deserialize)]
@@ -114,7 +114,7 @@ pub fn get_wh() ->(u32,u32){
 }
 
 #[tauri::command]
-pub fn set_line(path:&str,line:u64,all_lines:u64){
+pub fn set_line(path:&str,line:u64,chapter:u64){
     //info!("set_line:{},{},{}",path,line,all_lines);
     let md5=cfun::md5_file(path).unwrap_or_else(||{
         warn!("error to get md5");
@@ -139,7 +139,7 @@ pub fn set_line(path:&str,line:u64,all_lines:u64){
             path:path.to_string(),
             md5:md5,
             cur_line:line,
-            all_line:all_lines
+            cur_chapter:chapter
         });
 
     }
