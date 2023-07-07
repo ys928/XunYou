@@ -1,5 +1,5 @@
 <template>
-<div class="View" ref="div_view">
+<div class="View" ref="div_view" @wheel="process_wheel($event)" @scroll="process_scroll($event)">
   <div class="one_line" v-for="(item,index) in novel_show_lines">
     <div v-if="IsTitle(item)" class="title">{{item}}</div>
     <div v-else class="paragraph" :style="{'font-size':mainpan_font_size+'px',
@@ -11,12 +11,11 @@
       </div>
 
   </div>
-
 </div>
 </template>
 
 <script setup lang="ts">
-import { Ref, ref,onMounted, inject, watch } from 'vue';
+import { Ref, ref,onMounted, inject, watch,nextTick } from 'vue';
 import {dialog,event,fs, invoke} from '@tauri-apps/api';
 import { GlobalTheme } from 'naive-ui';
 
@@ -81,8 +80,6 @@ let cur_chap_num:number;
 let view_line:number;
 //存放当前打开的小说的路径
 let cur_novel_path:string;
-//存放当前阅读到的章节
-let cur_capter_index:number;
 
 /**
  * 初始化函数
@@ -163,6 +160,54 @@ onMounted(async ()=>{
   })
 });
 
+//当前是否已经处于边缘状态（顶部、或者底部）
+let IsEdeg:boolean=false;
+
+let timer:NodeJS.Timeout;
+//处理滑动事件
+async function process_wheel(e:WheelEvent){
+  // 延迟处理wheel事件
+    if(timer){
+      clearTimeout(timer);
+    }
+    timer=setTimeout(async () => {
+      if(IsEdeg===false) {
+        IsEdeg=true;
+        return;
+      }
+      //如果已经到了边缘
+      if(e.deltaY > 0) { //向下滚动，下边缘，翻到下一章
+        if(cur_chap_num<novel_chapter.length-1) {
+          cenpan_show_loading.value=true;
+          cur_chap_num++;
+          novel_show_lines.value.splice(0);
+          let cur_chap=novel_chapter[cur_chap_num];
+          for(let i=0;i<cur_chap.length;i++){
+            novel_show_lines.value.push(cur_chap[i]);
+          }
+          await nextTick(); //等待渲染完成
+          let p1=div_view.value.firstElementChild;
+          p1.scrollIntoView();
+          cenpan_show_loading.value=false;
+        }
+      } else if(e.deltaY < 0) { //向上滚动，上边缘，翻到上一章
+        if(cur_chap_num>0) {
+          cenpan_show_loading.value=true;
+          cur_chap_num--;
+          novel_show_lines.value.splice(0);
+          let cur_chap=novel_chapter[cur_chap_num];
+          for(let i=0;i<cur_chap.length;i++){
+            novel_show_lines.value.push(cur_chap[i]);
+          }
+          cenpan_show_loading.value=false;
+        }
+      }
+    }, 300);
+}
+//处理页面滚动事件
+async function process_scroll(e:Event){
+  IsEdeg=false; //只要有scroll事件发生，就说明没有到底部
+}
 
 //专门用于打开一个小说的函数，并将其内容显示在界面上
 async function fun_open_novel(path:string){
@@ -197,7 +242,11 @@ async function fun_open_novel(path:string){
       novel_chapter.push([])
       for(let i=0;i<novel_lines.length;i++){
         if(IsTitle(novel_lines[i])){
-          console.log(novel_chapter)
+          //目录
+          mainpan_novel_cata.value.push({
+              name:novel_lines[i],
+              line:i
+            });
           chap_num++;
           novel_chapter.push([]);
         }
@@ -208,7 +257,7 @@ async function fun_open_novel(path:string){
       for(let i=0;i<cur_chapter.length;i++){
         novel_show_lines.value.push(cur_chapter[i]);
       }
-      // //进度，按行显示
+      //关闭加载图标
       cenpan_show_loading.value=false;
 }
 function IsTitle(line:string) {
@@ -231,6 +280,7 @@ function get_file_name(path:string) {
   path=path.substring(idx+1);
   return path.substring(0,path.lastIndexOf('.'));
 }
+
 //处理跳转对话框按键的函数
 // function process_jump_input(key:string,value:string){
 //   if(key==='Escape'){
@@ -322,7 +372,6 @@ function get_file_name(path:string) {
       .paragraph{
         word-break: break-all;
         background-image:url("/src/assets/line.svg");
-        //background-repeat: repeat;
         color: #7F7F7F;
         user-select: text;
         &::selection {

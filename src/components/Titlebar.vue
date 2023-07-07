@@ -5,7 +5,7 @@
             <img src="/src/assets/app-icon.png" alt="app-icon">
             <n-el data-tauri-drag-region tag="span" style="color: var(--primary-color);">寻幽</n-el>
         </div>
-        <n-el class="app_title" style="color:var(--text-color-3)">
+        <n-el data-tauri-drag-region class="app_title" style="color:var(--text-color-3)">
             {{root_title}}
         </n-el>
         <div class="app_opt">
