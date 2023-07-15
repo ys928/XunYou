@@ -31,13 +31,13 @@ const all_panel=inject("all_panel") as Ref<type_all_pan_obj>;
 //存放所有遍历到的小说目录
 const mainpan_novel_cata=inject("mainpan_novel_cata") as Ref<Array<type_cata_obj>>
 //存放跳转函数
-//const mainpan_nov_jump_fun=inject("mainpan_nov_jump_fun") as Ref<Function>;
+const mainpan_nov_jump_fun=inject("mainpan_nov_jump_fun") as Ref<Function>;
 
 /**
  * 函数
  */
 function dclick_cata_item(index:number){
-    //mainpan_nov_jump_fun.value(index,mainpan_novel_cata.value[index].line);
+    mainpan_nov_jump_fun.value(index,0);
 }
 </script>
 

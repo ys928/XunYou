@@ -54,11 +54,11 @@ const cenpan_show_prompt=inject("cenpan_show_prompt") as Ref<boolean>;
 //用于控制是否显示加载图标
 const cenpan_show_loading=inject("cenpan_show_loading") as Ref<boolean>;
 //存放处理跳转jump组件的按键处理函数
-const cenpan_pro_jump_input=inject('cenpan_pro_jump_input') as Ref<Function>;
+//const cenpan_pro_jump_input=inject('cenpan_pro_jump_input') as Ref<Function>;
 //存放所有遍历到的小说目录
 const mainpan_novel_cata=inject("mainpan_novel_cata") as Ref<Array<type_cata_obj>>
 //存放跳转函数
-//const mainpan_nov_jump_fun=inject("mainpan_nov_jump_fun") as Ref<Function>;
+const mainpan_nov_jump_fun=inject("mainpan_nov_jump_fun") as Ref<Function>;
 //字体大小
 const mainpan_font_size=inject('mainpan_font_size') as Ref<number>;
 //字体粗细
@@ -86,7 +86,7 @@ let cur_novel_path:string;
  */
 onMounted(async ()=>{
     // //初始化跳转函数
-    // mainpan_nov_jump_fun.value=fun_jump;
+    mainpan_nov_jump_fun.value=fun_jump;
     // //初始化跳转组件的按键处理函数
     // cenpan_pro_jump_input.value=process_jump_input;
     //初始化打开小说的函数
@@ -138,19 +138,19 @@ onMounted(async ()=>{
     }
     });
     document.addEventListener("keyup",e=>{
-      if(e.key==="PageUp"){
-        if(cur_capter_index<mainpan_novel_cata.value.length){
-          cur_capter_index++;
-        }
-      }else if(e.key==='PageDown'){
-        if(cur_capter_index>0){
-          cur_capter_index--;
-        }
-      }else if(e.key==='ArrowUp'){
+      // if(e.key==="PageUp"){
+      //   if(cur_capter_index<mainpan_novel_cata.value.length){
+      //     cur_capter_index++;
+      //   }
+      // }else if(e.key==='PageDown'){
+      //   if(cur_capter_index>0){
+      //     cur_capter_index--;
+      //   }
+      // }else if(e.key==='ArrowUp'){
 
-      }else if(e.key==='ArrowDown'){
+      // }else if(e.key==='ArrowDown'){
 
-      }
+      // }
     })
 
   //处理文件拖拽
@@ -244,7 +244,7 @@ async function fun_open_novel(path:string){
         if(IsTitle(novel_lines[i])){
           //目录
           mainpan_novel_cata.value.push({
-              name:novel_lines[i],
+              name:novel_lines[i].trim(),
               line:i
             });
           chap_num++;
@@ -253,6 +253,15 @@ async function fun_open_novel(path:string){
         novel_chapter[chap_num].push(novel_lines[i]);
       }
       cur_chap_num=0;
+      //如果小说第一章、第一行不为标题，则添加一个‘开篇’作为标题
+      let first_chap=novel_chapter[0];
+      if(!IsTitle(first_chap[0])){
+        novel_chapter[0].unshift("开篇");
+        mainpan_novel_cata.value.unshift({
+          name: '开篇',
+          line: 0
+          })
+      }
       let cur_chapter=novel_chapter[cur_chap_num];
       for(let i=0;i<cur_chapter.length;i++){
         novel_show_lines.value.push(cur_chapter[i]);
@@ -267,8 +276,10 @@ function IsTitle(line:string) {
   }
   const r2=new RegExp(/^\s*序\s*章.*\r?\n?/);
   if(r2.test(line)) return true;
-  const r3=new RegExp(/^\s*第\s*[零一二三四五六七八九0-9]{1,7}\s*[章节幕卷集部回].*\r?\n?/);
-  return r3.test(line);
+  const r3=new RegExp(/^\s*第\s*[零一二三四五六七八九十百千万0-9]{1,7}\s*[章节幕卷集部回].{0,10}\r?\n?$/);
+  if(r3.test(line)) return true;
+  
+  return false;
 }
 //获取文件名
 function get_file_name(path:string) {
@@ -296,32 +307,26 @@ function get_file_name(path:string) {
 //   }
 // }
 
-// function fun_jump(index:number,line:number){
-//     if(index !==-1){
-//       cur_capter_index=index;
-//     }
-//     //console.log(line);
-//     //清空
-//     novel_show_lines.value.splice(0);
-//     //console.log(novel_show_lines.value.length);
-//     //开始渲染,最多两百行，不足则渲染最后所有
-//     view_line=line;
-//     let end=view_line+200>novel_lines.length?novel_lines.length:view_line+200;
-//     for(let i=view_line;i<end;i++){
-//       novel_show_lines.value.push(novel_lines[i]);
-//     }
-//     //进度，按行显示
-//     //nov_prog.value=view_line+"/"+novel_lines.length;
-//     cenpan_show_loading.value=false;
-//     //滑动到第一个元素的位置
-//     div_view.value.scrollTop=div_view.value.firstChild.offsetTop;
-//     //每次跳转都要记录一下数据
-//     invoke("set_line",{
-//       path:cur_novel_path,
-//       line:view_line+view_line,
-//       cur_chapter:
-//     });
-// }
+async function fun_jump(cur_chapter:number,cur_line:number){
+  cenpan_show_loading.value=true;
+  cur_chap_num=cur_chapter;
+  novel_show_lines.value.splice(0);
+  let cur_chap=novel_chapter[cur_chap_num];
+  for(let i=0;i<cur_chap.length;i++){
+    novel_show_lines.value.push(cur_chap[i]);
+  }
+  await nextTick(); //等待渲染完成
+  let p1=div_view.value.querySelector(`:nth-child(${cur_line+1})`);
+  p1.scrollIntoView();
+  cenpan_show_loading.value=false;
+  
+  //每次跳转都要记录一下数据
+  invoke("set_line",{
+    path:cur_novel_path,
+    line:cur_line,
+    chapter:cur_chapter
+  });
+}
 
 </script>
 
@@ -368,6 +373,7 @@ function get_file_name(path:string) {
         color: #7F7F7F;
         text-align: center;
         margin: 15px 0;
+        user-select: text;
       }
       .paragraph{
         word-break: break-all;

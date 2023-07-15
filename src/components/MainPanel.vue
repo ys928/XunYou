@@ -30,8 +30,8 @@ const mainpan_novel_cata=ref([]);
 provide("mainpan_novel_cata",mainpan_novel_cata);
 
 //存放跳转函数
-// const mainpan_nov_jump_fun=ref();
-// provide("mainpan_nov_jump_fun",mainpan_nov_jump_fun);
+const mainpan_nov_jump_fun=ref();
+provide("mainpan_nov_jump_fun",mainpan_nov_jump_fun);
 
 //字体大小
 const mainpan_font_size=ref(16);
