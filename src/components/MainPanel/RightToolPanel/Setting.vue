@@ -68,7 +68,7 @@ function save_setting(){
     display: flex;
     flex-direction: column;
     height: 100%;
-    background-color: var(--sbase-bgc);
+    background-color: var(--base-bgc);
     .title{
         font-size: 16px;
         margin: 5px 0;

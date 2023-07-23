@@ -1,11 +1,8 @@
 <template>
-<div @mouseenter="app_cursor='default';">
-    <n-el tag="div" class="StatusBar" ref="div_statusbar" style="background-color:var(--base-color)">
-        <div class="left"></div>
-        <div class="right">
-            <span>{{ root_novel_prog }}</span>
-        </div>
-    </n-el>
+<div @mouseenter="app_cursor='default';" class="StatusBar"  ref="div_statusbar">
+    <div class="left"></div>
+    <div class="right">
+    </div>
 </div>
 
 </template>
@@ -26,7 +23,7 @@ import {NEl} from "naive-ui"
 //鼠标样式
 const app_cursor=inject("app_cursor") as Ref<string>;
 //用于显示当前小说阅读进度的变量，本组件用于显示这个值
-const root_novel_prog=inject("root_novel_prog");
+//const root_novel_prog=inject("root_novel_prog");
 
 onMounted(()=>{
 
@@ -42,6 +39,7 @@ onMounted(()=>{
     background-color: #fff;
 }
 .StatusBar{
+    background-color: var(--base-bgc);
     height: 30px;
     display: flex;
     justify-content: space-between;

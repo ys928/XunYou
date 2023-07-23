@@ -1,6 +1,7 @@
 <template>
 <div @mouseenter="app_cursor='default'">
-    <n-el tag="div"  data-tauri-drag-region justify="space-between" class="Titlebar" style="background-color:var(--base-color)">
+    <div class="top_line"></div>
+    <div data-tauri-drag-region class="Titlebar">
         <div class="app_info">
             <img src="/src/assets/app-icon.png" alt="app-icon">
             <n-el data-tauri-drag-region tag="span" style="color: var(--primary-color);">寻幽</n-el>
@@ -23,12 +24,12 @@
                 <n-icon class="close" color="#7f7f7f" size="20" :component="Close" @click="WinClose"></n-icon>
             </div>
         </div>
-    </n-el>
+    </div>
 </div>
 </template>
 
 <script setup lang="ts">
-import { Ref, inject, onMounted, reactive, ref } from "vue";
+import { Ref, inject, nextTick, onMounted, reactive, ref } from "vue";
 import { appWindow } from "@tauri-apps/api/window";
 import { invoke } from "@tauri-apps/api";
 import {NSwitch,NIcon,useMessage, GlobalTheme,darkTheme,NImage,NEl} from "naive-ui"
@@ -61,28 +62,27 @@ const message = useMessage();
 function switch_sty(){
     style_switch.value=!style_switch.value;
     if(app_style.value===null){
-        dark_theme();
         app_style.value=darkTheme;
         invoke("set_theme",{theme:'dark'});
         message.info("黑夜模式");
+        change_theme(dark);
     }else{
-        sun_theme();
         app_style.value=null;
         message.info("白日模式");
         invoke("set_theme",{theme:'white'});
+        change_theme(light);
     }
 }
 
 onMounted(async ()=>{
+    await nextTick();
     let theme=await invoke("get_theme",{});
     if(theme==='dark'){
-        dark_theme();
-        change_theme(light);
+        change_theme(dark);
         style_switch.value=false;
         app_style.value=darkTheme;
     }else{
-        sun_theme();
-        change_theme(dark);
+        change_theme(light);
         style_switch.value=true;
         app_style.value=null;
     }
@@ -111,7 +111,8 @@ let light={
     '--hover-color':'#cfcfcf',
     '--menu-bgc':'#b4b3bd',
     '--menu-color':'#2e2e2e',
-    '--mih-color':'#aaa'
+    '--mih-color':'#aaa',
+    '--error-color':'#f00'
 }
 
 function change_theme(theme:Object) {
@@ -120,32 +121,6 @@ function change_theme(theme:Object) {
     }
 }
 
-function dark_theme(){
-    document.documentElement.style.setProperty('--sbase-bgc', '#202020');
-    document.documentElement.style.setProperty('--sbase1-bgc', '#2c2c2c');
-    document.documentElement.style.setProperty('--sbase2-bgc', '#222222');
-    document.documentElement.style.setProperty('--sbase2-color', '#fff');
-    document.documentElement.style.setProperty('--ssb-thumb-color', '#959595');
-    document.documentElement.style.setProperty('--ssb-track-color', '#333');
-    document.documentElement.style.setProperty('--sborder-color', '#3e3e3e');
-    document.documentElement.style.setProperty('--shover-color', '#3f3f3f');
-    document.documentElement.style.setProperty('--smenu-bgc', '#4a4a4a');
-    document.documentElement.style.setProperty('--smenu-color', '#999');
-    document.documentElement.style.setProperty('--smenu-item-hover-bgc', '#5f5f5f');
-}
-function sun_theme(){
-    document.documentElement.style.setProperty('--sbase-bgc', '#fff');
-    document.documentElement.style.setProperty('--sbase1-bgc', '#f4f3ed');
-    document.documentElement.style.setProperty('--sbase2-bgc', '#eee');
-    document.documentElement.style.setProperty('--sbase2-color', '#333');
-    document.documentElement.style.setProperty('--ssb-thumb-color', '#ddd');
-    document.documentElement.style.setProperty('--ssb-track-color', '#eee');
-    document.documentElement.style.setProperty('--sborder-color', '#e7e7e7');
-    document.documentElement.style.setProperty('--shover-color', '#cfcfcf');
-    document.documentElement.style.setProperty('--smenu-bgc', '#b4b3bd');
-    document.documentElement.style.setProperty('--smenu-color', '#2e2e2e');
-    document.documentElement.style.setProperty('--smenu-item-hover-bgc', '#aaa');
-}
 //处理程序退出时的情况
 async function WinClose() {
     appWindow.close();
@@ -160,12 +135,17 @@ async function WinTogMax(){
 </script>
 
 <style scoped lang="less">
+.top_line{
+    height: 2px;
+    background-color: var(--base-bgc);
+}
 .Titlebar {
     height: 30px;
     line-height: 30px;
     padding: 0 3px;
     display: flex;
     justify-content: space-between;
+    background-color: var(--base-bgc);
     .app_info{
         display: flex;
         img{
@@ -195,12 +175,12 @@ async function WinTogMax(){
             }
             .max,.min{
                 &:hover{
-                    background-color: var(--info-color-hover);
+                    background-color: var(--hover-color);
                 }
             }
             .close{
                 &:hover{
-                    background-color: var(--error-color-hover);
+                    background-color: var(--error-color);
                 }
             }
         }

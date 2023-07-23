@@ -92,11 +92,11 @@ onMounted(async ()=>{
     //初始化打开小说的函数
     root_fun_open_novel.value=fun_open_novel;
     //监听鼠标点击事件
-    document.addEventListener("click",()=>{
-      if(div_view.value!==undefined&&div_view.value!==null){
-        div_view.value.style.filter=""; //恢复原状
-      }
-    })
+    // document.addEventListener("click",()=>{
+    //   if(div_view.value!==undefined&&div_view.value!==null){
+    //     div_view.value.style.filter=""; //恢复原状
+    //   }
+    // })
     //对快捷键进行处理
     document.addEventListener("keydown",async (e)=>{
     //ctrl+O：打开小说
@@ -112,12 +112,12 @@ onMounted(async ()=>{
       //打开小说
       fun_open_novel(selected as string);
     }
-    //跳转
-    if(e.ctrlKey&&e.key==='g'){
-      e.preventDefault();
-      //设置视图为毛玻璃效果
-      div_view.value.style.filter="blur(5px)";
-    }
+    // //跳转
+    // if(e.ctrlKey&&e.key==='g'){
+    //   e.preventDefault();
+    //   //设置视图为毛玻璃效果
+    //   div_view.value.style.filter="blur(5px)";
+    // }
     //关闭当前小说
     if(e.ctrlKey&&e.key==='x'){
       e.preventDefault();
@@ -178,7 +178,6 @@ async function process_wheel(e:WheelEvent){
       //如果已经到了边缘
       if(e.deltaY > 0) { //向下滚动，下边缘，翻到下一章
         if(cur_chap_num<novel_chapter.length-1) {
-          cenpan_show_loading.value=true;
           cur_chap_num++;
           novel_show_lines.value.splice(0);
           let cur_chap=novel_chapter[cur_chap_num];
@@ -188,18 +187,15 @@ async function process_wheel(e:WheelEvent){
           await nextTick(); //等待渲染完成
           let p1=div_view.value.firstElementChild;
           p1.scrollIntoView();
-          cenpan_show_loading.value=false;
         }
       } else if(e.deltaY < 0) { //向上滚动，上边缘，翻到上一章
         if(cur_chap_num>0) {
-          cenpan_show_loading.value=true;
           cur_chap_num--;
           novel_show_lines.value.splice(0);
           let cur_chap=novel_chapter[cur_chap_num];
           for(let i=0;i<cur_chap.length;i++){
             novel_show_lines.value.push(cur_chap[i]);
           }
-          cenpan_show_loading.value=false;
         }
       }
     }, 300);
@@ -278,7 +274,8 @@ function IsTitle(line:string) {
   if(r2.test(line)) return true;
   const r3=new RegExp(/^\s*第\s*[零一二三四五六七八九十百千万0-9]{1,7}\s*[章节幕卷集部回].{0,10}\r?\n?$/);
   if(r3.test(line)) return true;
-  
+  const r4=new RegExp(/^Chapter\s*[零一二三四五六七八九十百千万0-9]{1,7}.{0,10}\r?\n?$/);
+  if(r4.test(line)) return true;
   return false;
 }
 //获取文件名
@@ -331,28 +328,9 @@ async function fun_jump(cur_chapter:number,cur_line:number){
 </script>
 
 <style scoped lang="less">
-.View.dark{
-  &::-webkit-scrollbar-thumb{
-      background-color: #959595;
-      border-radius: 3px;
-  }
-  &::-webkit-scrollbar-track{
-      background-color: #333;
-  }
-}
-.View.white{
-  &::-webkit-scrollbar-thumb{
-      background-color: #ddd;
-      border-radius: 3px;
-  }
-  &::-webkit-scrollbar-track{
-      background-color: #eee;
-  }
-}
-
 .View{
     height: 100%;
-    background-color: var(--sbase1-bgc);
+    background-color: var(--base-bgc1);
     overflow-y: auto;
     overflow-x: hidden;
     margin: 0 15px;
@@ -361,11 +339,11 @@ async function fun_jump(cur_chapter:number,cur_line:number){
         width: 10px;
     }
     &::-webkit-scrollbar-thumb{
-        background-color: var(--ssb-thumb-color);
+        background-color: var(--thumb-color);
         border-radius: 3px;
     }
     &::-webkit-scrollbar-track{
-        background-color: var(--ssb-track-color);
+        background-color: var(--track-color);
     }
     .one_line{
       .title{

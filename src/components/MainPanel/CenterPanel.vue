@@ -63,7 +63,7 @@ onMounted(async ()=>{
     position: relative;
     flex-grow: 1;
     height: 100%;
-    background-color: var(--sbase1-bgc);
+    background-color: var(--base-bgc1);
     .loading{
         position: absolute;
         left: 50%;

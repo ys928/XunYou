@@ -6,9 +6,9 @@
             <span @dblclick="dclick_novel(index)"  class="novel_name">
                 {{item.name.substring(0,item.name.lastIndexOf('.'))}}
             </span> 
-            <span @dblclick="dclick_novel(index)" class="novel_progress">
+            <!-- <span @dblclick="dclick_novel(index)" class="novel_progress">
                 进度:{{ (item.cur_line*100 / item.all_line).toFixed(2) }}%
-            </span>
+            </span> -->
         </div>
     </div>
     <div class="opt_menu" ref="dev_menu" v-show="is_show_menu" >
@@ -131,7 +131,7 @@ async function del_record(){
     height: 100%;
     display: flex;
     flex-direction: column;
-    background-color:var(--sbase-bgc);
+    background-color:var(--base-bgc);
     .title{
         width: 100%;
         text-align: center;
@@ -147,17 +147,17 @@ async function del_record(){
         border-radius: 5px;
         color: #7f7f7f;
         border-bottom: none;
-        background-color: var(--sbase1-bgc);
-        border: var(--sborder-color) solid 2px;
+        background-color: var(--base1-bgc);
+        border: var(--border-color) solid 2px;
         &::-webkit-scrollbar{
             width: 5px;
         }
         &::-webkit-scrollbar-thumb{
-            background-color: var(--ssb-thumb-color);
+            background-color: var(--thumb-color);
             border-radius: 3px;
         }
         &::-webkit-scrollbar-track{
-            background-color: var(--ssb-track-color);
+            background-color: var(--track-color);
         }
         .novel_item{
             display: flex;
@@ -172,7 +172,7 @@ async function del_record(){
             line-height: 25px;
             padding-left: 5px;
             &:hover{
-                background-color: var(--shover-color);
+                background-color: var(--hover-color);
             }
             .novel_name{
                 overflow: hidden;
@@ -190,13 +190,13 @@ async function del_record(){
         border-radius: 5px;
         padding: 3px 5px;
         width: 100px;
-        background-color: var(--smenu-bgc);
-        color: var(--smenu-color);
+        background-color: var(--menu-bgc);
+        color: var(--menu-color);
         .item{
             padding: 2px 10px;
             border-radius: 5px;
             &:hover{
-                background-color: var(--smenu-item-hover-bgc);
+                background-color: var(--menu-item-hover-bgc);
             }
         }
     }

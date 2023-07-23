@@ -62,9 +62,9 @@ function process_input(e:KeyboardEvent){
         outline: none;
         padding: 0 10px;
         border-radius: 5px;
-        background-color: var(--sbase2-bgc);
-        color: var(--sbase2-color);
-        border: var(--sborder-color) solid 2px;
+        background-color: var(--base2-bgc);
+        color: var(--base2-color);
+        border: var(--border-color) solid 2px;
         border-bottom: #4c5277 solid 2px;
     }
 

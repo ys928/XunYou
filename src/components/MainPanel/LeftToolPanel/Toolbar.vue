@@ -1,5 +1,5 @@
 <template>
-<n-el class="Toolbar">
+<div class="Toolbar">
     <div class="top">
         <n-icon class="icon" size="18" :component="History" title="历史记录" @click="switch_panel('HistoryPanel')" color="#585858"></n-icon>
         <n-icon class="icon" size="23" :component="List16Filled" title="目录"  @click="switch_panel('Catalogue')" color="#585858"></n-icon>
@@ -7,7 +7,7 @@
     <div class="bottom">
         <n-icon class="icon" size="20" :component="Toolbox20Regular" title="工具箱" @click="switch_panel('Toolbox')" color="#585858"></n-icon>
     </div>
-</n-el>
+</div>
 </template>
 
 <script setup lang="ts">
@@ -55,7 +55,7 @@ function switch_panel(name:string){
     padding: 5px;
     display: flex;
     border-right: var(--border-color) 2px solid;
-    background-color:var(--base-color);
+    background-color:var(--base-bgc);
     flex-direction: column;
     justify-content: space-between;
     .icon{
@@ -64,7 +64,7 @@ function switch_panel(name:string){
         padding: 5px;
         border-radius: 5px;
         &:hover{
-            background-color: var(--info-color-hover);
+            background-color: var(--hover-color);
         }
     }
 }

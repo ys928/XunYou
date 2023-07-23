@@ -23,9 +23,6 @@ provide("root_fun_open_novel",root_fun_open_novel);
 //用于显示当前打开的小说名称
 const root_title=ref();
 provide("root_title",root_title);
-//用于显示当前小说阅读进度，以行数显示
-const root_novel_prog=ref();
-provide("root_novel_prog",root_novel_prog);
 //用于控制当前鼠标样式
 const app_cursor=ref("none");
 provide("app_cursor",app_cursor);
@@ -47,16 +44,12 @@ watch(app_cursor,(newv,oldv)=>{
 const lightThemeOverrides = {
   common: {
     baseColor: '#fff',
-    errorColorHover:"#f00",
-    infoColorHover:"#bfbfbf"
   }
 }
 
 const darkThemeOverrides = {
   common: {
     baseColor: '#202020',
-    errorColorHover:"#f00",
-    infoColorHover:"#3e3e3e"
   }
 }
 //初始化
@@ -103,23 +96,5 @@ onMounted(()=>{
   flex-direction: column;
   height: 100vh;
   width: 100vw;
-}
-</style>
-
-<style lang="less">
-:root {
-  --sbase-bgc:#202020; //主题基础背景色 
-  --sbase-color:#7f7f7f; //主题基础文本颜色
-  --sbase1-bgc:#2c2c2c; //主题基础背景色1号
-  --sbase1-color:#7f7f7f; //主题基础文本颜色1号
-  --sbase2-bgc:#222222; //主题基础背景色2号
-  --sbase2-color:#fff; //主题基础文本颜色2号
-  --ssb-thumb-color:#959595; //滑块颜色
-  --ssb-track-color:#333; //滑动条颜色
-  --sborder-color:#3e3e3e; //边框颜色
-  --shover-color:#3f3f3f; //鼠标经过颜色
-  --smenu-bgc:#4a4a4a; //菜单颜色
-  --smenu-color:#999; //菜单字体颜色
-  --smenu-item-hover-bgc:#5f5f5f;
 }
 </style>

@@ -98,12 +98,14 @@ onMounted(()=>{
 <style scoped lang="less">
 .RightToolPanel{
     display: flex;
+    border-top: solid 2px var(--border-color);
+    border-bottom: solid 2px var(--border-color);
     .content{
       width: 200px;
       height: 100%;
     }
     .divid_line{
-        background-color: var(--sbase-bgc);
+        background-color: var(--base-bgc);
         width: 5px;
     }
 }

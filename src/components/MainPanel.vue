@@ -58,15 +58,8 @@ provide("mainpan_line_height",mainpan_line_height);
 </script>
 
 <style scoped lang="less">
-.MainPanel.dark{
-    background-color: #2c2c2c;
-    border: 2px #3f3f3f solid;
-}
-.MainPanel.white{
-    background-color: #f4f3ed;
-    border: 2px #e7e7e7 solid;
-}
 .MainPanel{
+    background-color: var(--base-bgc1);
     flex-grow: 1;
     height: 100px;
     width: 100%;

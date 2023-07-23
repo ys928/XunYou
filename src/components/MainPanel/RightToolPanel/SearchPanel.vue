@@ -126,7 +126,7 @@ function dclick_novel(index:number){
     flex-direction: column;
     height: 100%;
     padding: 0 10px;
-    background-color: var(--sbase-bgc);
+    background-color: var(--base-bgc);
     .title{
         font-size: 16px;
         margin: 5px 0;
@@ -148,7 +148,7 @@ function dclick_novel(index:number){
         border-radius: 5px;
         margin-left: 3px;
         &:hover{
-            background-color: var(--shover-color);
+            background-color: var(--hover-color);
         }
     }
     .novel_list{

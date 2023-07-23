@@ -100,13 +100,16 @@ function left_panel_mo(){
 <style scoped lang="less">
 .LeftToolPanel{
     display: flex;
+    border-top: solid 2px var(--border-color);
+    border-bottom: solid 2px var(--border-color);
+
     .content{
       width: 200px;
       height: 100%;
     }
     .divid_line{
         width: 5px;
-        background-color: var(--sbase-bgc);
+        background-color: var(--base-bgc);
         &:hover{
             cursor: ew-resize;
         }

@@ -46,7 +46,7 @@ function dclick_cata_item(index:number){
     height: 100%;
     display: flex;
     flex-direction: column;
-    background-color: var(--sbase-bgc);
+    background-color: var(--base-bgc);
     .title{
         width: 100%;
         text-align: center;
@@ -61,19 +61,19 @@ function dclick_cata_item(index:number){
         flex-grow: 1;
         border-radius: 5px;
         color: #7f7f7f;
-        background: var(--sbase1-bgc);
+        background: var(--base1-bgc);
         overflow-x: hidden;
         border-bottom: none;
-        border: solid 2px var(--sborder-color);
+        border: solid 2px var(--border-color);
         &::-webkit-scrollbar{
             width: 5px;
         }
         &::-webkit-scrollbar-thumb{
-            background-color: var(--ssb-thumb-color);
+            background-color: var(--thumb-color);
             border-radius: 3px;
         }
         &::-webkit-scrollbar-track{
-            background-color: var(--ssb-track-color);
+            background-color: var(--track-color);
         }
         .cata_item{
             display: flex;
@@ -88,7 +88,7 @@ function dclick_cata_item(index:number){
             line-height: 25px;
             padding-left: 5px;
             &:hover{
-                background-color: var(--shover-color);
+                background-color: var(--hover-color);
             }
         }
     }
