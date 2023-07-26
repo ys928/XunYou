@@ -98,7 +98,8 @@ let dark={
     '--hover-color':'#3f3f3f',
     '--menu-bgc':'#4a4a4a',
     '--menu-color':'#999',
-    '--mih-color':'#5f5f5f'
+    '--mih-color':'#5f5f5f',
+    '--error-color':'#f00'
 }
 let light={
     '--base-bgc':'#fff',

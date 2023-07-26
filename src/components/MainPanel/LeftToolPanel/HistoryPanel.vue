@@ -75,7 +75,6 @@ let cur_index: number;
 
 //双击代表要打开的小说文件
 function dclick_novel(index: number) {
-    console.log("dclick_novel");
     root_fun_open_novel.value(records_novel.value[index].path);
 }
 
@@ -213,4 +212,5 @@ async function del_record() {
             }
         }
     }
-}</style>
+}
+</style>

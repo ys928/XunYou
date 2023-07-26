@@ -3,26 +3,31 @@
 
 mod config;
 mod tool;
-use tauri::{Manager, Size, PhysicalSize};
+use tauri::{Manager, PhysicalSize, Size};
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 fn main() {
     //config::init_log();
     tauri::Builder::default()
-        .setup(move |app|{
+        .setup(move |app| {
             let window = app.get_window("MainWindow").unwrap();
             //初始化窗口大小
-            let (w,h)=config::get_wh();
-            window.set_size(Size::Physical(PhysicalSize{ width: w, height: h })).unwrap();
-            window_shadows::set_shadow(&window,true).expect("Unsupported platform!");
+            let (w, h) = config::get_wh();
+            window
+                .set_size(Size::Physical(PhysicalSize {
+                    width: w,
+                    height: h,
+                }))
+                .unwrap();
+            window_shadows::set_shadow(&window, true).expect("Unsupported platform!");
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
             tool::open_novel,
             tool::open_novel_txt,
             tool::txt_to_bzip,
-            config::set_line,
-            config::get_line,
+            config::set_nov_prog,
+            config::get_nov_prog,
             config::get_record,
             config::del_record,
             config::set_wh,

@@ -259,7 +259,12 @@ async function fun_open_novel(path: string) {
 		}
 		novel_chapter[chap_num].push(novel_lines[i]);
 	}
-	cur_chap_num = 0;
+
+	let record=await invoke<Array<number>>("get_nov_prog",{
+		path:cur_novel_path
+	});
+	cur_chap_num = record[0]; //从记录章节开始加载
+	console.log(cur_chap_num);
 	//如果小说第一章、第一行不为标题，则添加一个‘开篇’作为标题
 	let first_chap = novel_chapter[0];
 	if (!IsTitle(first_chap[0])) {
@@ -278,7 +283,6 @@ async function fun_open_novel(path: string) {
 	}
 	//关闭加载图标
 	cenpan_show_loading.value = false;
-	console.log(novel_show_lines.value);
 }
 function IsTitle(line: string) {
 	const r1 = new RegExp(/^\s*开\s*篇.*\r?\n?/);
@@ -331,9 +335,9 @@ async function fun_jump(cur_chapter: number, cur_line: number) {
 	let p1 = div_view.value.querySelector(`:nth-child(${cur_line + 1})`);
 	p1.scrollIntoView();
 	cenpan_show_loading.value = false;
-
+	console.log(cur_chapter);
 	//每次跳转都要记录一下数据
-	invoke("set_line", {
+	invoke("set_nov_prog", {
 		path: cur_novel_path,
 		line: cur_line,
 		chapter: cur_chapter
