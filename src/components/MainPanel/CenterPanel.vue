@@ -22,8 +22,6 @@ const div_center_panel = ref();
  * 取得父变量
  */
 
-
-
 /**
  * 传递个子组件的变量
  */
