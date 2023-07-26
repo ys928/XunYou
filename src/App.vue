@@ -34,6 +34,15 @@ provide("app_style",app_style);
  * 绑定标签
  */
 const div_main_window=ref();
+
+/**
+ * 全局变量
+ */
+
+//是否修改鼠标样式
+const app_is_change_cursor=ref(true);
+provide("app_is_change_cursor",app_is_change_cursor);
+
 /**
  * 监视变量变化
  */

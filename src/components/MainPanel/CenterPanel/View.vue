@@ -47,8 +47,6 @@ const novel_show_lines=ref([]) as Ref<Array<string>>;
 const root_fun_open_novel=inject('root_fun_open_novel') as Ref<Function>;
 //当前打开的小说名称,本组件修改它
 const root_title=inject("root_title") as Ref<string>;
-//用于显示当前小说阅读进度的变量，本组件用于更新这个值
-const root_novel_prog=inject("root_novel_prog") as Ref<string>;
 //用于控制提示消息是否显示
 const cenpan_show_prompt=inject("cenpan_show_prompt") as Ref<boolean>;
 //用于控制是否显示加载图标
@@ -133,7 +131,6 @@ onMounted(async ()=>{
         if(novel_lines!==undefined){
           novel_lines.splice(0); //清空读取到的小说内容
         }
-        root_novel_prog.value=""; //小说进度提示，置空
       }
     }
     });
