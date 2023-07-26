@@ -168,7 +168,7 @@ function dclick_novel(index: number) {
             color: var(--txt-color);
             overflow-x: hidden;
             white-space: nowrap;
-
+            transition: border 0.3s,color 0.3s;
             &:hover {
                 border: #36ad6a solid 1px;
                 color: #36ad6a;
@@ -183,4 +183,5 @@ function dclick_novel(index: number) {
             transform: translate(-50%, 0);
         }
     }
-}</style>
+}
+</style>

@@ -1,36 +1,36 @@
 <template>
-<n-el class="HistoryPanel" v-show="all_panel.HistoryPanel">
-    <div class="title">历史记录</div>
-    <div class="novels" ref="div_record">
-        <div v-for="(item,index) in records_novel" class="novel_item" @dblclick="dclick_novel(index)">
-            <span @dblclick="dclick_novel(index)"  class="novel_name">
-                {{item.name.substring(0,item.name.lastIndexOf('.'))}}
-            </span> 
-            <!-- <span @dblclick="dclick_novel(index)" class="novel_progress">
+    <div class="HistoryPanel" v-show="all_panel.HistoryPanel">
+        <div class="title">历史记录</div>
+        <div class="novels" ref="div_record">
+            <div v-for="(item, index) in records_novel" class="novel_item" @dblclick="dclick_novel(index)">
+                <span class="novel_name">
+                    {{ item.name.substring(0, item.name.lastIndexOf('.')) }}
+                </span>
+                <!-- <span @dblclick="dclick_novel(index)" class="novel_progress">
                 进度:{{ (item.cur_line*100 / item.all_line).toFixed(2) }}%
             </span> -->
+            </div>
+        </div>
+        <div class="opt_menu" ref="dev_menu" v-show="is_show_menu">
+            <div class="item" @click="del_record">删除</div>
         </div>
     </div>
-    <div class="opt_menu" ref="dev_menu" v-show="is_show_menu" >
-        <div class="item" @click="del_record">删除</div>
-    </div>
-</n-el>
 </template>
 
 <script setup lang="ts">
 import { invoke } from '@tauri-apps/api';
 import { Ref, inject, onMounted, ref, watch } from 'vue';
-import {GlobalTheme, NEl} from "naive-ui"
+import { GlobalTheme, NEl } from "naive-ui"
 //相关变量类型
-type type_all_pan_obj={
-    'HistoryPanel':boolean
+type type_all_pan_obj = {
+    'HistoryPanel': boolean
 }
-type type_record_novel={
-    name:string, //小说名字
-    path:string, //小说文件路径
-    md5:string, //小说md5值校验
-    cur_line:number, //当前读到的行数
-    all_line:number, //小说总行数
+type type_record_novel = {
+    name: string, //小说名字
+    path: string, //小说文件路径
+    md5: string, //小说md5值校验
+    cur_line: number, //当前读到的行数
+    all_line: number, //小说总行数
 }
 
 /**
@@ -38,9 +38,9 @@ type type_record_novel={
  */
 
 //取出存放打开小说的函数变量，本组件用来使用该函数
-const root_fun_open_novel=inject('root_fun_open_novel') as Ref<Function>;
+const root_fun_open_novel = inject('root_fun_open_novel') as Ref<Function>;
 //控制面板显示与否变量
-const all_panel=inject("all_panel") as Ref<type_all_pan_obj>;
+const all_panel = inject("all_panel") as Ref<type_all_pan_obj>;
 /**
  * 取得父变量
  */
@@ -50,23 +50,23 @@ const all_panel=inject("all_panel") as Ref<type_all_pan_obj>;
  * vue 绑定标签变量
  */
 
-const div_record=ref();
-const dev_menu=ref();
+const div_record = ref();
+const dev_menu = ref();
 
 /**
  * vue变量
  */
 
 //记录所有打开过的小说
-const records_novel=ref([]) as Ref<Array<type_record_novel>>;
+const records_novel = ref([]) as Ref<Array<type_record_novel>>;
 //是否显示右键菜单
-const is_show_menu=ref(false);
+const is_show_menu = ref(false);
 
 /**
  * 普通变量
  */
 //记录当前右键点击的历史项
-let cur_index:number;
+let cur_index: number;
 
 /**
  * 双击打开某个记录
@@ -74,7 +74,8 @@ let cur_index:number;
  */
 
 //双击代表要打开的小说文件
-function dclick_novel(index:number){
+function dclick_novel(index: number) {
+    console.log("dclick_novel");
     root_fun_open_novel.value(records_novel.value[index].path);
 }
 
@@ -82,64 +83,66 @@ function dclick_novel(index:number){
  * 初始化记录
  */
 
- onMounted(async ()=>{
-    let record:Array<type_record_novel>=await invoke("get_record",{});
-    for(let i of record){
+onMounted(async () => {
+    let record: Array<type_record_novel> = await invoke("get_record", {});
+    for (let i of record) {
         records_novel.value.push(i);
     }
 
-    div_record.value.oncontextmenu=(e:MouseEvent)=>{
-        let index=-1;
-        let all_history_item=div_record.value.querySelectorAll("div");
-        for(let i =0;i<all_history_item.length;i++){
-            if(all_history_item[i].contains(e.target)){
-                dev_menu.value.style.left=e.pageX+"px";
-                dev_menu.value.style.top=e.pageY+"px";
-                is_show_menu.value=true;
-                index=i;
+    div_record.value.oncontextmenu = (e: MouseEvent) => {
+        let index = -1;
+        let all_history_item = div_record.value.querySelectorAll("div");
+        for (let i = 0; i < all_history_item.length; i++) {
+            if (all_history_item[i].contains(e.target)) {
+                dev_menu.value.style.left = e.pageX + "px";
+                dev_menu.value.style.top = e.pageY + "px";
+                is_show_menu.value = true;
+                index = i;
             }
         }
         //没有点击到任何一个历史记录项中，则要隐藏菜单
-        if(index===-1){
-            cur_index===-1;
-            is_show_menu.value=false;
-        }else{
-            cur_index=index;
+        if (index === -1) {
+            cur_index === -1;
+            is_show_menu.value = false;
+        } else {
+            cur_index = index;
         }
     }
-    document.addEventListener("click",e=>{
-        if(dev_menu.value!==undefined&&dev_menu.value!==null&& !dev_menu.value.contains(e.target)){
-            is_show_menu.value=false;
+    document.addEventListener("click", e => {
+        if (dev_menu.value !== undefined && dev_menu.value !== null && !dev_menu.value.contains(e.target)) {
+            is_show_menu.value = false;
         }
     })
 });
 
 //删除一个记录项，
-async function del_record(){
-    await invoke("del_record",{
-        path:records_novel.value[cur_index].path
+async function del_record() {
+    await invoke("del_record", {
+        path: records_novel.value[cur_index].path
     });
 
-    records_novel.value.splice(cur_index,1);
-    is_show_menu.value=false;
+    records_novel.value.splice(cur_index, 1);
+    is_show_menu.value = false;
 }
 
 </script>
 
 <style scoped lang="less">
-.HistoryPanel{
+.HistoryPanel {
     height: 100%;
     display: flex;
     flex-direction: column;
-    background-color:var(--base-bgc);
-    .title{
+    background-color: var(--base-bgc);
+
+    .title {
         width: 100%;
         text-align: center;
         font-size: 16px;
         margin: 10px 0;
         color: #aaa;
     }
-    .novels{
+
+    .novels {
         padding: 0 5px;
         margin: 0 5px;
         overflow-y: auto;
@@ -149,17 +152,21 @@ async function del_record(){
         border-bottom: none;
         background-color: var(--base1-bgc);
         border: var(--border-color) solid 2px;
-        &::-webkit-scrollbar{
+
+        &::-webkit-scrollbar {
             width: 5px;
         }
-        &::-webkit-scrollbar-thumb{
+
+        &::-webkit-scrollbar-thumb {
             background-color: var(--thumb-color);
             border-radius: 3px;
         }
-        &::-webkit-scrollbar-track{
+
+        &::-webkit-scrollbar-track {
             background-color: var(--track-color);
         }
-        .novel_item{
+
+        .novel_item {
             display: flex;
             justify-content: space-between;
             white-space: nowrap;
@@ -171,13 +178,16 @@ async function del_record(){
             height: 25px;
             line-height: 25px;
             padding-left: 5px;
-            &:hover{
+            transition: background-color 0.2s;
+            &:hover {
                 background-color: var(--hover-color);
             }
-            .novel_name{
+
+            .novel_name {
                 overflow: hidden;
             }
-            .novel_progress{
+
+            .novel_progress {
                 color: #4fccb0;
                 margin: 0 5px;
                 padding: 0 5px;
@@ -185,20 +195,22 @@ async function del_record(){
             }
         }
     }
-    .opt_menu{
+
+    .opt_menu {
         position: fixed;
         border-radius: 5px;
         padding: 3px 5px;
         width: 100px;
         background-color: var(--menu-bgc);
         color: var(--menu-color);
-        .item{
+
+        .item {
             padding: 2px 10px;
             border-radius: 5px;
-            &:hover{
+
+            &:hover {
                 background-color: var(--menu-item-hover-bgc);
             }
         }
     }
-}
-</style>
+}</style>
