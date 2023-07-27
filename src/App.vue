@@ -2,7 +2,13 @@
 <n-config-provider :theme="app_style" :theme-overrides="app_style===null?lightThemeOverrides : darkThemeOverrides">
   <n-message-provider>
     <div class="MainWindow" ref="div_main_window">
-      <Titlebar></Titlebar>
+      <Titlebar 
+        name="寻幽" 
+        :title="app_title" 
+        v-model:style="app_style" 
+        v-model:cursor="app_cursor"
+        >
+      </Titlebar>
       <MainPanel></MainPanel>
       <Statusbar></Statusbar>
     </div>
@@ -16,19 +22,20 @@ import MainPanel from './components/MainPanel.vue';
 import Statusbar from './components/Statusbar.vue';
 import { onMounted, provide, ref,watch } from 'vue';
 import { event, invoke,window } from '@tauri-apps/api';
-import { darkTheme,NMessageProvider,NConfigProvider, GlobalTheme,GlobalThemeOverrides, } from 'naive-ui'
+import { darkTheme,NMessageProvider,NConfigProvider, GlobalTheme,GlobalThemeOverrides,useMessage } from 'naive-ui'
 //用与打开文件显示在页面的函数,在view组件中为其赋值，然后给其它组件调用
 const root_fun_open_novel=ref();
 provide("root_fun_open_novel",root_fun_open_novel);
 //用于显示当前打开的小说名称
-const root_title=ref();
-provide("root_title",root_title);
+const app_title=ref();
+provide("app_title",app_title);
 //用于控制当前鼠标样式
 const app_cursor=ref("none");
 provide("app_cursor",app_cursor);
 //全局应用样式
 const app_style=ref<GlobalTheme | null>(darkTheme);
 provide("app_style",app_style);
+
 
 /**
  * 绑定标签
@@ -97,6 +104,8 @@ onMounted(()=>{
     }, 800)
   });
 });
+
+
 </script>
 
 <style scoped lang="less">

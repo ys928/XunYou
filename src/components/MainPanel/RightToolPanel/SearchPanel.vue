@@ -165,7 +165,7 @@ function dclick_novel(index: number) {
             border-radius: 8px;
             padding: 5px 10px;
             border: var(--border-color) solid 1px;
-            color: var(--txt-color);
+            color: var(--text-color);
             overflow-x: hidden;
             white-space: nowrap;
             transition: border 0.3s,color 0.3s;

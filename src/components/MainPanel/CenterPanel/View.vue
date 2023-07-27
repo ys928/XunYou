@@ -46,7 +46,7 @@ const novel_show_lines = ref([]) as Ref<Array<string>>;
 //取出存放打开小说的函数变量，本组件用来存放该函数
 const root_fun_open_novel = inject('root_fun_open_novel') as Ref<Function>;
 //当前打开的小说名称,本组件修改它
-const root_title = inject("root_title") as Ref<string>;
+const app_title = inject("app_title") as Ref<string>;
 //用于控制提示消息是否显示
 const cenpan_show_prompt = inject("cenpan_show_prompt") as Ref<boolean>;
 //用于控制是否显示加载图标
@@ -121,12 +121,12 @@ onMounted(async () => {
 			e.preventDefault();
 			let ret = await dialog.ask("确定要关闭当前小说？", { title: "提示", type: "info" });
 			if (ret) {
-				if (root_title.value === undefined || root_title.value.length === 0) {
+				if (app_title.value === undefined || app_title.value.length === 0) {
 					await dialog.message("当前还没有打开小说", { title: "提示", type: "info" });
 					return;
 				}
 				novel_show_lines.value.splice(0); //清空界面内容
-				root_title.value = ""; //清除当前显示的文件名
+				app_title.value = ""; //清除当前显示的文件名
 				cenpan_show_prompt.value = true; //重新显示提示信息
 				if (novel_lines !== undefined) {
 					novel_lines.splice(0); //清空读取到的小说内容
@@ -233,7 +233,7 @@ async function fun_open_novel(path: string) {
 	//console.log(novel_loading.value);
 	cur_novel_path = path;
 	//更新文件名
-	root_title.value = get_file_name(path);
+	app_title.value = get_file_name(path);
 	if (path.endsWith(".novel")) {
 		//打开文件进行展示
 		novel_lines = await invoke("open_novel", { filename: path });
