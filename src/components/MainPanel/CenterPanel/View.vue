@@ -136,26 +136,9 @@ onMounted(async () => {
 	});
 	document.addEventListener("keyup", async e => {
 		if (e.key === "PageUp") {
-			if (cur_chap_num > 0) {
-				cur_chap_num--;
-				novel_show_lines.value.splice(0);
-				let cur_chap = novel_chapter[cur_chap_num];
-				for (let i = 0; i < cur_chap.length; i++) {
-					novel_show_lines.value.push(cur_chap[i]);
-				}
-			}
+			prev_chapter();
 		} else if (e.key === 'PageDown') {
-			if (cur_chap_num < novel_chapter.length - 1) {
-				cur_chap_num++;
-				novel_show_lines.value.splice(0);
-				let cur_chap = novel_chapter[cur_chap_num];
-				for (let i = 0; i < cur_chap.length; i++) {
-					novel_show_lines.value.push(cur_chap[i]);
-				}
-				await nextTick(); //等待渲染完成
-				let p1 = div_view.value.firstElementChild;
-				p1.scrollIntoView();
-			}
+			next_chapter();
 		}
 		// }else if(e.key==='ArrowUp'){
 
@@ -188,26 +171,9 @@ async function process_wheel(e: WheelEvent) {
 		}
 		//如果已经到了边缘
 		if (e.deltaY > 0) { //向下滚动，下边缘，翻到下一章
-			if (cur_chap_num < novel_chapter.length - 1) {
-				cur_chap_num++;
-				novel_show_lines.value.splice(0);
-				let cur_chap = novel_chapter[cur_chap_num];
-				for (let i = 0; i < cur_chap.length; i++) {
-					novel_show_lines.value.push(cur_chap[i]);
-				}
-				await nextTick(); //等待渲染完成
-				let p1 = div_view.value.firstElementChild;
-				p1.scrollIntoView();
-			}
+			next_chapter();
 		} else if (e.deltaY < 0) { //向上滚动，上边缘，翻到上一章
-			if (cur_chap_num > 0) {
-				cur_chap_num--;
-				novel_show_lines.value.splice(0);
-				let cur_chap = novel_chapter[cur_chap_num];
-				for (let i = 0; i < cur_chap.length; i++) {
-					novel_show_lines.value.push(cur_chap[i]);
-				}
-			}
+			prev_chapter();
 		}
 	}, 300);
 }
@@ -260,8 +226,8 @@ async function fun_open_novel(path: string) {
 		novel_chapter[chap_num].push(novel_lines[i]);
 	}
 
-	let record=await invoke<Array<number>>("get_nov_prog",{
-		path:cur_novel_path
+	let record = await invoke<Array<number>>("get_nov_prog", {
+		path: cur_novel_path
 	});
 	cur_chap_num = record[0]; //从记录章节开始加载
 	console.log(cur_chap_num);
@@ -274,7 +240,7 @@ async function fun_open_novel(path: string) {
 			line: 0
 		})
 	}
-	
+
 	novel_show_lines.value.splice(0); //清空显示的章节
 
 	let cur_chapter = novel_chapter[cur_chap_num];
@@ -306,6 +272,44 @@ function get_file_name(path: string) {
 	}
 	path = path.substring(idx + 1);
 	return path.substring(0, path.lastIndexOf('.'));
+}
+
+//翻到下一章
+async function next_chapter() {
+	if (cur_chap_num < novel_chapter.length - 1) {
+		cur_chap_num++;
+		novel_show_lines.value.splice(0);
+		let cur_chap = novel_chapter[cur_chap_num];
+		for (let i = 0; i < cur_chap.length; i++) {
+			novel_show_lines.value.push(cur_chap[i]);
+		}
+		await nextTick(); //等待渲染完成
+		let p1 = div_view.value.firstElementChild;
+		p1.scrollIntoView();
+		//记录翻章
+		invoke("set_nov_prog", {
+			path: cur_novel_path,
+			line: 0,
+			chapter: cur_chap_num
+		});
+	}
+}
+//翻到上一章
+async function prev_chapter() {
+	if (cur_chap_num > 0) {
+		cur_chap_num--;
+		novel_show_lines.value.splice(0);
+		let cur_chap = novel_chapter[cur_chap_num];
+		for (let i = 0; i < cur_chap.length; i++) {
+			novel_show_lines.value.push(cur_chap[i]);
+		}
+		//记录翻章
+		invoke("set_nov_prog", {
+			path: cur_novel_path,
+			line: 0,
+			chapter: cur_chap_num
+		});
+	}
 }
 
 //处理跳转对话框按键的函数
