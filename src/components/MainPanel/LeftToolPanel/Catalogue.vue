@@ -1,17 +1,17 @@
 <template>
-<n-el class="Catalogue" v-show="all_panel.Catalogue">
+<div class="Catalogue" v-show="all_panel.Catalogue">
     <div class="title">目录</div>
-    <div class="catal">
+    <Scrollbar class="catal">
         <div v-for="(item,index) in mainpan_novel_cata" class="cata_item"  @dblclick="dclick_cata_item(index)">
             {{item.name}}
         </div>
-    </div>
-</n-el>
+    </Scrollbar>
+</div>
 </template>
 
 <script setup lang="ts">
 import { Ref, inject, ref } from 'vue';
-import {NEl} from "naive-ui"
+import Scrollbar from "../../../common/Scrollbar.vue"
 //相关变量类型
 type type_all_pan_obj={
     'HistoryPanel':boolean,
@@ -55,26 +55,9 @@ function dclick_cata_item(index:number){
         color: #aaa;
     }
     .catal{
-        padding: 0 5px;
         margin: 0 5px;
-        overflow-y: auto;
         flex-grow: 1;
-        border-radius: 5px;
-        color: #7f7f7f;
-        background: var(--base1-bgc);
-        overflow-x: hidden;
         border-bottom: none;
-        border: solid 2px var(--border-color);
-        &::-webkit-scrollbar{
-            width: 5px;
-        }
-        &::-webkit-scrollbar-thumb{
-            background-color: var(--thumb-color);
-            border-radius: 3px;
-        }
-        &::-webkit-scrollbar-track{
-            background-color: var(--track-color);
-        }
         .cata_item{
             display: flex;
             justify-content: space-between;

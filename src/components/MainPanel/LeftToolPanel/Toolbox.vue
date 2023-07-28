@@ -1,16 +1,16 @@
 <template>
-<n-el class="Toolbox" v-show="all_panel.Toolbox">
+<div class="Toolbox" v-show="all_panel.Toolbox">
     <div class="title">工具箱</div>
     <div class="tools">
         <n-button @click="fun_txt_to_bzip2">txt转换</n-button>
     </div>
-</n-el>
+</div>
 </template>
 
 <script setup lang="ts">
 import { dialog, invoke } from '@tauri-apps/api';
 import { Ref, inject, ref } from 'vue';
-import { NButton,NEl } from 'naive-ui';
+import { NButton} from 'naive-ui';
 //相关变量类型
 type type_all_pan_obj={
     'Toolbox':boolean

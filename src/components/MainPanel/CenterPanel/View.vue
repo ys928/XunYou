@@ -1,5 +1,5 @@
 <template>
-	<div class="View" ref="div_view" @wheel="process_wheel($event)" @scroll="process_scroll($event)">
+	<Scrollbar class="View" ref="div_view" @wheel="process_wheel($event)" @scroll="process_scroll($event)">
 		<div class="one_line" v-for="(item, index) in novel_show_lines">
 			<div v-if="IsTitle(item)" class="title">{{ item }}</div>
 			<div v-else class="paragraph" :style="{
@@ -12,13 +12,13 @@
 			</div>
 
 		</div>
-	</div>
+	</Scrollbar>
 </template>
 
 <script setup lang="ts">
 import { Ref, ref, onMounted, inject, watch, nextTick } from 'vue';
 import { dialog, event, fs, invoke } from '@tauri-apps/api';
-
+import Scrollbar from "../../../common/Scrollbar.vue"
 /**
  * 自定义类型
  */
@@ -353,23 +353,10 @@ async function fun_jump(cur_chapter: number, cur_line: number) {
 <style scoped lang="less">
 .View {
 	height: 100%;
-	background-color: var(--base-bgc1);
-	overflow-y: auto;
-	overflow-x: hidden;
 	margin: 0 15px;
-	padding: 0 5px;
-
+	border: none;
 	&::-webkit-scrollbar {
 		width: 10px;
-	}
-
-	&::-webkit-scrollbar-thumb {
-		background-color: var(--thumb-color);
-		border-radius: 3px;
-	}
-
-	&::-webkit-scrollbar-track {
-		background-color: var(--track-color);
 	}
 
 	.one_line {

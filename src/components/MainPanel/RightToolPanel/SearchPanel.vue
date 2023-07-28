@@ -5,12 +5,12 @@
             <n-input size="tiny" round @input="search_fun" placeholder="搜小说"></n-input>
             <n-icon class="icon" size="20" color="#787878" :component="FolderMinus" @click="choose_dir"></n-icon>
         </div>
-        <n-scrollbar class="novel_list">
+        <Scrollbar class="novel_list">
             <div v-for="(item, index) in show_novel_list" class="novel_item" @dblclick="dclick_novel(index)">
                 {{ item.name!.substring(0, item.name!.lastIndexOf('.')) }}
             </div>
             <n-spin class="loading" size="medium" v-show="show_loading"></n-spin>
-        </n-scrollbar>
+        </Scrollbar>
     </div>
 </template>
 
@@ -19,6 +19,7 @@ import { Ref, ref, inject, onMounted } from 'vue';
 import { FileEntry, readDir } from '@tauri-apps/api/fs';
 import { dialog, invoke } from '@tauri-apps/api';
 import { fs } from '@tauri-apps/api';
+import Scrollbar from "../../../common/Scrollbar.vue";
 import { NIcon, NInput, NSpin, NScrollbar, NEl, NButton } from "naive-ui"
 import { FolderMinus } from "@vicons/tabler"
 /**
@@ -159,13 +160,13 @@ function dclick_novel(index: number) {
         font-size: 14px;
         flex-grow: 1;
         border-radius: 5px;
+        border-bottom: none;
 
         .novel_item {
             margin: 10px 10px 10px 5px;
             border-radius: 8px;
-            padding: 5px 10px;
+            padding: 5px 8px;
             border: var(--border-color) solid 1px;
-            color: var(--text-color);
             overflow-x: hidden;
             white-space: nowrap;
             transition: border 0.3s,color 0.3s;

@@ -1,7 +1,7 @@
 <template>
     <div class="HistoryPanel" v-show="all_panel.HistoryPanel">
         <div class="title">历史记录</div>
-        <div class="novels" ref="div_record">
+        <Scrollbar class="novels" ref="div_record">
             <div v-for="(item, index) in records_novel" class="novel_item" @dblclick="dclick_novel(index)">
                 <span class="novel_name">
                     {{ item.name.substring(0, item.name.lastIndexOf('.')) }}
@@ -10,7 +10,7 @@
                 进度:{{ (item.cur_line*100 / item.all_line).toFixed(2) }}%
             </span> -->
             </div>
-        </div>
+        </Scrollbar>
         <div class="opt_menu" ref="dev_menu" v-show="is_show_menu">
             <div class="item" @click="del_record">删除</div>
         </div>
@@ -20,7 +20,7 @@
 <script setup lang="ts">
 import { invoke } from '@tauri-apps/api';
 import { Ref, inject, onMounted, ref, watch } from 'vue';
-import { GlobalTheme, NEl } from "naive-ui"
+import Scrollbar from "../../../common/Scrollbar.vue"
 //相关变量类型
 type type_all_pan_obj = {
     'HistoryPanel': boolean
@@ -142,28 +142,9 @@ async function del_record() {
     }
 
     .novels {
-        padding: 0 5px;
         margin: 0 5px;
-        overflow-y: auto;
         flex-grow: 1;
-        border-radius: 5px;
-        color: #7f7f7f;
         border-bottom: none;
-        background-color: var(--base1-bgc);
-        border: var(--border-color) solid 2px;
-
-        &::-webkit-scrollbar {
-            width: 5px;
-        }
-
-        &::-webkit-scrollbar-thumb {
-            background-color: var(--thumb-color);
-            border-radius: 3px;
-        }
-
-        &::-webkit-scrollbar-track {
-            background-color: var(--track-color);
-        }
 
         .novel_item {
             display: flex;
