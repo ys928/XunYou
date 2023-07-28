@@ -1,16 +1,14 @@
 <template>
     <div class="CenterPanel" ref="div_center_panel">
         <View></View>
-        <ShowInfo></ShowInfo>
+        <ShowInfo v-show="cenpan_show_prompt"></ShowInfo>
         <n-spin class="loading" size="medium" v-show="cenpan_show_loading"></n-spin>
-        <Jump></Jump>
     </div>
 </template>
 
 <script setup lang="ts">
 import View from './CenterPanel/View.vue';
 import ShowInfo from './CenterPanel/ShowInfo.vue';
-import Jump from './CenterPanel/Jump.vue';
 import { Ref, provide, ref, onMounted, inject, watch } from 'vue';
 import { GlobalTheme, NSpin } from "naive-ui"
 import { invoke } from '@tauri-apps/api';

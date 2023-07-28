@@ -1,10 +1,25 @@
 <template>
-    <div class="COMScrollbar">
+    <div class="COMScrollbar" ref="div_scrollbar">
         <slot></slot>
     </div>
 </template>
 
 <script setup lang="ts">
+import { ref,onMounted } from "vue";
+//父组件事件
+const emit=defineEmits(['onWheel','onScroll'])
+
+//绑定滑动条
+const div_scrollbar=ref();
+
+onMounted(()=>{
+    div_scrollbar.value.addEventListener('wheel',(e)=>{
+        emit('onWheel',e);
+    },{ passive: true })
+    div_scrollbar.value.addEventListener('scroll',(e)=>{
+        emit('onScroll',e);
+    })
+});
 
 </script>
 

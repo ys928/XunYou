@@ -1,5 +1,5 @@
 <template>
-	<Scrollbar class="View" ref="div_view" @wheel="process_wheel($event)" @scroll="process_scroll($event)">
+	<Scrollbar class="View" id="div_view" @onWheel="process_wheel" @onScroll="process_scroll">
 		<div class="one_line" v-for="(item, index) in novel_show_lines">
 			<div v-if="IsTitle(item)" class="title">{{ item }}</div>
 			<div v-else class="paragraph" :style="{
@@ -51,8 +51,6 @@ const app_title = inject("app_title") as Ref<string>;
 const cenpan_show_prompt = inject("cenpan_show_prompt") as Ref<boolean>;
 //用于控制是否显示加载图标
 const cenpan_show_loading = inject("cenpan_show_loading") as Ref<boolean>;
-//存放处理跳转jump组件的按键处理函数
-//const cenpan_pro_jump_input=inject('cenpan_pro_jump_input') as Ref<Function>;
 //存放所有遍历到的小说目录
 const mainpan_novel_cata = inject("mainpan_novel_cata") as Ref<Array<type_cata_obj>>
 //存放跳转函数
@@ -89,13 +87,9 @@ onMounted(async () => {
 	// cenpan_pro_jump_input.value=process_jump_input;
 	//初始化打开小说的函数
 	root_fun_open_novel.value = fun_open_novel;
-	//监听鼠标点击事件
-	// document.addEventListener("click",()=>{
-	//   if(div_view.value!==undefined&&div_view.value!==null){
-	//     div_view.value.style.filter=""; //恢复原状
-	//   }
-	// })
-	//对快捷键进行处理
+	//初始化view对象
+	div_view.value=document.getElementById('div_view');
+
 	document.addEventListener("keydown", async (e) => {
 		//ctrl+O：打开小说
 		if (e.ctrlKey && e.key === 'o') {
@@ -193,9 +187,8 @@ async function fun_open_novel(path: string) {
 	mainpan_novel_cata.value.splice(0);
 	//关闭显示提示信息
 	cenpan_show_prompt.value = false;
-
-	//实现加载图案
-	cenpan_show_loading.value = true;
+	novel_show_lines.value.splice(0); //清空显示的章节
+	cenpan_show_loading.value = true; //显示加载图案
 	//console.log(novel_loading.value);
 	cur_novel_path = path;
 	//更新文件名
@@ -230,18 +223,16 @@ async function fun_open_novel(path: string) {
 		path: cur_novel_path
 	});
 	cur_chap_num = record[0]; //从记录章节开始加载
-	console.log(cur_chap_num);
 	//如果小说第一章、第一行不为标题，则添加一个‘开篇’作为标题
 	let first_chap = novel_chapter[0];
 	if (!IsTitle(first_chap[0])) {
-		novel_chapter[0].unshift("开篇");
+		novel_chapter[0].unshift("开始");
 		mainpan_novel_cata.value.unshift({
-			name: '开篇',
+			name: '开始',
 			line: 0
 		})
 	}
 
-	novel_show_lines.value.splice(0); //清空显示的章节
 
 	let cur_chapter = novel_chapter[cur_chap_num];
 	for (let i = 0; i < cur_chapter.length; i++) {
@@ -251,11 +242,11 @@ async function fun_open_novel(path: string) {
 	cenpan_show_loading.value = false;
 }
 function IsTitle(line: string) {
-	const r1 = new RegExp(/^\s*开\s*篇.*\r?\n?/);
+	const r1 = new RegExp(/^\s*开\s*篇.*\r?\n?$/);
 	if (r1.test(line)) {
 		return true;
 	}
-	const r2 = new RegExp(/^\s*序\s*章.*\r?\n?/);
+	const r2 = new RegExp(/^\s*序\s*章.*\r?\n?$/);
 	if (r2.test(line)) return true;
 	const r3 = new RegExp(/^\s*第\s*[零一二三四五六七八九十百千万0-9]{1,7}\s*[章节幕卷集部回].{0,10}\r?\n?$/);
 	if (r3.test(line)) return true;
@@ -312,21 +303,6 @@ async function prev_chapter() {
 	}
 }
 
-//处理跳转对话框按键的函数
-// function process_jump_input(key:string,value:string){
-//   if(key==='Escape'){
-//     div_view.value.style.filter=""; //清除毛玻璃效果
-//   }
-//   if(key==='Enter'){ //按下Enter键，开启跳转
-//     let to_line=Number(value);
-//     if(novel_lines===undefined||to_line>novel_lines.length){
-//       return;
-//     }
-//     fun_jump(-1,to_line);
-//     div_view.value.style.filter=""; //清除毛玻璃效果
-//   }
-// }
-
 async function fun_jump(cur_chapter: number, cur_line: number) {
 	cenpan_show_loading.value = true;
 	cur_chap_num = cur_chapter;
@@ -339,7 +315,6 @@ async function fun_jump(cur_chapter: number, cur_line: number) {
 	let p1 = div_view.value.querySelector(`:nth-child(${cur_line + 1})`);
 	p1.scrollIntoView();
 	cenpan_show_loading.value = false;
-	console.log(cur_chapter);
 	//每次跳转都要记录一下数据
 	invoke("set_nov_prog", {
 		path: cur_novel_path,
