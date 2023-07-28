@@ -19,6 +19,7 @@
 import { Ref, ref, onMounted, inject, watch, nextTick } from 'vue';
 import { dialog, event, fs, invoke } from '@tauri-apps/api';
 import Scrollbar from "../../../common/Scrollbar.vue"
+import { useDialog,useMessage } from "naive-ui"
 /**
  * 自定义类型
  */
@@ -77,6 +78,8 @@ let view_line: number;
 //存放当前打开的小说的路径
 let cur_novel_path: string;
 
+const ndialog = useDialog();
+const nmessage = useMessage();
 /**
  * 初始化函数
  */
@@ -88,7 +91,7 @@ onMounted(async () => {
 	//初始化打开小说的函数
 	root_fun_open_novel.value = fun_open_novel;
 	//初始化view对象
-	div_view.value=document.getElementById('div_view');
+	div_view.value = document.getElementById('div_view');
 
 	document.addEventListener("keydown", async (e) => {
 		//ctrl+O：打开小说
@@ -104,48 +107,51 @@ onMounted(async () => {
 			//打开小说
 			fun_open_novel(selected as string);
 		}
-		// //跳转
-		// if(e.ctrlKey&&e.key==='g'){
-		//   e.preventDefault();
-		//   //设置视图为毛玻璃效果
-		//   div_view.value.style.filter="blur(5px)";
-		// }
 		//关闭当前小说
 		if (e.ctrlKey && e.key === 'x') {
 			e.preventDefault();
-			let ret = await dialog.ask("确定要关闭当前小说？", { title: "提示", type: "info" });
-			if (ret) {
-				if (app_title.value === undefined || app_title.value.length === 0) {
-					await dialog.message("当前还没有打开小说", { title: "提示", type: "info" });
-					return;
+			ndialog.info({
+				title: '提示',
+				content: '确定要关闭当前小说？',
+				positiveText: '确定',
+				negativeText: '取消',
+				onPositiveClick: () => {
+					if (app_title.value === undefined || app_title.value.length === 0) {
+						nmessage.info("当前没有打开小说");
+						return;
+					}
+					novel_show_lines.value.splice(0); //清空界面内容
+					app_title.value = ""; //清除当前显示的文件名
+					cenpan_show_prompt.value = true; //重新显示提示信息
+					if (novel_lines !== undefined) {
+						novel_lines.splice(0); //清空读取到的小说内容
+					}
+					nmessage.info("关闭成功");
+				},
+				onNegativeClick: () => {
+
 				}
-				novel_show_lines.value.splice(0); //清空界面内容
-				app_title.value = ""; //清除当前显示的文件名
-				cenpan_show_prompt.value = true; //重新显示提示信息
-				if (novel_lines !== undefined) {
-					novel_lines.splice(0); //清空读取到的小说内容
-				}
-			}
+			})
 		}
 	});
-	document.addEventListener("keyup", async e => {
-		if (e.key === "PageUp") {
-			prev_chapter();
-		} else if (e.key === 'PageDown') {
-			next_chapter();
-		}
-		// }else if(e.key==='ArrowUp'){
+document.addEventListener("keyup", async e => {
+	if (e.key === "PageUp") {
+		prev_chapter();
+	} else if (e.key === 'PageDown') {
+		next_chapter();
+	}
+	// }else if(e.key==='ArrowUp'){
 
-		// }else if(e.key==='ArrowDown'){
+	// }else if(e.key==='ArrowDown'){
 
-		// }
-	})
+	// }
+})
 
-	//处理文件拖拽
-	event.listen<Array<string>>("tauri://file-drop", (e) => {
-		let file = e.payload[0];
-		fun_open_novel(file);
-	})
+//处理文件拖拽
+event.listen<Array<string>>("tauri://file-drop", (e) => {
+	let file = e.payload[0];
+	fun_open_novel(file);
+})
 });
 
 //当前是否已经处于边缘状态（顶部、或者底部）
@@ -330,6 +336,7 @@ async function fun_jump(cur_chapter: number, cur_line: number) {
 	height: 100%;
 	margin: 0 15px;
 	border: none;
+
 	&::-webkit-scrollbar {
 		width: 10px;
 	}

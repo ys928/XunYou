@@ -1,6 +1,7 @@
 <template>
 <n-config-provider :theme="app_style" :theme-overrides="app_style===null?lightThemeOverrides : darkThemeOverrides">
   <n-message-provider>
+    <n-dialog-provider>
     <div class="MainWindow" ref="div_main_window">
       <Titlebar 
         name="寻幽" 
@@ -12,6 +13,7 @@
       <MainPanel></MainPanel>
       <Statusbar></Statusbar>
     </div>
+  </n-dialog-provider>
   </n-message-provider>
 </n-config-provider>
 </template>
@@ -22,7 +24,7 @@ import MainPanel from './components/MainPanel.vue';
 import Statusbar from './components/Statusbar.vue';
 import { onMounted, provide, ref,watch } from 'vue';
 import { event, invoke,window } from '@tauri-apps/api';
-import { darkTheme,NMessageProvider,NConfigProvider, GlobalTheme,GlobalThemeOverrides,useMessage } from 'naive-ui'
+import { darkTheme,NMessageProvider,NConfigProvider, GlobalTheme,NDialogProvider} from 'naive-ui'
 //用与打开文件显示在页面的函数,在view组件中为其赋值，然后给其它组件调用
 const root_fun_open_novel=ref();
 provide("root_fun_open_novel",root_fun_open_novel);
