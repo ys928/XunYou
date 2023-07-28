@@ -13,10 +13,10 @@ const emit=defineEmits(['onWheel','onScroll'])
 const div_scrollbar=ref();
 
 onMounted(()=>{
-    div_scrollbar.value.addEventListener('wheel',(e)=>{
+    div_scrollbar.value.addEventListener('wheel',(e:WheelEvent)=>{
         emit('onWheel',e);
     },{ passive: true })
-    div_scrollbar.value.addEventListener('scroll',(e)=>{
+    div_scrollbar.value.addEventListener('scroll',(e:Event)=>{
         emit('onScroll',e);
     })
 });
