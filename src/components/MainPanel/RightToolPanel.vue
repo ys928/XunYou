@@ -2,8 +2,8 @@
     <div class="RightToolPanel" ref="div_right_panel">
         <div v-show="show_divid" class="divid_line" ref="div_divid_line"></div>
         <div class="content" ref="div_content" v-show="show_divid">
-            <SearchPanel></SearchPanel>
-            <Setting></Setting>
+            <SearchPanel v-show="all_panel.SearchPanel"></SearchPanel>
+            <Setting v-show="all_panel.Setting"></Setting>
         </div>
         <Toolbar></Toolbar>
     </div>

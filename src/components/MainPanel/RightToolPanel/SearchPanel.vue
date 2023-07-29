@@ -1,5 +1,5 @@
 <template>
-    <div class="SearchPanel" v-show="all_panel.SearchPanel">
+    <div class="SearchPanel">
         <div class="title">搜索栏</div>
         <div class="top_pos">
             <n-input size="tiny" round @input="search_fun" placeholder="搜小说"></n-input>
@@ -20,20 +20,16 @@ import { FileEntry, readDir } from '@tauri-apps/api/fs';
 import { dialog, invoke } from '@tauri-apps/api';
 import { fs } from '@tauri-apps/api';
 import Scrollbar from "../../../common/Scrollbar.vue";
-import { NIcon, NInput, NSpin, NScrollbar, NEl, NButton } from "naive-ui"
+import { NIcon, NInput, NSpin } from "naive-ui"
 import { FolderMinus } from "@vicons/tabler"
 /**
  * 相关变量类型
  */
-type all_pan_obj = {
-    'SearchPanel': boolean
-}
+
 /**
  * vue变量
  */
 
-//控制面板显示与否变量
-const all_panel = inject("all_panel") as Ref<all_pan_obj>;
 //控制要显示的小说列表项
 let show_novel_list = ref([]) as Ref<Array<FileEntry>>;
 //控制加载图标是否显示
@@ -169,7 +165,8 @@ function dclick_novel(index: number) {
             border: var(--border-color) solid 1px;
             overflow-x: hidden;
             white-space: nowrap;
-            transition: border 0.3s,color 0.3s;
+            transition: border 0.3s, color 0.3s;
+
             &:hover {
                 border: #36ad6a solid 1px;
                 color: #36ad6a;

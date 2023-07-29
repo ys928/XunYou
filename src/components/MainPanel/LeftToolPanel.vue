@@ -2,9 +2,10 @@
    <div class="LeftToolPanel" ref="div_left_panel" @mouseover="left_panel_mo">
       <Toolbar></Toolbar>
       <div class="content" v-show="show_divid" ref="div_content">
-         <HistoryPanel></HistoryPanel>
-         <Catalogue></Catalogue>
-         <Toolbox></Toolbox>
+         <HistoryPanel v-show="all_panel.HistoryPanel"></HistoryPanel>
+         <Catalogue v-show="all_panel.Catalogue"></Catalogue>
+         <Toolbox v-show="all_panel.Toolbox"></Toolbox>
+         <Tag v-show="all_panel.Tag"></Tag>
       </div>
       <div v-show="show_divid" class="divid_line" ref="div_divid_line"></div>
    </div>
@@ -15,6 +16,7 @@ import Toolbar from './LeftToolPanel/Toolbar.vue';
 import HistoryPanel from './LeftToolPanel/HistoryPanel.vue';
 import Catalogue from "./LeftToolPanel/Catalogue.vue"
 import Toolbox from './LeftToolPanel/Toolbox.vue';
+import Tag from './LeftToolPanel/Tag.vue';
 import { Ref, inject, onMounted, provide, reactive, ref, watch } from 'vue';
 /**
  * ref变量
@@ -37,7 +39,8 @@ const app_is_change_cursor = inject("app_is_change_cursor") as Ref<boolean>;
 const all_panel = reactive({
    'HistoryPanel': false,
    'Catalogue': false,
-   'Toolbox': false
+   'Toolbox': false,
+   'Tag': false,
 });
 provide("all_panel", all_panel);
 

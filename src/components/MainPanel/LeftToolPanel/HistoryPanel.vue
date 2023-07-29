@@ -1,5 +1,5 @@
 <template>
-    <div class="HistoryPanel" v-show="all_panel.HistoryPanel">
+    <div class="HistoryPanel">
         <div class="title">历史记录</div>
         <Scrollbar class="novels" ref="div_record">
             <div v-for="(item, index) in records_novel" class="novel_item" @dblclick="dclick_novel(index)">
@@ -22,9 +22,6 @@ import { invoke } from '@tauri-apps/api';
 import { Ref, inject, onMounted, ref, watch } from 'vue';
 import Scrollbar from "../../../common/Scrollbar.vue"
 //相关变量类型
-type type_all_pan_obj = {
-    'HistoryPanel': boolean
-}
 type type_record_novel = {
     name: string, //小说名字
     path: string, //小说文件路径
@@ -39,8 +36,6 @@ type type_record_novel = {
 
 //取出存放打开小说的函数变量，本组件用来使用该函数
 const root_fun_open_novel = inject('root_fun_open_novel') as Ref<Function>;
-//控制面板显示与否变量
-const all_panel = inject("all_panel") as Ref<type_all_pan_obj>;
 /**
  * 取得父变量
  */
@@ -159,6 +154,7 @@ async function del_record() {
             line-height: 25px;
             padding-left: 5px;
             transition: background-color 0.2s;
+
             &:hover {
                 background-color: var(--hover-color);
             }
