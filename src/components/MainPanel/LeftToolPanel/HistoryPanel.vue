@@ -1,7 +1,7 @@
 <template>
     <div class="HistoryPanel">
         <div class="title">历史记录</div>
-        <Scrollbar class="novels" ref="div_record">
+        <Scrollbar class="novels" id="div_history_list">
             <div v-for="(item, index) in records_novel" class="novel_item" @dblclick="dclick_novel(index)">
                 <span class="novel_name">
                     {{ item.name.substring(0, item.name.lastIndexOf('.')) }}
@@ -45,7 +45,7 @@ const root_fun_open_novel = inject('root_fun_open_novel') as Ref<Function>;
  * vue 绑定标签变量
  */
 
-const div_record = ref();
+let div_record:HTMLElement;
 const dev_menu = ref();
 
 /**
@@ -83,11 +83,13 @@ onMounted(async () => {
         records_novel.value.push(i);
     }
 
-    div_record.value.oncontextmenu = (e: MouseEvent) => {
+    div_record = document.getElementById('div_history_list') as HTMLElement;
+
+    div_record.oncontextmenu = (e: MouseEvent) => {
         let index = -1;
-        let all_history_item = div_record.value.querySelectorAll("div");
+        let all_history_item = div_record.querySelectorAll("div");
         for (let i = 0; i < all_history_item.length; i++) {
-            if (all_history_item[i].contains(e.target)) {
+            if (all_history_item[i].contains(e.target as Node)) {
                 dev_menu.value.style.left = e.pageX + "px";
                 dev_menu.value.style.top = e.pageY + "px";
                 is_show_menu.value = true;
@@ -185,7 +187,7 @@ async function del_record() {
             border-radius: 5px;
 
             &:hover {
-                background-color: var(--menu-item-hover-bgc);
+                background-color: var(--mih-color);
             }
         }
     }

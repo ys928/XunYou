@@ -33,7 +33,7 @@ type type_cata_obj = {
 /*
 绑定标签
 */
-const div_view = ref();
+let div_view:HTMLElement;
 /*
 控制内容的变量数据
 */
@@ -91,7 +91,7 @@ onMounted(async () => {
 	//初始化打开小说的函数
 	root_fun_open_novel.value = fun_open_novel;
 	//初始化view对象
-	div_view.value = document.getElementById('div_view');
+	div_view = document.getElementById('div_view') as HTMLElement;
 
 	document.addEventListener("keydown", async (e) => {
 		//ctrl+O：打开小说
@@ -281,7 +281,7 @@ async function next_chapter() {
 			novel_show_lines.value.push(cur_chap[i]);
 		}
 		await nextTick(); //等待渲染完成
-		let p1 = div_view.value.firstElementChild;
+		let p1 = div_view.firstElementChild as Element;
 		p1.scrollIntoView();
 		//记录翻章
 		invoke("set_nov_prog", {
@@ -318,7 +318,7 @@ async function fun_jump(cur_chapter: number, cur_line: number) {
 		novel_show_lines.value.push(cur_chap[i]);
 	}
 	await nextTick(); //等待渲染完成
-	let p1 = div_view.value.querySelector(`:nth-child(${cur_line + 1})`);
+	let p1 = div_view.querySelector(`:nth-child(${cur_line + 1})`) as Element;
 	p1.scrollIntoView();
 	cenpan_show_loading.value = false;
 	//每次跳转都要记录一下数据

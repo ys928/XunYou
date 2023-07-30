@@ -9,7 +9,6 @@
 
 <script setup lang="ts">
 import { Ref, inject, onMounted,ref } from 'vue';
-import {NEl} from "naive-ui"
 
 /**
  * 绑定标签的变量
