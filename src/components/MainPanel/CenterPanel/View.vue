@@ -248,16 +248,23 @@ async function fun_open_novel(path: string) {
 	cenpan_show_loading.value = false;
 }
 function IsTitle(line: string) {
+	//开篇
 	const r1 = new RegExp(/^\s*开\s*篇.*\r?\n?$/);
 	if (r1.test(line)) {
 		return true;
 	}
+	//序章
 	const r2 = new RegExp(/^\s*序\s*章.*\r?\n?$/);
 	if (r2.test(line)) return true;
-	const r3 = new RegExp(/^\s*第\s*[零一二三四五六七八九十百千万0-9]{1,7}\s*[章节幕卷集部回].{0,10}\r?\n?$/);
-	if (r3.test(line)) return true;
-	const r4 = new RegExp(/^Chapter\s*[零一二三四五六七八九十百千万0-9]{1,7}.{0,10}\r?\n?$/);
+	//第xxx章
+	const r3 = new RegExp(/^\s*第\s*[零一二三四五六七八九十百千万0-9]{1,10}\s*[章节幕卷集部回]\s*\r?\n?$/);
+	if(r3.test(line)) return true;
+	//第xxx章 章节名
+	const r4 = new RegExp(/^\s*第\s*[零一二三四五六七八九十百千万0-9]{1,10}\s*[章节幕卷集部回]\s+.*\r?\n?$/);
 	if (r4.test(line)) return true;
+	//Chapter xxx 章节名
+	const r5 = new RegExp(/^Chapter\s*[零一二三四五六七八九十百千万0-9]{1,10}\s+.*\r?\n?$/);
+	if (r5.test(line)) return true;
 	return false;
 }
 //获取文件名

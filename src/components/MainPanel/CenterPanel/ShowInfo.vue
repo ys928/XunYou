@@ -2,7 +2,6 @@
   <div class="Init_info">
     <div>Ctrl+O:打开小说</div>
     <div>Ctrl+X:关闭当前小说</div>
-    <div>Ctrl+G:跳转指定行数</div>
   </div>
 </template>
 
