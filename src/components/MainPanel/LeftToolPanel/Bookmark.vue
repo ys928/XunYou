@@ -1,5 +1,5 @@
 <template>
-    <div class="Tag">
+    <div class="Bookmark">
         <div class="title">书签</div>
         <div class="content">
         </div>
@@ -13,7 +13,7 @@ import { Ref, inject } from 'vue';
 </script>
 
 <style scoped lang="less">
-.Tag {
+.Bookmark {
     background-color: var(--base-bgc);
     height: 100%;
     display: flex;

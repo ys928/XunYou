@@ -5,7 +5,7 @@
          <HistoryPanel v-show="all_panel.HistoryPanel"></HistoryPanel>
          <Catalogue v-show="all_panel.Catalogue"></Catalogue>
          <Toolbox v-show="all_panel.Toolbox"></Toolbox>
-         <Tag v-show="all_panel.Tag"></Tag>
+         <Bookmark v-show="all_panel.Tag"></Bookmark>
       </div>
       <div v-show="show_divid" class="divid_line" ref="div_divid_line"></div>
    </div>
@@ -16,7 +16,7 @@ import Toolbar from './LeftToolPanel/Toolbar.vue';
 import HistoryPanel from './LeftToolPanel/HistoryPanel.vue';
 import Catalogue from "./LeftToolPanel/Catalogue.vue"
 import Toolbox from './LeftToolPanel/Toolbox.vue';
-import Tag from './LeftToolPanel/Tag.vue';
+import Bookmark from './LeftToolPanel/Bookmark.vue';
 import { Ref, inject, onMounted, provide, reactive, ref, watch } from 'vue';
 /**
  * ref变量
