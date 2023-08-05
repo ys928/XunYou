@@ -5,7 +5,7 @@
                 color="#585858"></n-icon>
             <n-icon class="icon" size="23" :component="List16Filled" title="目录" @click="switch_panel('Catalogue')"
                 color="#585858"></n-icon>
-            <n-icon class="icon" size="20" :component="Tag" title="标签" @click="switch_panel('Tag')"
+            <n-icon class="icon" size="20" :component="Tag" title="书签" @click="switch_panel('Tag')"
                 color="#585858"></n-icon>
         </div>
         <div class="bottom">

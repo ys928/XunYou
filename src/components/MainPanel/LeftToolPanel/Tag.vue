@@ -1,6 +1,6 @@
 <template>
     <div class="Tag">
-        <div class="title">标签</div>
+        <div class="title">书签</div>
         <div class="content">
         </div>
     </div>
