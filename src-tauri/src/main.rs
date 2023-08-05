@@ -3,6 +3,7 @@
 
 mod config;
 mod tool;
+mod types;
 use tauri::{Manager, PhysicalSize, Size};
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
@@ -37,6 +38,9 @@ fn main() {
             config::get_novel_folder,
             config::get_setting,
             config::set_setting,
+            config::get_bookmark,
+            config::add_bookmark,
+            config::del_bookmark
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

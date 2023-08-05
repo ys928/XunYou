@@ -1,6 +1,6 @@
 use core::panic;
 
-use serde::{Deserialize, Serialize};
+use crate::types::*;
 //初始化日志文件
 #[allow(dead_code)]
 fn init_log() {
@@ -13,60 +13,7 @@ fn init_log() {
     //初始化日志文件
     cfun::log_to_file(p.to_str().unwrap());
 }
-#[derive(Serialize, Deserialize, Clone, Default)]
-pub struct Novel {
-    name: String,     //小说名字
-    path: String,     //小说文件路径
-    md5: String,      //小说md5值校验
-    cur_chapter: u64, //当前章节（从0开始）
-    cur_line: u64,    //当前章节中读到的行数
-}
 
-#[derive(Serialize, Deserialize)]
-struct AppInfo {
-    width: u32,               //软件宽度
-    height: u32,              //软件高度
-    left_panel_status: bool,  //左面板是否展开
-    right_panel_status: bool, //右面板是否展开
-    theme: String,            //主题
-    novel_folder: String,     //小说文件夹
-}
-
-impl Default for AppInfo {
-    fn default() -> Self {
-        Self {
-            width: 1200,
-            height: 800,
-            left_panel_status: false,
-            right_panel_status: false,
-            theme: "dark".to_string(),
-            novel_folder: "novels".to_string(),
-        }
-    }
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct AppSet {
-    font_size: u32,   //字体大小
-    font_weight: u32, //字体粗细
-    line_height: u32, //行高,除以10
-}
-impl Default for AppSet {
-    fn default() -> Self {
-        Self {
-            font_size: 16,
-            font_weight: 400,
-            line_height: 16,
-        }
-    }
-}
-
-#[derive(Serialize, Deserialize, Default)]
-struct ConfigInfo {
-    app: AppInfo,       //软件界面相关的配置信息
-    record: Vec<Novel>, //最近打开过的小说
-    appset: AppSet,     //相关的设置项
-}
 
 //获取历史小说文件记录
 #[tauri::command]
@@ -147,6 +94,7 @@ pub fn set_nov_prog(path: &str, line: u64, chapter: u64) {
             md5: md5,
             cur_line: line,
             cur_chapter: chapter,
+            bookmark:Vec::new()
         });
     }
     //保存到文件中
@@ -240,18 +188,61 @@ pub fn get_novel_folder() -> String {
     let cfg = config_info();
     cfg.app.novel_folder
 }
-
+//获取小说界面相关设置
 #[tauri::command]
 pub fn get_setting() -> AppSet {
     let cfg = config_info();
     cfg.appset
 }
-
+//设置小说界面相关设置
 #[tauri::command]
 pub fn set_setting(fs: u32, fw: u32, lh: u32) {
     let mut cfg = config_info();
     cfg.appset.font_size = fs;
     cfg.appset.font_weight = fw;
     cfg.appset.line_height = lh;
+    record_config(cfg);
+}
+
+//获取当前小说标签
+#[tauri::command]
+pub fn get_bookmark(path: &str) ->Vec<Bookmark>{
+    let cfg = config_info();
+    for n in cfg.record{
+        if n.path==path{
+            return n.bookmark;
+        }
+    }
+    Vec::new()    
+}
+//添加当前小说书签
+#[tauri::command]
+pub fn add_bookmark(path: &str,mark:Bookmark) {
+    let mut cfg = config_info();
+    for n in cfg.record.iter_mut(){
+        if n.path==path{
+            n.bookmark.push(mark);
+            break;
+        }
+    }
+    record_config(cfg);
+}
+
+//删除当前小说书签
+#[tauri::command]
+pub fn del_bookmark(path: &str,id:String) {
+    let mut cfg = config_info();
+    for n in cfg.record.iter_mut(){
+        if n.path!=path{
+            continue;
+        }
+        for b in 0..n.bookmark.len(){
+            if n.bookmark[b].id==id{
+                n.bookmark.remove(b);
+                break;
+            }
+        }
+        break;
+    }
     record_config(cfg);
 }
