@@ -29,12 +29,6 @@ provide('cenpan_show_prompt', cenpan_show_prompt);
 //用于控制是否显示加载图标
 const cenpan_show_loading = ref(false);
 provide('cenpan_show_loading', cenpan_show_loading);
-//用于绑定子组件View中的处理输入跳转输入框的函数，让Jump组件使用
-const cenpan_pro_jump_input = ref();
-provide('cenpan_pro_jump_input', cenpan_pro_jump_input);
-//用于决定是否显示Jump跳转组件
-const cenpan_show_jump = ref(false);
-provide('cenpan_show_jump', cenpan_show_jump);
 
 
 
@@ -48,9 +42,7 @@ onMounted(async () => {
         }
     })
     document.addEventListener("keyup", e => {
-        if ((e.key === 'g' || e.key === 'G') && e.ctrlKey) {
-            cenpan_show_jump.value = true;
-        }
+
     })
 });
 

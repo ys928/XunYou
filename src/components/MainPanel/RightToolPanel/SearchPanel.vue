@@ -157,6 +157,7 @@ function dclick_novel(index: number) {
         flex-grow: 1;
         border-radius: 5px;
         border-bottom: none;
+        position: relative;
 
         .novel_item {
             margin: 10px 10px 10px 5px;

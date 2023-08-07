@@ -28,7 +28,13 @@ type type_cata_obj = {
 	name: string,
 	line: number
 };
-
+type book_mark={
+    id:String, //识别该书签的唯一id
+    label:String, //该标签的额外标注信息
+    chapter:Number, //所属章节
+    line:Number, //所属行
+    datetime:String //创建日期
+}
 
 /*
 绑定标签
@@ -62,7 +68,8 @@ const mainpan_font_size = inject('mainpan_font_size') as Ref<number>;
 const mainpan_font_weight = inject("mainpan_font_weight") as Ref<number>
 //行高
 const mainpan_line_height = inject("mainpan_line_height") as Ref<number>;
-
+//存放当前小说所有书签
+const mainpan_bookmark=inject("mainpan_bookmark") as Ref<Array<book_mark>>
 
 /*
 普通变量
@@ -246,6 +253,9 @@ async function fun_open_novel(path: string) {
 	}
 	//关闭加载图标
 	cenpan_show_loading.value = false;
+	//获取当前小说所有标签
+	mainpan_bookmark.value=await invoke('get_bookmark',{path:cur_novel_path});
+
 }
 function IsTitle(line: string) {
 	//开篇

@@ -42,6 +42,9 @@ provide("mainpan_font_weight",mainpan_font_weight);
 //行高
 const mainpan_line_height=ref(16);
 provide("mainpan_line_height",mainpan_line_height);
+//存放当前打开的小说所有书签
+const mainpan_bookmark=ref([]);
+provide('mainpan_bookmark',mainpan_bookmark)
 
 /**
  * 初始化操作
