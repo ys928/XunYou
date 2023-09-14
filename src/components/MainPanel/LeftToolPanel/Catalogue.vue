@@ -66,6 +66,7 @@ function dclick_cata_item(index: number) {
             height: 25px;
             line-height: 25px;
             padding-left: 5px;
+            cursor: pointer;
 
             &:hover {
                 background-color: var(--hover-color);

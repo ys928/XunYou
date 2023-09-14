@@ -1,6 +1,6 @@
 <template>
 	<Scrollbar class="View" id="div_view" @onWheel="process_wheel" @onScroll="process_scroll">
-		<div class="one_line" v-for="(item, index) in novel_show_lines">
+		<template v-for="(item, index) in novel_show_lines">
 			<div v-if="IsTitle(item)" class="title">{{ item }}</div>
 			<div v-else class="paragraph" :style="{
 				'font-size': mainpan_font_size + 'px',
@@ -10,16 +10,27 @@
 			}">
 				{{ item }}
 			</div>
-
+		</template>
+		<div class="opt_menu" ref="dev_menu" v-show="is_show_menu">
+			<div class="item" @click="fun_add_bookmark">添加书签</div>
 		</div>
+		<n-modal v-model:show="show_edit_remark" preset="dialog" title="dialog" :mask-closable="false" positive-text="确定"
+			negative-text="取消" :closable="false" @positive-click="onPositiveClick" @negative-click="onNegativeClick">
+			<template #header>
+				<div>书签备注</div>
+			</template>
+			<div>
+				<n-input placeholder="填写书签备注" v-model:value="bookmark.label"></n-input>
+			</div>
+		</n-modal>
 	</Scrollbar>
 </template>
 
 <script setup lang="ts">
-import { Ref, ref, onMounted, inject, watch, nextTick } from 'vue';
+import { Ref, ref, onMounted, inject, watch, nextTick, reactive } from 'vue';
 import { dialog, event, fs, invoke } from '@tauri-apps/api';
 import Scrollbar from "../../../common/Scrollbar.vue"
-import { useDialog,useMessage } from "naive-ui"
+import { useDialog, useMessage, NModal, NInput, NButton } from "naive-ui"
 /**
  * 自定义类型
  */
@@ -28,24 +39,38 @@ type type_cata_obj = {
 	name: string,
 	line: number
 };
-type book_mark={
-    id:String, //识别该书签的唯一id
-    label:String, //该标签的额外标注信息
-    chapter:Number, //所属章节
-    line:Number, //所属行
-    datetime:String //创建日期
+type book_mark = {
+	id: string, //识别该书签的唯一id
+	label: string, //该标签的额外标注信息
+	chapter: Number, //所属章节
+	line: Number, //所属行
+	datetime: string, //创建日期
+	content: string, //简短文章内容
 }
-
 /*
 绑定标签
 */
-let div_view:HTMLElement;
+let div_view: HTMLElement;
+let dev_menu = ref();
 /*
 控制内容的变量数据
 */
-
+//控制菜单是否显示的变量
+const is_show_menu = ref(false);
+//控制是否显示添加备注
+const show_edit_remark = ref(false);
 //程序要进行显示的小说行数内容
 const novel_show_lines = ref([]) as Ref<Array<string>>;
+//保存当前书签内容
+const bookmark: book_mark = reactive({
+	id: '',
+	chapter: 0,
+	line: 0,
+	label: "",
+	datetime: '',
+	content: '',
+});
+
 
 /**
  * 取出父组件传递下来的变量
@@ -69,8 +94,9 @@ const mainpan_font_weight = inject("mainpan_font_weight") as Ref<number>
 //行高
 const mainpan_line_height = inject("mainpan_line_height") as Ref<number>;
 //存放当前小说所有书签
-const mainpan_bookmark=inject("mainpan_bookmark") as Ref<Array<book_mark>>
-
+const mainpan_bookmark = inject("mainpan_bookmark") as Ref<Array<book_mark>>
+//存放当前小说路径
+const mainpan_nov_path = inject("mainpan_nov_path") as Ref<string>
 /*
 普通变量
 */
@@ -80,10 +106,10 @@ let novel_lines: Array<string>;
 let novel_chapter: Array<Array<string>> = [];
 //当前阅读章节
 let cur_chap_num: number;
-//存放视图显示出来的第一行占原小说的具体行数
-let view_line: number;
 //存放当前打开的小说的路径
 let cur_novel_path: string;
+//存放当前用户右键点击到的div标签
+let p_div: EventTarget | null;
 
 const ndialog = useDialog();
 const nmessage = useMessage();
@@ -99,7 +125,17 @@ onMounted(async () => {
 	root_fun_open_novel.value = fun_open_novel;
 	//初始化view对象
 	div_view = document.getElementById('div_view') as HTMLElement;
-
+	div_view.oncontextmenu = function (e) {
+		dev_menu.value.style.left = e.pageX + "px";
+		dev_menu.value.style.top = e.pageY + "px";
+		is_show_menu.value = true;
+		p_div = e.target;
+	}
+	document.addEventListener("click", e => {
+		if (dev_menu.value !== undefined && dev_menu.value !== null && !dev_menu.value.contains(e.target)) {
+			is_show_menu.value = false;
+		}
+	})
 	document.addEventListener("keydown", async (e) => {
 		//ctrl+O：打开小说
 		if (e.ctrlKey && e.key === 'o') {
@@ -141,24 +177,24 @@ onMounted(async () => {
 			})
 		}
 	});
-document.addEventListener("keyup", async e => {
-	if (e.key === "PageUp") {
-		prev_chapter();
-	} else if (e.key === 'PageDown') {
-		next_chapter();
-	}
-	// }else if(e.key==='ArrowUp'){
+	document.addEventListener("keyup", async e => {
+		if (e.key === "PageUp") {
+			prev_chapter();
+		} else if (e.key === 'PageDown') {
+			next_chapter();
+		}
+		// }else if(e.key==='ArrowUp'){
 
-	// }else if(e.key==='ArrowDown'){
+		// }else if(e.key==='ArrowDown'){
 
-	// }
-})
+		// }
+	})
 
-//处理文件拖拽
-event.listen<Array<string>>("tauri://file-drop", (e) => {
-	let file = e.payload[0];
-	fun_open_novel(file);
-})
+	//处理文件拖拽
+	event.listen<Array<string>>("tauri://file-drop", (e) => {
+		let file = e.payload[0];
+		fun_open_novel(file);
+	})
 });
 
 //当前是否已经处于边缘状态（顶部、或者底部）
@@ -204,6 +240,7 @@ async function fun_open_novel(path: string) {
 	cenpan_show_loading.value = true; //显示加载图案
 	//console.log(novel_loading.value);
 	cur_novel_path = path;
+	mainpan_nov_path.value = path;
 	//更新文件名
 	app_title.value = get_file_name(path);
 	if (path.endsWith(".novel")) {
@@ -245,8 +282,6 @@ async function fun_open_novel(path: string) {
 			line: 0
 		})
 	}
-
-
 	let cur_chapter = novel_chapter[cur_chap_num];
 	for (let i = 0; i < cur_chapter.length; i++) {
 		novel_show_lines.value.push(cur_chapter[i]);
@@ -254,8 +289,7 @@ async function fun_open_novel(path: string) {
 	//关闭加载图标
 	cenpan_show_loading.value = false;
 	//获取当前小说所有标签
-	mainpan_bookmark.value=await invoke('get_bookmark',{path:cur_novel_path});
-
+	mainpan_bookmark.value = await invoke('get_bookmark', { path: cur_novel_path });
 }
 function IsTitle(line: string) {
 	//开篇
@@ -268,7 +302,7 @@ function IsTitle(line: string) {
 	if (r2.test(line)) return true;
 	//第xxx章
 	const r3 = new RegExp(/^\s*第\s*[零一二三四五六七八九十百千万0-9]{1,10}\s*[章节幕卷集部回]\s*\r?\n?$/);
-	if(r3.test(line)) return true;
+	if (r3.test(line)) return true;
 	//第xxx章 章节名
 	const r4 = new RegExp(/^\s*第\s*[零一二三四五六七八九十百千万0-9]{1,10}\s*[章节幕卷集部回]\s+.*\r?\n?$/);
 	if (r4.test(line)) return true;
@@ -345,7 +379,87 @@ async function fun_jump(cur_chapter: number, cur_line: number) {
 		chapter: cur_chapter
 	});
 }
+//添加书签函数
+async function fun_add_bookmark() {
+	if (novel_lines === undefined || novel_lines.length === 0) {
+		nmessage.error("请先打开一本小说！");
+		is_show_menu.value = false;
+		return;
+	}
+	//获取所有段落
+	let ps = div_view.querySelectorAll('div');
+	// 遍历子标签div
+	let cur_p = -1;
+	for (var i = 0; i < ps.length; i++) {
+		if (ps[i] === p_div) {
+			cur_p = i;
+			break;
+		}
+	}
+	if (cur_p == -1) {
+		is_show_menu.value = false;
+		nmessage.info("右键到指定的内容才可添加标签");
+		return;
+	}
+	let time = getCurrentDateTime();
+	let id = generateUUID();
+	bookmark.id = id;
+	bookmark.chapter = cur_chap_num;
+	bookmark.line = cur_p;
+	bookmark.datetime = time;
+	bookmark.content = novel_chapter[cur_chap_num][cur_p].trim();
+	show_edit_remark.value = true;
+	is_show_menu.value = false;
+}
 
+function getCurrentDateTime() {
+	// 获取当前的日期时间
+	var currentDate = new Date();
+	// 获取年份
+	var year = currentDate.getFullYear();
+	// 获取月份（注意，返回的月份是从0开始的，所以要加1）
+	var month = currentDate.getMonth() + 1;
+	// 获取日
+	var day = currentDate.getDate();
+	// 获取小时
+	var hours = String(currentDate.getHours()).padStart(2, '0');
+	// 获取分钟
+	var minutes = String(currentDate.getMinutes()).padStart(2, '0');
+	// 获取秒钟
+	var seconds = String(currentDate.getSeconds()).padStart(2, '0');
+	// 返回格式化的日期时间
+	return year + '/' + month + '/' + day + ' ' + hours + ':' + minutes + ':' + seconds;
+}
+
+function generateUUID() {
+	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+		var r = Math.random() * 16 | 0,
+			v = c === 'x' ? r : (r & 0x3 | 0x8);
+		return v.toString(16);
+	});
+}
+//模态框，取消添加书签
+function onNegativeClick() {
+	show_edit_remark.value = false;
+	nmessage.info('已取消添加书签')
+}
+//模态框，确认添加书签
+async function onPositiveClick() {
+	mainpan_bookmark.value.push({
+		label: bookmark.label,
+		datetime: bookmark.datetime,
+		id: bookmark.id,
+		chapter: bookmark.chapter,
+		line: bookmark.line,
+		content: bookmark.content
+	});
+	await invoke('add_bookmark', {
+		path: cur_novel_path,
+		mark: bookmark
+	});
+	bookmark.label = "";
+	nmessage.success('成功添加书签!');
+}
 </script>
 
 <style scoped lang="less">
@@ -358,24 +472,41 @@ async function fun_jump(cur_chapter: number, cur_line: number) {
 		width: 10px;
 	}
 
-	.one_line {
-		.title {
-			font-size: 25px;
-			color: #7F7F7F;
-			text-align: center;
-			margin: 15px 0;
-			user-select: text;
+	.title {
+		font-size: 25px;
+		color: #7F7F7F;
+		text-align: center;
+		margin: 15px 0;
+		user-select: text;
+	}
+
+	.paragraph {
+		word-break: break-all;
+		background-image: url("/src/assets/line.svg");
+		color: #7F7F7F;
+		user-select: text;
+
+		&::selection {
+			background: #f5eccf;
+			opacity: 0.5;
 		}
+	}
 
-		.paragraph {
-			word-break: break-all;
-			background-image: url("/src/assets/line.svg");
-			color: #7F7F7F;
-			user-select: text;
+	.opt_menu {
+		position: fixed;
+		border-radius: 5px;
+		padding: 3px 5px;
+		width: 100px;
+		background-color: var(--menu-bgc);
+		color: var(--menu-color);
+		cursor: pointer;
 
-			&::selection {
-				background: #f5eccf;
-				opacity: 0.5;
+		.item {
+			padding: 2px 10px;
+			border-radius: 5px;
+
+			&:hover {
+				background-color: var(--mih-color);
 			}
 		}
 	}

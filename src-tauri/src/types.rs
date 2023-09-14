@@ -6,7 +6,8 @@ pub struct Bookmark{
     pub label:String, //该标签的额外标注信息
     pub chapter:u64, //所属章节
     pub line:u64, //所属行
-    pub datetime:String //创建日期
+    pub datetime:String, //创建日期
+    pub content:String, //简短内容，用于快捷展示
 }
 
 #[derive(Serialize, Deserialize, Clone, Default)]

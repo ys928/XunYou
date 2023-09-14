@@ -98,7 +98,7 @@ onMounted(async () => {
         }
         //没有点击到任何一个历史记录项中，则要隐藏菜单
         if (index === -1) {
-            cur_index === -1;
+            cur_index = -1;
             is_show_menu.value = false;
         } else {
             cur_index = index;
@@ -113,12 +113,14 @@ onMounted(async () => {
 
 //删除一个记录项，
 async function del_record() {
+    if(cur_index==-1) return;
     await invoke("del_record", {
         path: records_novel.value[cur_index].path
     });
 
     records_novel.value.splice(cur_index, 1);
     is_show_menu.value = false;
+    cur_index=-1;
 }
 
 </script>
@@ -156,6 +158,7 @@ async function del_record() {
             line-height: 25px;
             padding-left: 5px;
             transition: background-color 0.2s;
+            cursor: pointer;
 
             &:hover {
                 background-color: var(--hover-color);
@@ -185,6 +188,7 @@ async function del_record() {
         .item {
             padding: 2px 10px;
             border-radius: 5px;
+            cursor: pointer;
 
             &:hover {
                 background-color: var(--mih-color);

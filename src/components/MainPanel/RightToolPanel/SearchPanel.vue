@@ -167,7 +167,7 @@ function dclick_novel(index: number) {
             overflow-x: hidden;
             white-space: nowrap;
             transition: border 0.3s, color 0.3s;
-
+            cursor: pointer;
             &:hover {
                 border: #36ad6a solid 1px;
                 color: #36ad6a;

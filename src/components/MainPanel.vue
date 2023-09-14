@@ -32,7 +32,9 @@ provide("mainpan_novel_cata",mainpan_novel_cata);
 //存放跳转函数
 const mainpan_nov_jump_fun=ref();
 provide("mainpan_nov_jump_fun",mainpan_nov_jump_fun);
-
+//存放当前小说路径
+const mainpan_nov_path=ref("");
+provide("mainpan_nov_path",mainpan_nov_path);
 //字体大小
 const mainpan_font_size=ref(16);
 provide("mainpan_font_size",mainpan_font_size);

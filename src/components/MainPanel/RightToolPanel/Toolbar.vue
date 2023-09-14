@@ -63,6 +63,7 @@ function switch_panel(name: string) {
         height: 30px;
         padding: 3px;
         border-radius: 5px;
+        cursor: pointer;
 
         &:hover {
             background-color: var(--hover-color);
