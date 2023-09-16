@@ -196,11 +196,12 @@ pub fn get_setting() -> AppSet {
 }
 //设置小说界面相关设置
 #[tauri::command]
-pub fn set_setting(fs: u32, fw: u32, lh: u32) {
+pub fn set_setting(fs: u32, fw: u32, lh: u32,ff:&str) {
     let mut cfg = config_info();
     cfg.appset.font_size = fs;
     cfg.appset.font_weight = fw;
     cfg.appset.line_height = lh;
+    cfg.appset.font_family=ff.to_string();
     record_config(cfg);
 }
 

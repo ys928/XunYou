@@ -1,12 +1,17 @@
 <template>
 	<Scrollbar class="View" id="div_view" @onWheel="process_wheel" @onScroll="process_scroll">
 		<template v-for="(item, index) in novel_show_lines">
-			<div v-if="IsTitle(item)" class="title">{{ item }}</div>
+			<div v-if="IsTitle(item)" class="title"
+				:style="{
+					'font-family':mainpan_font_family
+				}"
+			>{{ item }}</div>
 			<div v-else class="paragraph" :style="{
 				'font-size': mainpan_font_size + 'px',
 				'font-weight': mainpan_font_weight,
 				'line-height': mainpan_line_height / 10 + 'em',
 				'background-size': '15px ' + mainpan_line_height / 10 + 'em',
+				'font-family':mainpan_font_family
 			}">
 				{{ item }}
 			</div>
@@ -93,6 +98,8 @@ const mainpan_nov_jump_fun = inject("mainpan_nov_jump_fun") as Ref<Function>;
 const mainpan_font_size = inject('mainpan_font_size') as Ref<number>;
 //字体粗细
 const mainpan_font_weight = inject("mainpan_font_weight") as Ref<number>
+//字体
+const mainpan_font_family = inject("mainpan_font_family") as Ref<string>;
 //行高
 const mainpan_line_height = inject("mainpan_line_height") as Ref<number>;
 //存放当前小说所有书签

@@ -19,7 +19,8 @@ import {NLayout,NLayoutSider,NLayoutContent} from "naive-ui"
 type app_setting={
     font_size:number, //font-size
     font_weight:number, //font-weight
-    line_height:number //line-height
+    line_height:number, //line-height
+    font_family:string, //font-family
 }
 
 //全局主题样式
@@ -44,6 +45,10 @@ provide("mainpan_font_size",mainpan_font_size);
 //字体粗细
 const mainpan_font_weight=ref(400);
 provide("mainpan_font_weight",mainpan_font_weight);
+//字体
+const mainpan_font_family=ref("楷体");
+provide("mainpan_font_family",mainpan_font_family);
+
 //行高
 const mainpan_line_height=ref(16);
 provide("mainpan_line_height",mainpan_line_height);
@@ -61,6 +66,7 @@ provide('mainpan_bookmark',mainpan_bookmark)
     mainpan_font_size.value=setting.font_size;
     mainpan_font_weight.value=setting.font_weight;
     mainpan_line_height.value=setting.line_height;
+    mainpan_font_family.value=setting.font_family;
  });
 
 </script>

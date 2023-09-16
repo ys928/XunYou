@@ -17,6 +17,10 @@
                 <n-input-number v-model:value="mainpan_line_height" :min="10" :max="25" :step="1" button-placement="both"
                     size="tiny"></n-input-number>
             </div>
+            <div>
+                <n-tag :bordered="false" size="small">正文字体:</n-tag>
+                <n-select v-model:value="mainpan_font_family" size="tiny" :options="fonts" />
+            </div>
         </div>
     </div>
 </template>
@@ -24,7 +28,7 @@
 <script setup lang="ts">
 import { invoke } from '@tauri-apps/api';
 import { Ref, inject, onMounted, ref, watch } from 'vue';
-import { NInputNumber, NTag } from "naive-ui"
+import { NInputNumber, NTag, NSelect } from "naive-ui"
 /**
  * 相关变量类型
  */
@@ -33,12 +37,38 @@ import { NInputNumber, NTag } from "naive-ui"
  * vue变量
  */
 
+/**
+ * 从父组件取得的变量
+ */
 //字体大小
 const mainpan_font_size = inject('mainpan_font_size') as Ref<number>;
 //字体粗细
 const mainpan_font_weight = inject("mainpan_font_weight") as Ref<number>
 //行高
 const mainpan_line_height = inject("mainpan_line_height") as Ref<number>;
+//字体
+const mainpan_font_family = inject("mainpan_font_family") as Ref<string>;
+
+
+const fonts = [
+    {
+        value: '楷体',
+        label: '楷体'
+    },
+    {
+        value: '宋体',
+        label: '宋体'
+    },
+    {
+        value: '仿宋',
+        label: '仿宋'
+    },
+    {
+        value: '黑体',
+        label: '黑体'
+    },
+];
+
 /**
  * 函数
  */
@@ -51,11 +81,15 @@ watch(mainpan_font_weight, () => {
 watch(mainpan_line_height, () => {
     save_setting();
 })
+watch(mainpan_font_family, () => {
+    save_setting();
+})
 function save_setting() {
     invoke("set_setting", {
         fs: mainpan_font_size.value,
         fw: mainpan_font_weight.value,
-        lh: mainpan_line_height.value
+        lh: mainpan_line_height.value,
+        ff: mainpan_font_family.value
     });
 }
 
@@ -92,4 +126,5 @@ function save_setting() {
             white-space: nowrap;
         }
     }
-}</style>
+}
+</style>

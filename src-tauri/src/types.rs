@@ -48,6 +48,7 @@ pub struct AppSet {
     pub font_size: u32,   //字体大小
     pub font_weight: u32, //字体粗细
     pub line_height: u32, //行高,除以10
+    pub font_family:String //字体
 }
 impl Default for AppSet {
     fn default() -> Self {
@@ -55,6 +56,7 @@ impl Default for AppSet {
             font_size: 16,
             font_weight: 400,
             line_height: 16,
+            font_family:"楷体".to_string(),
         }
     }
 }
