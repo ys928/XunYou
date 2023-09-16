@@ -28,10 +28,17 @@
 <script setup lang="ts">
 import { invoke } from '@tauri-apps/api';
 import { Ref, inject, onMounted, ref, watch } from 'vue';
-import { NInputNumber, NTag, NSelect } from "naive-ui"
+import { NInputNumber, NTag, NSelect ,useMessage } from "naive-ui"
+/**
+ * 普通变量
+ */
+
+const popmsg=useMessage();
+
 /**
  * 相关变量类型
  */
+
 
 /**
  * vue变量
@@ -83,6 +90,7 @@ watch(mainpan_line_height, () => {
 })
 watch(mainpan_font_family, () => {
     save_setting();
+    popmsg.info('频繁切换字体会引起内存大量缓存占用，如遇卡顿，请重启软件!');
 })
 function save_setting() {
     invoke("set_setting", {
