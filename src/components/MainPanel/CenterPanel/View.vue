@@ -1,13 +1,13 @@
 <template>
 	<Scrollbar class="View" id="div_view" :style="{
-												'font-family': mainpan_font_family
-												}" 
-	@onWheel="process_wheel" @onScroll="process_scroll">
+		'font-family': mainpan_font_family,
+		'font-weight': mainpan_font_weight,
+
+	}" @onWheel="process_wheel" @onScroll="process_scroll">
 		<template v-for="(item, index) in novel_show_lines">
 			<div v-if="IsTitle(item)" class="title">{{ item }}</div>
 			<div v-else class="paragraph" :style="{
 				'font-size': mainpan_font_size + 'px',
-				'font-weight': mainpan_font_weight,
 				'line-height': mainpan_line_height / 10 + 'em',
 				'background-size': '15px ' + mainpan_line_height / 10 + 'em',
 			}">
@@ -487,6 +487,7 @@ async function onPositiveClick() {
 		margin: 15px 0;
 		user-select: text;
 		font-family: inherit;
+		font-weight: inherit;
 	}
 
 	.paragraph {
@@ -495,6 +496,7 @@ async function onPositiveClick() {
 		color: #7F7F7F;
 		user-select: text;
 		font-family: inherit;
+		font-weight: inherit;
 		&::selection {
 			background: #f5eccf;
 			opacity: 0.5;
