@@ -1,17 +1,15 @@
 <template>
-	<Scrollbar class="View" id="div_view" @onWheel="process_wheel" @onScroll="process_scroll">
+	<Scrollbar class="View" id="div_view" :style="{
+												'font-family': mainpan_font_family
+												}" 
+	@onWheel="process_wheel" @onScroll="process_scroll">
 		<template v-for="(item, index) in novel_show_lines">
-			<div v-if="IsTitle(item)" class="title"
-				:style="{
-					'font-family':mainpan_font_family
-				}"
-			>{{ item }}</div>
+			<div v-if="IsTitle(item)" class="title">{{ item }}</div>
 			<div v-else class="paragraph" :style="{
 				'font-size': mainpan_font_size + 'px',
 				'font-weight': mainpan_font_weight,
 				'line-height': mainpan_line_height / 10 + 'em',
 				'background-size': '15px ' + mainpan_line_height / 10 + 'em',
-				'font-family':mainpan_font_family
 			}">
 				{{ item }}
 			</div>
@@ -295,7 +293,7 @@ async function fun_open_novel(path: string) {
 	for (let i = 0; i < cur_chapter.length; i++) {
 		novel_show_lines.value.push(cur_chapter[i]);
 	}
-	mainpan_show_novel_cata.value=Array.from(mainpan_novel_cata.value);
+	mainpan_show_novel_cata.value = Array.from(mainpan_novel_cata.value);
 	//关闭加载图标
 	cenpan_show_loading.value = false;
 	//获取当前小说所有标签
@@ -488,6 +486,7 @@ async function onPositiveClick() {
 		text-align: center;
 		margin: 15px 0;
 		user-select: text;
+		font-family: inherit;
 	}
 
 	.paragraph {
@@ -495,7 +494,7 @@ async function onPositiveClick() {
 		background-image: url("/src/assets/line.svg");
 		color: #7F7F7F;
 		user-select: text;
-
+		font-family: inherit;
 		&::selection {
 			background: #f5eccf;
 			opacity: 0.5;
