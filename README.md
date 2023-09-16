@@ -18,15 +18,14 @@
 
 # 软件界面
 
-<img width="798" alt="1687827326418" src="https://github.com/ys928/XunYou/assets/80371119/0d2c17a8-a3c7-4c94-aa1e-e3883a0c3584">
-
+<img width="798" src="https://github.com/ys928/XunYou/assets/80371119/c8d84fa7-615f-4b26-befd-11021288faab">
 
 ## 暗色调主题：
 
-<img width="798" alt="1687827268047" src="https://github.com/ys928/XunYou/assets/80371119/c53a99e8-81b8-4ec8-8c44-3d9a96ac8f45">
+<img width="798" alt="1687827268047" src="https://github.com/ys928/XunYou/assets/80371119/4db01466-303b-4dce-a384-e44f280301cc">
 
 
 ## 亮色调主题：
 
-<img width="798" alt="1687827298628" src="https://github.com/ys928/XunYou/assets/80371119/3a27cd31-b68e-484c-bd6f-19fda12f1643">
+<img width="798" alt="1687827298628" src="https://github.com/ys928/XunYou/assets/80371119/35fbcab0-719d-4e01-b459-e56fa0220416">
 
