@@ -90,7 +90,6 @@ watch(mainpan_line_height, () => {
 })
 watch(mainpan_font_family, () => {
     save_setting();
-    popmsg.info('频繁切换字体会引起内存大量缓存占用，如遇卡顿，请重启软件!');
 })
 function save_setting() {
     invoke("set_setting", {
