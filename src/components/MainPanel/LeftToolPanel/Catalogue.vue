@@ -1,8 +1,11 @@
 <template>
     <div class="Catalogue">
         <div class="title">目录</div>
+        <div class="top_pos">
+            <n-input size="tiny" round @input="search_fun" placeholder="搜目录"></n-input>
+        </div>
         <Scrollbar class="catal">
-            <div v-for="(item, index) in mainpan_novel_cata" class="cata_item" @dblclick="dclick_cata_item(index)">
+            <div v-for="item in mainpan_show_novel_cata" class="cata_item" @dblclick="dclick_cata_item(item.index)">
                 {{ item.name }}
             </div>
         </Scrollbar>
@@ -10,21 +13,31 @@
 </template>
 
 <script setup lang="ts">
-import { Ref, inject, ref } from 'vue';
+import { Ref, inject, ref, watch } from 'vue';
+import { NInput } from "naive-ui"
 import Scrollbar from "../../../common/Scrollbar.vue"
 //目录类型
 type type_cata_obj = {
     name: string,
-    line: number
+    index: number
 };
+
+/**
+ * ref变量
+ */
 /**
  * 从父组件取出的变量
  */
-
 //存放所有遍历到的小说目录
 const mainpan_novel_cata = inject("mainpan_novel_cata") as Ref<Array<type_cata_obj>>
 //存放跳转函数
 const mainpan_nov_jump_fun = inject("mainpan_nov_jump_fun") as Ref<Function>;
+//配合搜索功能，存放要显示的目录
+const mainpan_show_novel_cata = inject('mainpan_show_novel_cata') as Ref<Array<type_cata_obj>>;
+
+watch(mainpan_novel_cata, () => {
+    mainpan_show_novel_cata.value = Array.from(mainpan_novel_cata.value);
+});
 
 /**
  * 函数
@@ -32,6 +45,17 @@ const mainpan_nov_jump_fun = inject("mainpan_nov_jump_fun") as Ref<Function>;
 function dclick_cata_item(index: number) {
     mainpan_nov_jump_fun.value(index, 0);
 }
+
+function search_fun(v: string) {
+    if (v.length === 0) { //为空，显示所有内容
+        mainpan_show_novel_cata.value = Array.from(mainpan_novel_cata.value);
+    } else {
+        mainpan_show_novel_cata.value.splice(0); //先清空
+        mainpan_show_novel_cata.value = mainpan_novel_cata.value.filter(e => e.name!.includes(v));
+    }
+}
+
+
 </script>
 
 <style scoped lang="less">
@@ -47,6 +71,13 @@ function dclick_cata_item(index: number) {
         font-size: 16px;
         margin: 10px 0;
         color: #aaa;
+    }
+
+    .top_pos {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 15px;
+        padding: 0 20px;
     }
 
     .catal {
@@ -73,4 +104,5 @@ function dclick_cata_item(index: number) {
             }
         }
     }
-}</style>
+}
+</style>

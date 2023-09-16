@@ -28,6 +28,9 @@ const mainpan_style=ref() as Ref<string>;
 //存放小说目录
 const mainpan_novel_cata=ref([]);
 provide("mainpan_novel_cata",mainpan_novel_cata);
+//要进行显示的小说目录（配合搜索功能）
+const mainpan_show_novel_cata=ref([]);
+provide("mainpan_show_novel_cata",mainpan_show_novel_cata);
 
 //存放跳转函数
 const mainpan_nov_jump_fun=ref();

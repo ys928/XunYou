@@ -37,7 +37,7 @@ import { useDialog, useMessage, NModal, NInput, NButton } from "naive-ui"
 //目录类型
 type type_cata_obj = {
 	name: string,
-	line: number
+	index: number
 };
 type book_mark = {
 	id: string, //识别该书签的唯一id
@@ -85,6 +85,8 @@ const cenpan_show_prompt = inject("cenpan_show_prompt") as Ref<boolean>;
 const cenpan_show_loading = inject("cenpan_show_loading") as Ref<boolean>;
 //存放所有遍历到的小说目录
 const mainpan_novel_cata = inject("mainpan_novel_cata") as Ref<Array<type_cata_obj>>
+//配合搜索功能，存放要显示的目录
+const mainpan_show_novel_cata = inject('mainpan_show_novel_cata') as Ref<Array<type_cata_obj>>;
 //存放跳转函数
 const mainpan_nov_jump_fun = inject("mainpan_nov_jump_fun") as Ref<Function>;
 //字体大小
@@ -258,12 +260,12 @@ async function fun_open_novel(path: string) {
 	novel_chapter.push([])
 	for (let i = 0; i < novel_lines.length; i++) {
 		if (IsTitle(novel_lines[i])) {
+			chap_num++;
 			//目录
 			mainpan_novel_cata.value.push({
 				name: novel_lines[i].trim(),
-				line: i
+				index: chap_num
 			});
-			chap_num++;
 			novel_chapter.push([]);
 		}
 		novel_chapter[chap_num].push(novel_lines[i]);
@@ -273,19 +275,20 @@ async function fun_open_novel(path: string) {
 		path: cur_novel_path
 	});
 	cur_chap_num = record[0]; //从记录章节开始加载
-	//如果小说第一章、第一行不为标题，则添加一个‘开篇’作为标题
+	//如果小说第一章、第一行不为标题，则添加一个‘开始’作为标题
 	let first_chap = novel_chapter[0];
 	if (!IsTitle(first_chap[0])) {
 		novel_chapter[0].unshift("开始");
 		mainpan_novel_cata.value.unshift({
 			name: '开始',
-			line: 0
+			index: 0
 		})
 	}
 	let cur_chapter = novel_chapter[cur_chap_num];
 	for (let i = 0; i < cur_chapter.length; i++) {
 		novel_show_lines.value.push(cur_chapter[i]);
 	}
+	mainpan_show_novel_cata.value=Array.from(mainpan_novel_cata.value);
 	//关闭加载图标
 	cenpan_show_loading.value = false;
 	//获取当前小说所有标签
