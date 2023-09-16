@@ -2,9 +2,9 @@
 name = "xun_you"
 version = "0.1.0"
 description = "一个看小说的软件"
-authors = ["余识-"]
+authors = ["ys928"]
 license = "MIT"
-repository = ""
+repository = "https://github.com/ys928/XunYou"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
