@@ -119,7 +119,7 @@ let cur_novel_path: string;
 let p_div: EventTarget | null;
 
 const ndialog = useDialog();
-const nmessage = useMessage();
+const popmsg = useMessage();
 /**
  * 初始化函数
  */
@@ -167,16 +167,19 @@ onMounted(async () => {
 				negativeText: '取消',
 				onPositiveClick: () => {
 					if (app_title.value === undefined || app_title.value.length === 0) {
-						nmessage.info("当前没有打开小说");
+						popmsg.info("当前没有打开小说");
 						return;
 					}
-					novel_show_lines.value.splice(0); //清空界面内容
+					novel_show_lines.value=[]; //清空界面内容
 					app_title.value = ""; //清除当前显示的文件名
 					cenpan_show_prompt.value = true; //重新显示提示信息
+					mainpan_bookmark.value=[]; //清空书签
+					mainpan_show_novel_cata.value=[]; //清空目录
+					mainpan_novel_cata.value=[]; //清空目录
 					if (novel_lines !== undefined) {
-						novel_lines.splice(0); //清空读取到的小说内容
+						novel_lines=[]; //清空读取到的小说内容
 					}
-					nmessage.info("关闭成功");
+					popmsg.info("关闭成功");
 				},
 				onNegativeClick: () => {
 
@@ -390,7 +393,7 @@ async function fun_jump(cur_chapter: number, cur_line: number) {
 //添加书签函数
 async function fun_add_bookmark() {
 	if (novel_lines === undefined || novel_lines.length === 0) {
-		nmessage.error("请先打开一本小说！");
+		popmsg.error("请先打开一本小说！");
 		is_show_menu.value = false;
 		return;
 	}
@@ -406,7 +409,7 @@ async function fun_add_bookmark() {
 	}
 	if (cur_p == -1) {
 		is_show_menu.value = false;
-		nmessage.info("右键到指定的内容才可添加标签");
+		popmsg.info("右键到指定的内容才可添加标签");
 		return;
 	}
 	let time = getCurrentDateTime();
@@ -449,7 +452,7 @@ function generateUUID() {
 //模态框，取消添加书签
 function onNegativeClick() {
 	show_edit_remark.value = false;
-	nmessage.info('已取消添加书签')
+	popmsg.info('已取消添加书签')
 }
 //模态框，确认添加书签
 async function onPositiveClick() {
@@ -466,7 +469,7 @@ async function onPositiveClick() {
 		mark: bookmark
 	});
 	bookmark.label = "";
-	nmessage.success('成功添加书签!');
+	popmsg.success('成功添加书签!');
 }
 </script>
 

@@ -46,9 +46,8 @@ provide("mainpan_font_size",mainpan_font_size);
 const mainpan_font_weight=ref(400);
 provide("mainpan_font_weight",mainpan_font_weight);
 //字体
-const mainpan_font_family=ref("楷体");
+const mainpan_font_family=ref();
 provide("mainpan_font_family",mainpan_font_family);
-
 //行高
 const mainpan_line_height=ref(16);
 provide("mainpan_line_height",mainpan_line_height);
