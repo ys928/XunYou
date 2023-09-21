@@ -1,14 +1,14 @@
 <template>
     <div class="HistoryPanel">
         <div class="title">历史记录</div>
+        <div class="top_pos">
+            <n-input size="tiny" round @input="search_fun" placeholder="搜记录"></n-input>
+        </div>
         <Scrollbar class="novels" id="div_history_list">
-            <div v-for="(item, index) in records_novel" class="novel_item" @dblclick="dclick_novel(index)">
+            <div v-for="(item, index) in show_records_novel" class="novel_item" @dblclick="dclick_novel(index)">
                 <span class="novel_name">
                     {{ item.name.substring(0, item.name.lastIndexOf('.')) }}
                 </span>
-                <!-- <span @dblclick="dclick_novel(index)" class="novel_progress">
-                进度:{{ (item.cur_line*100 / item.all_line).toFixed(2) }}%
-            </span> -->
             </div>
         </Scrollbar>
         <div class="opt_menu" ref="dev_menu" v-show="is_show_menu">
@@ -20,6 +20,7 @@
 <script setup lang="ts">
 import { invoke } from '@tauri-apps/api';
 import { Ref, inject, onMounted, ref, watch } from 'vue';
+import { NInput } from "naive-ui";
 import Scrollbar from "../../../common/Scrollbar.vue"
 //相关变量类型
 type type_record_novel = {
@@ -45,7 +46,7 @@ const root_fun_open_novel = inject('root_fun_open_novel') as Ref<Function>;
  * vue 绑定标签变量
  */
 
-let div_record:HTMLElement;
+let div_record: HTMLElement;
 const dev_menu = ref();
 
 /**
@@ -54,6 +55,8 @@ const dev_menu = ref();
 
 //记录所有打开过的小说
 const records_novel = ref([]) as Ref<Array<type_record_novel>>;
+//实际要显示的内容
+const show_records_novel = ref([]) as Ref<Array<type_record_novel>>;
 //是否显示右键菜单
 const is_show_menu = ref(false);
 
@@ -70,7 +73,7 @@ let cur_index: number;
 
 //双击代表要打开的小说文件
 function dclick_novel(index: number) {
-    root_fun_open_novel.value(records_novel.value[index].path);
+    root_fun_open_novel.value(show_records_novel.value[index].path);
 }
 
 /**
@@ -82,6 +85,7 @@ onMounted(async () => {
     for (let i of record) {
         records_novel.value.push(i);
     }
+    show_records_novel.value = Array.from(records_novel.value);
 
     div_record = document.getElementById('div_history_list') as HTMLElement;
 
@@ -113,14 +117,23 @@ onMounted(async () => {
 
 //删除一个记录项，
 async function del_record() {
-    if(cur_index==-1) return;
+    if (cur_index == -1) return;
     await invoke("del_record", {
         path: records_novel.value[cur_index].path
     });
 
     records_novel.value.splice(cur_index, 1);
     is_show_menu.value = false;
-    cur_index=-1;
+    cur_index = -1;
+}
+
+function search_fun(v: string) {
+    if (v.length === 0) { //为空，显示所有内容
+        show_records_novel.value = Array.from(records_novel.value);
+    } else {
+        show_records_novel.value.splice(0); //先清空
+        show_records_novel.value = records_novel.value.filter(e => e.name!.includes(v));
+    }
 }
 
 </script>
@@ -138,6 +151,13 @@ async function del_record() {
         font-size: 16px;
         margin: 10px 0;
         color: #aaa;
+    }
+
+    .top_pos {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 15px;
+        padding: 0 20px;
     }
 
     .novels {
