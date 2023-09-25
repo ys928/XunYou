@@ -10,6 +10,7 @@
 				'font-size': mainpan_font_size + 'px',
 				'line-height': mainpan_line_height / 10 + 'em',
 				'background-size': '15px ' + mainpan_line_height / 10 + 'em',
+				'background-image': 'url(' + root_bgc_svg + ')'
 			}">
 				{{ item }}
 			</div>
@@ -104,6 +105,9 @@ const mainpan_line_height = inject("mainpan_line_height") as Ref<number>;
 const mainpan_bookmark = inject("mainpan_bookmark") as Ref<Array<book_mark>>
 //存放当前小说路径
 const mainpan_nov_path = inject("mainpan_nov_path") as Ref<string>
+//段落背景图片
+const root_bgc_svg = inject('root_bgc_svg') as Ref<string>;
+
 /*
 普通变量
 */
@@ -170,14 +174,14 @@ onMounted(async () => {
 						popmsg.info("当前没有打开小说");
 						return;
 					}
-					novel_show_lines.value=[]; //清空界面内容
+					novel_show_lines.value = []; //清空界面内容
 					app_title.value = ""; //清除当前显示的文件名
 					cenpan_show_prompt.value = true; //重新显示提示信息
-					mainpan_bookmark.value=[]; //清空书签
-					mainpan_show_novel_cata.value=[]; //清空目录
-					mainpan_novel_cata.value=[]; //清空目录
+					mainpan_bookmark.value = []; //清空书签
+					mainpan_show_novel_cata.value = []; //清空目录
+					mainpan_novel_cata.value = []; //清空目录
 					if (novel_lines !== undefined) {
-						novel_lines=[]; //清空读取到的小说内容
+						novel_lines = []; //清空读取到的小说内容
 					}
 					popmsg.info("关闭成功");
 				},
@@ -485,24 +489,25 @@ async function onPositiveClick() {
 
 	.title {
 		font-size: 25px;
-		color: #7F7F7F;
+		color: var(--text-c3);
 		text-align: center;
 		margin: 15px 0;
-		user-select: text;
+		user-select: none;
 		font-family: inherit;
 		font-weight: inherit;
 	}
 
 	.paragraph {
 		word-break: break-all;
-		background-image: url("/src/assets/line.svg");
-		color: #7F7F7F;
+		color: var(--text-c3);
 		user-select: text;
 		font-family: inherit;
 		font-weight: inherit;
+		background-repeat: repeat;
 		&::selection {
-			background: #f5eccf;
+			background: var(--selected-color);
 			opacity: 0.5;
+			line-height: normal;
 		}
 	}
 

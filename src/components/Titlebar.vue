@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, onMounted, ref } from "vue";
+import { Ref, inject, nextTick, onMounted, ref } from "vue";
 import { appWindow } from "@tauri-apps/api/window";
 import { invoke } from "@tauri-apps/api";
 import { NSwitch, NIcon, useMessage, darkTheme, } from "naive-ui"
@@ -49,6 +49,10 @@ const emit = defineEmits(['update:style', 'update:cursor', 'pop_msg']);
 const style_switch = ref(false);
 //全局应用样式
 const message = useMessage();
+
+//段落背景图片
+const root_bgc_svg=inject('root_bgc_svg') as Ref<string>;
+
 /**
  * 普通函数
  */
@@ -59,11 +63,13 @@ function switch_sty() {
         message.info("黑夜模式");
         invoke("set_theme", { theme: 'dark' });
         change_theme(dark);
+        root_bgc_svg.value='/src/assets/line-dark.svg';
     } else {
         emit("update:style", null);
         message.info("白日模式");
         invoke("set_theme", { theme: 'white' });
         change_theme(light);
+        root_bgc_svg.value='/src/assets/line-light.svg';
     }
 }
 
@@ -74,19 +80,22 @@ onMounted(async () => {
         change_theme(dark);
         style_switch.value = false;
         emit("update:style", darkTheme);
+        root_bgc_svg.value='/src/assets/line-dark.svg';
     } else {
         change_theme(light);
         style_switch.value = true;
         emit("update:style", null);
+        root_bgc_svg.value='/src/assets/line-light.svg';
     }
 });
 let dark = {
     '--base-bgc': '#202020',
-    '--base-bgc1': '#2c2c2c',
+    '--base-bgc1': '#282828',
     '--base-bgc2': '#222',
     '--text-color': '#fff',
     '--text-color1': 'rgba(255, 255, 255, 0.52)',
     '--text-color2': '#63e2b7',
+    '--text-c3':'#eaeaea',
     '--thumb-color': '#959595',
     '--track-color': '#333',
     '--border-color': '#3e3e3e',
@@ -94,15 +103,17 @@ let dark = {
     '--menu-bgc': '#4a4a4a',
     '--menu-color': '#999',
     '--mih-color': '#5f5f5f',
-    '--error-color': '#f00'
+    '--error-color': '#f00',
+    '--selected-color':'#273d59'
 }
 let light = {
     '--base-bgc': '#fff',
-    '--base-bgc1': '#f4f3ed',
+    '--base-bgc1': '#f0f0f2',
     '--base-bgc2': '#eee',
     '--text-color': '#3e3e3e',
     '--text-color1': 'rgb(118, 124, 130)',
     '--text-color2': '#18a058',
+    '--text-c3':'#28313b',
     '--thumb-color': '#ddd',
     '--track-color': '#eee',
     '--border-color': '#e7e7e7',
@@ -110,7 +121,9 @@ let light = {
     '--menu-bgc': '#b4b3bd',
     '--menu-color': '#2e2e2e',
     '--mih-color': '#aaa',
-    '--error-color': '#f00'
+    '--error-color': '#f00',
+    '--selected-color':'#c6d6f2'
+
 }
 
 function change_theme(theme: Object) {
