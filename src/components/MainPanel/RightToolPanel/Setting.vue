@@ -27,7 +27,7 @@
 
 <script setup lang="ts">
 import { invoke } from '@tauri-apps/api';
-import { Ref, inject, onMounted, ref, watch } from 'vue';
+import { Ref, inject, watch } from 'vue';
 import { NInputNumber, NTag, NSelect ,useMessage } from "naive-ui"
 /**
  * 普通变量

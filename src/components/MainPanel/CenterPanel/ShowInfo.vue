@@ -6,7 +6,6 @@
 </template>
 
 <script setup lang="ts">
-import { inject, ref } from 'vue';
 
 /**
  * 取出父组件传递下来的变量

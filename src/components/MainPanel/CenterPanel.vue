@@ -9,9 +9,8 @@
 <script setup lang="ts">
 import View from './CenterPanel/View.vue';
 import ShowInfo from './CenterPanel/ShowInfo.vue';
-import { Ref, provide, ref, onMounted, inject, watch } from 'vue';
-import { GlobalTheme, NSpin } from "naive-ui"
-import { invoke } from '@tauri-apps/api';
+import { Ref, provide, ref, onMounted, inject } from 'vue';
+import { NSpin } from "naive-ui"
 /**
  * 绑定标签
  */

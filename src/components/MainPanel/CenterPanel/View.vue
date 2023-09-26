@@ -9,8 +9,7 @@
 			<div v-else class="paragraph" :style="{
 				'font-size': mainpan_font_size + 'px',
 				'line-height': mainpan_line_height / 10 + 'em',
-				'background-size': '15px ' + mainpan_line_height / 10 + 'em',
-				'background-image': 'url(' + root_bgc_svg + ')'
+				'background-size': '15px ' + mainpan_line_height / 10 + 'em'
 			}">
 				{{ item }}
 			</div>
@@ -31,10 +30,10 @@
 </template>
 
 <script setup lang="ts">
-import { Ref, ref, onMounted, inject, watch, nextTick, reactive } from 'vue';
+import { Ref, ref, onMounted, inject, nextTick, reactive } from 'vue';
 import { dialog, event, fs, invoke } from '@tauri-apps/api';
 import Scrollbar from "../../../common/Scrollbar.vue"
-import { useDialog, useMessage, NModal, NInput, NButton } from "naive-ui"
+import { useDialog, useMessage, NModal, NInput } from "naive-ui"
 /**
  * 自定义类型
  */
@@ -105,8 +104,6 @@ const mainpan_line_height = inject("mainpan_line_height") as Ref<number>;
 const mainpan_bookmark = inject("mainpan_bookmark") as Ref<Array<book_mark>>
 //存放当前小说路径
 const mainpan_nov_path = inject("mainpan_nov_path") as Ref<string>
-//段落背景图片
-const root_bgc_svg = inject('root_bgc_svg') as Ref<string>;
 
 /*
 普通变量
@@ -504,6 +501,7 @@ async function onPositiveClick() {
 		font-family: inherit;
 		font-weight: inherit;
 		background-repeat: repeat;
+
 		&::selection {
 			background: var(--selected-color);
 			opacity: 0.5;

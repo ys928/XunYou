@@ -9,7 +9,6 @@
 
 <script setup lang="ts">
 import { dialog, invoke } from '@tauri-apps/api';
-import { Ref, inject, ref } from 'vue';
 import { NButton } from 'naive-ui';
 //相关变量类型
 

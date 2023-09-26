@@ -51,10 +51,6 @@ const div_main_window=ref();
 //是否修改鼠标样式
 const app_is_change_cursor=ref(true);
 provide("app_is_change_cursor",app_is_change_cursor);
-//段落背景色
-const root_bgc_svg=ref('');
-provide("root_bgc_svg",root_bgc_svg);
-
 /**
  * 监视变量变化
  */

@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { Ref, inject } from 'vue';
+import { inject } from 'vue';
 import { History } from "@vicons/fa"
 import { List16Filled, Toolbox20Regular } from "@vicons/fluent"
 import { Tag } from "@vicons/carbon"
@@ -77,4 +77,5 @@ function switch_panel(name: string) {
             background-color: var(--hover-color);
         }
     }
-}</style>
+}
+</style>

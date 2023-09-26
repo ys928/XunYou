@@ -19,7 +19,7 @@
 
 <script setup lang="ts">
 import { invoke } from '@tauri-apps/api';
-import { Ref, inject, onMounted, ref, watch } from 'vue';
+import { Ref, inject, onMounted, ref } from 'vue';
 import { NInput } from "naive-ui";
 import Scrollbar from "../../../common/Scrollbar.vue"
 //相关变量类型

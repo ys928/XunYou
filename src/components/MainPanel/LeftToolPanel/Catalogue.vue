@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { Ref, inject, ref, watch } from 'vue';
+import { Ref, inject, watch } from 'vue';
 import { NInput } from "naive-ui"
 import Scrollbar from "../../../common/Scrollbar.vue"
 //目录类型

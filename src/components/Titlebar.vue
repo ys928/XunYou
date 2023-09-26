@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import { Ref, inject, nextTick, onMounted, ref } from "vue";
+import { nextTick, onMounted, ref } from "vue";
 import { appWindow } from "@tauri-apps/api/window";
 import { invoke } from "@tauri-apps/api";
 import { NSwitch, NIcon, useMessage, darkTheme, } from "naive-ui"
@@ -50,9 +50,6 @@ const style_switch = ref(false);
 //全局应用样式
 const message = useMessage();
 
-//段落背景图片
-const root_bgc_svg=inject('root_bgc_svg') as Ref<string>;
-
 /**
  * 普通函数
  */
@@ -63,13 +60,11 @@ function switch_sty() {
         message.info("黑夜模式");
         invoke("set_theme", { theme: 'dark' });
         change_theme(dark);
-        root_bgc_svg.value='/src/assets/line-dark.svg';
     } else {
         emit("update:style", null);
         message.info("白日模式");
         invoke("set_theme", { theme: 'white' });
         change_theme(light);
-        root_bgc_svg.value='/src/assets/line-light.svg';
     }
 }
 
@@ -80,12 +75,10 @@ onMounted(async () => {
         change_theme(dark);
         style_switch.value = false;
         emit("update:style", darkTheme);
-        root_bgc_svg.value='/src/assets/line-dark.svg';
     } else {
         change_theme(light);
         style_switch.value = true;
         emit("update:style", null);
-        root_bgc_svg.value='/src/assets/line-light.svg';
     }
 });
 let dark = {

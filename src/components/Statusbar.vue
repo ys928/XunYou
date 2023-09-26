@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang="ts">
-import { Ref, inject, onMounted,ref } from 'vue';
+import { Ref, inject, onMounted} from 'vue';
 
 /**
  * 绑定标签的变量
