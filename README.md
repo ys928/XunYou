@@ -29,3 +29,6 @@
 
 <img width="798" alt="1687827298628" src="https://github.com/ys928/XunYou/assets/80371119/35fbcab0-719d-4e01-b459-e56fa0220416">
 
+# 支持作者
+
+开源不易，如果你对学习编程感兴趣，欢迎前去我的自建站点购买会员，支持作者：[酷编程](https://www.kucoding.com)
