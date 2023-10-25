@@ -501,7 +501,7 @@ async function onPositiveClick() {
 		font-family: inherit;
 		font-weight: inherit;
 		background-repeat: repeat;
-
+		margin: 15px 0;
 		&::selection {
 			background: var(--selected-color);
 			opacity: 0.5;

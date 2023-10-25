@@ -3683,8 +3683,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "xun_you"
-version = "0.1.0"
+name = "xunyou"
+version = "2.0.0"
 dependencies = [
  "bzip2",
  "dirs",
