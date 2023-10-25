@@ -1,18 +1,7 @@
 use core::panic;
 
+use crate::common;
 use crate::types::*;
-//初始化日志文件
-#[allow(dead_code)]
-fn init_log() {
-    //构建日志文件路径
-    let logfile = cfun::now("%Y_%m_%d.log");
-    let cfpath = cfun::config_dir("XunYou");
-    let p = cfpath.join(logfile);
-    //确保该日志文件存在
-    cfun::ensure_file(p.as_path().to_str().unwrap());
-    //初始化日志文件
-    cfun::log_to_file(p.to_str().unwrap());
-}
 
 
 //获取历史小说文件记录
@@ -25,7 +14,7 @@ pub fn get_record() -> Vec<Novel> {
 //获取指定小说的行数
 #[tauri::command]
 pub fn get_nov_prog(path: &str) -> (u64, u64) {
-    let md5 = cfun::md5_file(path).unwrap_or_else(|| {
+    let md5 = common::md5_file(path).unwrap_or_else(|| {
         //warn!("get md5 failed:{}",path);
         panic!();
     });
@@ -69,7 +58,7 @@ pub fn get_wh() -> (u32, u32) {
 #[tauri::command]
 pub fn set_nov_prog(path: &str, line: u64, chapter: u64) {
     //info!("set_nov_prog:{},{},{}",path,line,all_lines);
-    let md5 = cfun::md5_file(path).unwrap_or_else(|| {
+    let md5 = common::md5_file(path).unwrap_or_else(|| {
         //warn!("error to get md5");
         panic!("error to get md5");
     });
@@ -89,7 +78,7 @@ pub fn set_nov_prog(path: &str, line: u64, chapter: u64) {
     //新小说，需要添加
     if f {
         cfg.record.push(Novel {
-            name: cfun::file_name(path),
+            name: common::file_name(path),
             path: path.to_string(),
             md5: md5,
             cur_line: line,
@@ -104,13 +93,13 @@ pub fn set_nov_prog(path: &str, line: u64, chapter: u64) {
 
 //获取配置信息
 fn config_info() -> ConfigInfo {
-    let cf_path = cfun::config_dir("XunYou");
+    let cf_path =common::config_dir("XunYou");
     let p = cf_path.join("profile");
     let p = p.as_path().to_str().unwrap_or_else(|| {
         //warn!("get config file failed");
         panic!();
     });
-    if !cfun::exist_file(p) {
+    if !common::exist_file(p) {
         let c = ConfigInfo::default();
         //默认宽高
         let s = serde_json::to_string(&c).unwrap_or_else(|_e| {
@@ -144,7 +133,7 @@ fn config_info() -> ConfigInfo {
 }
 //保存配置信息到文件中
 fn record_config(cfg: ConfigInfo) {
-    let cf_path = cfun::config_dir("XunYou");
+    let cf_path = common::config_dir("XunYou");
     let p = cf_path.join("profile");
     let p = p.as_path().to_str().unwrap_or_else(|| {
         //warn!("get config file failed");

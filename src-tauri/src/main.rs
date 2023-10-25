@@ -4,6 +4,7 @@
 mod config;
 mod tool;
 mod types;
+mod common;
 use tauri::{Manager, PhysicalSize, Size};
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
