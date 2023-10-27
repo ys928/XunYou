@@ -18,12 +18,13 @@
 
 ## 暗色调主题：
 
-<img width="798" alt="1687827268047" src="https://github.com/ys928/XunYou/assets/80371119/4db01466-303b-4dce-a384-e44f280301cc">
+![image](https://github.com/ys928/XunYou/assets/80371119/9af2f656-09cf-49c6-8b58-c325ce7befbd)
 
 
 ## 亮色调主题：
 
-<img width="798" alt="1687827298628" src="https://github.com/ys928/XunYou/assets/80371119/35fbcab0-719d-4e01-b459-e56fa0220416">
+![image](https://github.com/ys928/XunYou/assets/80371119/c13082b6-0f8f-4dfe-9419-f8a67f357765)
+
 
 # 支持作者
 
