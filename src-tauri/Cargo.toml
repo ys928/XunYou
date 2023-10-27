@@ -16,14 +16,13 @@ tauri-build = { version = "1.4", features = [] }
 tauri = { version = "1.4", features = [ "clipboard-all", "fs-all", "window-all", "global-shortcut-all", "dialog-all", "shell-open"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-window-shadows = "0.2.1"
+window-shadows = "0.2.2"
 bzip2 = "0.4"
 md-5 = "0.10.5"
-dirs = "5.0.1"
-log = "0.4"
+dirs = "5.0.1" 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem
-# DO NOT REMOVE!!
+# DO NOT REMOVE!! 
 custom-protocol = ["tauri/custom-protocol"]
 
 [profile.release]

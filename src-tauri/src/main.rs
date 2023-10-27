@@ -21,7 +21,9 @@ fn main() {
                     height: h,
                 }))
                 .unwrap();
+            #[cfg(any(windows, target_os = "macos"))]
             window_shadows::set_shadow(&window, true).expect("Unsupported platform!");
+            
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
