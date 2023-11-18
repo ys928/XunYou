@@ -151,7 +151,7 @@ onMounted(async () => {
 				multiple: false,
 				filters: [{
 					name: '小说文件',
-					extensions: ['novel']
+					extensions: ['novel','txt']
 				}]
 			});
 			if (selected === null) return;

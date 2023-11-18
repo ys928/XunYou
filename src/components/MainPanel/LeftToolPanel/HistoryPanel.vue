@@ -19,7 +19,7 @@
 
 <script setup lang="ts">
 import { invoke } from '@tauri-apps/api';
-import { Ref, inject, onMounted, ref } from 'vue';
+import { Ref, inject, onMounted, reactive, ref } from 'vue';
 import { NInput } from "naive-ui";
 import Scrollbar from "../../../common/Scrollbar.vue"
 //相关变量类型
@@ -54,9 +54,9 @@ const dev_menu = ref();
  */
 
 //记录所有打开过的小说
-const records_novel = ref([]) as Ref<Array<type_record_novel>>;
+const records_novel = reactive([]) as Array<type_record_novel>;
 //实际要显示的内容
-const show_records_novel = ref([]) as Ref<Array<type_record_novel>>;
+const show_records_novel = reactive([]) as Array<type_record_novel>;
 //是否显示右键菜单
 const is_show_menu = ref(false);
 
@@ -73,7 +73,7 @@ let cur_index: number;
 
 //双击代表要打开的小说文件
 function dclick_novel(index: number) {
-    root_fun_open_novel.value(show_records_novel.value[index].path);
+    root_fun_open_novel.value(show_records_novel[index].path);
 }
 
 /**
@@ -83,9 +83,9 @@ function dclick_novel(index: number) {
 onMounted(async () => {
     let record: Array<type_record_novel> = await invoke("get_record", {});
     for (let i of record) {
-        records_novel.value.push(i);
+        records_novel.push(i);
     }
-    show_records_novel.value = Array.from(records_novel.value);
+    show_records_novel.push(...records_novel);
 
     div_record = document.getElementById('div_history_list') as HTMLElement;
 
@@ -119,20 +119,21 @@ onMounted(async () => {
 async function del_record() {
     if (cur_index == -1) return;
     await invoke("del_record", {
-        path: records_novel.value[cur_index].path
+        path: records_novel[cur_index].path
     });
 
-    records_novel.value.splice(cur_index, 1);
+    records_novel.splice(cur_index, 1);
+    show_records_novel.splice(cur_index, 1);
     is_show_menu.value = false;
     cur_index = -1;
 }
 
 function search_fun(v: string) {
     if (v.length === 0) { //为空，显示所有内容
-        show_records_novel.value = Array.from(records_novel.value);
+        show_records_novel.push(...records_novel);
     } else {
-        show_records_novel.value.splice(0); //先清空
-        show_records_novel.value = records_novel.value.filter(e => e.name!.includes(v));
+        show_records_novel.length=0; //先清空
+        show_records_novel.push(...records_novel.filter(e => e.name!.includes(v)));
     }
 }
 
