@@ -2,6 +2,8 @@
   <div class="Init_info">
     <div>Ctrl+O:打开小说</div>
     <div>Ctrl+X:关闭当前小说</div>
+    <div>PageUp:上一章</div>
+    <div>PageDown:下一章</div>
   </div>
 </template>
 
