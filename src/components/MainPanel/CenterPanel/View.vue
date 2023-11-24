@@ -109,7 +109,7 @@ const mainpan_nov_path = inject("mainpan_nov_path") as Ref<string>
 普通变量
 */
 //存放读取到的所有小说内容
-let novel_lines: Array<string>;
+let novel_lines: Array<string> = [];
 //存放读取到的小说所有内容，并按章节划分存放，每章第一节为标题。
 let novel_chapter: Array<Array<string>> = [];
 //当前阅读章节
@@ -151,12 +151,13 @@ onMounted(async () => {
 				multiple: false,
 				filters: [{
 					name: '小说文件',
-					extensions: ['novel','txt']
+					extensions: ['novel', 'txt']
 				}]
 			});
 			if (selected === null) return;
 			//打开小说
 			fun_open_novel(selected as string);
+			return;
 		}
 		//关闭当前小说
 		if (e.ctrlKey && e.key === 'x') {
@@ -336,40 +337,52 @@ function get_file_name(path: string) {
 
 //翻到下一章
 async function next_chapter() {
-	if (cur_chap_num < novel_chapter.length - 1) {
-		cur_chap_num++;
-		novel_show_lines.value.splice(0);
-		let cur_chap = novel_chapter[cur_chap_num];
-		for (let i = 0; i < cur_chap.length; i++) {
-			novel_show_lines.value.push(cur_chap[i]);
-		}
-		await nextTick(); //等待渲染完成
-		let p1 = div_view.firstElementChild as Element;
-		p1.scrollIntoView();
-		//记录翻章
-		invoke("set_nov_prog", {
-			path: cur_novel_path,
-			line: 0,
-			chapter: cur_chap_num
-		});
+	if (novel_lines.length <= 0) {
+		popmsg.error('当前还未打开小说');
+		return;
 	}
+	if (cur_chap_num >= novel_chapter.length - 1) {
+		popmsg.error('已经是最后一章了');
+		return;
+	}
+	cur_chap_num++;
+	novel_show_lines.value.splice(0);
+	let cur_chap = novel_chapter[cur_chap_num];
+	for (let i = 0; i < cur_chap.length; i++) {
+		novel_show_lines.value.push(cur_chap[i]);
+	}
+	await nextTick(); //等待渲染完成
+	let p1 = div_view.firstElementChild as Element;
+	p1.scrollIntoView();
+	//记录翻章
+	invoke("set_nov_prog", {
+		path: cur_novel_path,
+		line: 0,
+		chapter: cur_chap_num
+	});
 }
 //翻到上一章
 async function prev_chapter() {
-	if (cur_chap_num > 0) {
-		cur_chap_num--;
-		novel_show_lines.value.splice(0);
-		let cur_chap = novel_chapter[cur_chap_num];
-		for (let i = 0; i < cur_chap.length; i++) {
-			novel_show_lines.value.push(cur_chap[i]);
-		}
-		//记录翻章
-		invoke("set_nov_prog", {
-			path: cur_novel_path,
-			line: 0,
-			chapter: cur_chap_num
-		});
+	if (novel_lines.length <= 0) {
+		popmsg.error('当前还未打开小说');
+		return;
 	}
+	if (cur_chap_num <= 0) {
+		popmsg.error('已经是第一章了');;
+		return;
+	}
+	cur_chap_num--;
+	novel_show_lines.value.splice(0);
+	let cur_chap = novel_chapter[cur_chap_num];
+	for (let i = 0; i < cur_chap.length; i++) {
+		novel_show_lines.value.push(cur_chap[i]);
+	}
+	//记录翻章
+	invoke("set_nov_prog", {
+		path: cur_novel_path,
+		line: 0,
+		chapter: cur_chap_num
+	});
 }
 
 async function fun_jump(cur_chapter: number, cur_line: number) {
@@ -502,6 +515,7 @@ async function onPositiveClick() {
 		font-weight: inherit;
 		background-repeat: repeat;
 		margin: 15px 0;
+
 		&::selection {
 			background: var(--selected-color);
 			opacity: 0.5;
