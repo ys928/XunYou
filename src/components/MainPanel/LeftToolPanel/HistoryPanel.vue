@@ -4,13 +4,13 @@
         <div class="top_pos">
             <n-input size="tiny" round @input="search_fun" placeholder="搜记录"></n-input>
         </div>
-        <Scrollbar class="novels" id="div_history_list">
+        <n-scrollbar class="novels" id="div_history_list">
             <div v-for="(item, index) in show_records_novel" class="novel_item" @dblclick="dclick_novel(index)">
                 <span class="novel_name">
                     {{ item.name.substring(0, item.name.lastIndexOf('.')) }}
                 </span>
             </div>
-        </Scrollbar>
+        </n-scrollbar>
         <div class="opt_menu" ref="dev_menu" v-show="is_show_menu">
             <div class="item" @click="del_record">删除</div>
         </div>
@@ -20,8 +20,7 @@
 <script setup lang="ts">
 import { invoke } from '@tauri-apps/api';
 import { Ref, inject, onMounted, reactive, ref } from 'vue';
-import { NInput } from "naive-ui";
-import Scrollbar from "../../../common/Scrollbar.vue"
+import { NInput,NScrollbar } from "naive-ui";
 //相关变量类型
 type type_record_novel = {
     name: string, //小说名字

@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { Ref, ref, onMounted, inject, nextTick, reactive } from 'vue';
 import { dialog, event, fs, invoke } from '@tauri-apps/api';
-import Scrollbar from "../../../common/Scrollbar.vue"
-import { useDialog, useMessage, NModal, NInput } from "naive-ui"
+import { useDialog, useMessage, NModal, NInput, NScrollbar } from "naive-ui"
 import { Novel } from '../../../api/novel';
 /**
  * 自定义类型
@@ -415,7 +414,7 @@ async function onPositiveClick() {
 </script>
 
 <template>
-	<Scrollbar class="View" id="div_view" :style="{
+	<n-scrollbar class="View" :style="{
 		'font-family': mainpan_font_family,
 		'font-weight': mainpan_font_weight,
 
@@ -444,7 +443,7 @@ async function onPositiveClick() {
 				<n-input placeholder="填写书签备注" v-model:value="bookmark.label"></n-input>
 			</div>
 		</n-modal>
-	</Scrollbar>
+	</n-scrollbar>
 </template>
 
 <style scoped lang="less">

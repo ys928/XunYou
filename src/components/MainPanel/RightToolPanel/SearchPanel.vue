@@ -5,12 +5,12 @@
             <n-input size="tiny" round @input="search_fun" placeholder="搜小说"></n-input>
             <n-icon class="icon" size="20" color="#787878" :component="FolderMinus" @click="choose_dir"></n-icon>
         </div>
-        <Scrollbar class="novel_list">
+        <n-scrollbar class="novel_list">
             <div v-for="(item, index) in show_novel_list" class="novel_item" @dblclick="dclick_novel(index)">
                 {{ item.name!.substring(0, item.name!.lastIndexOf('.')) }}
             </div>
             <n-spin class="loading" size="medium" v-show="show_loading"></n-spin>
-        </Scrollbar>
+        </n-scrollbar>
     </div>
 </template>
 
@@ -19,8 +19,7 @@ import { Ref, ref, inject, onMounted } from 'vue';
 import { FileEntry, readDir } from '@tauri-apps/api/fs';
 import { dialog, invoke } from '@tauri-apps/api';
 import { fs } from '@tauri-apps/api';
-import Scrollbar from "../../../common/Scrollbar.vue";
-import { NIcon, NInput, NSpin } from "naive-ui"
+import { NIcon, NInput, NSpin,NScrollbar } from "naive-ui"
 import { FolderMinus } from "@vicons/tabler"
 /**
  * 相关变量类型

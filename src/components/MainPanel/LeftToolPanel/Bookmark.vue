@@ -1,7 +1,7 @@
 <template>
     <div class="Bookmark">
         <div class="title">书签</div>
-        <Scrollbar class="content" id="div_marks">
+        <n-scrollbar class="content" id="div_marks">
             <template v-for="(item, index) in mainpan_bookmark">
                 <n-popover trigger="hover" :keep-alive-on-hover="false">
                     <template #trigger>
@@ -18,7 +18,7 @@
                     <span>备注:{{ item.label }}</span>
                 </n-popover>
             </template>
-        </Scrollbar>
+        </n-scrollbar>
         <div class="opt_menu" ref="dev_menu" v-show="is_show_menu">
             <div class="item" @click="del_mark">删除</div>
         </div>
@@ -27,8 +27,7 @@
 
 <script setup lang="ts">
 import { Ref, inject, ref ,onMounted } from 'vue';
-import { NPopover } from "naive-ui";
-import Scrollbar from "../../../common/Scrollbar.vue";
+import { NPopover,NScrollbar } from "naive-ui";
 import { invoke } from '@tauri-apps/api';
 type book_mark = {
     id: string, //识别该书签的唯一id

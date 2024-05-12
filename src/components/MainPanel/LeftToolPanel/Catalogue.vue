@@ -4,18 +4,17 @@
         <div class="top_pos">
             <n-input size="tiny" round @input="search_fun" placeholder="搜目录"></n-input>
         </div>
-        <Scrollbar class="catal">
+        <n-scrollbar class="catal">
             <div v-for="item in mainpan_show_novel_cata" class="cata_item" @dblclick="dclick_cata_item(item.index)">
                 {{ item.name }}
             </div>
-        </Scrollbar>
+        </n-scrollbar>
     </div>
 </template>
 
 <script setup lang="ts">
 import { Ref, inject, watch } from 'vue';
-import { NInput } from "naive-ui"
-import Scrollbar from "../../../common/Scrollbar.vue"
+import { NInput,NScrollbar } from "naive-ui"
 //目录类型
 type type_cata_obj = {
     name: string,
