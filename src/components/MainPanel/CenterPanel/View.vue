@@ -1,39 +1,9 @@
-<template>
-	<Scrollbar class="View" id="div_view" :style="{
-		'font-family': mainpan_font_family,
-		'font-weight': mainpan_font_weight,
-
-	}" @onWheel="process_wheel" @onScroll="process_scroll">
-		<template v-for="(item, index) in novel_show_lines">
-			<div v-if="IsTitle(item)" class="title">{{ item }}</div>
-			<div v-else class="paragraph" :style="{
-				'font-size': mainpan_font_size + 'px',
-				'line-height': mainpan_line_height / 10 + 'em',
-				'background-size': '15px ' + mainpan_line_height / 10 + 'em'
-			}">
-				{{ item }}
-			</div>
-		</template>
-		<div class="opt_menu" ref="dev_menu" v-show="is_show_menu">
-			<div class="item" @click="fun_add_bookmark">添加书签</div>
-		</div>
-		<n-modal v-model:show="show_edit_remark" preset="dialog" title="dialog" :mask-closable="false" positive-text="确定"
-			negative-text="取消" :closable="false" @positive-click="onPositiveClick" @negative-click="onNegativeClick">
-			<template #header>
-				<div>书签备注</div>
-			</template>
-			<div>
-				<n-input placeholder="填写书签备注" v-model:value="bookmark.label"></n-input>
-			</div>
-		</n-modal>
-	</Scrollbar>
-</template>
-
 <script setup lang="ts">
 import { Ref, ref, onMounted, inject, nextTick, reactive } from 'vue';
 import { dialog, event, fs, invoke } from '@tauri-apps/api';
 import Scrollbar from "../../../common/Scrollbar.vue"
 import { useDialog, useMessage, NModal, NInput } from "naive-ui"
+import { Novel } from '../../../api/novel';
 /**
  * 自定义类型
  */
@@ -50,6 +20,12 @@ type book_mark = {
 	datetime: string, //创建日期
 	content: string, //简短文章内容
 }
+type Chapter = {
+	/// 每章标题
+	title: string,
+	/// 每章内容，按行分割
+	lines: Array<string>,
+}
 /*
 绑定标签
 */
@@ -62,6 +38,9 @@ let dev_menu = ref();
 const is_show_menu = ref(false);
 //控制是否显示添加备注
 const show_edit_remark = ref(false);
+// 当前显示的小说
+const show_chapter = ref({ title: '', lines: [] }) as Ref<Chapter>;
+
 //程序要进行显示的小说行数内容
 const novel_show_lines = ref([]) as Ref<Array<string>>;
 //保存当前书签内容
@@ -260,70 +239,15 @@ async function fun_open_novel(path: string) {
 		novel_lines = await invoke("open_novel", { filename: path });
 	} else if (path.endsWith(".txt")) {
 		//打开文件进行展示
-		novel_lines = await invoke("open_novel_txt", { filename: path });
+		let ret = await Novel.open_txt(path);
+		show_chapter.value = await Novel.get_chapter(0);
 	} else {
 		await dialog.message('不支持该类型文件！', { title: '打开失败', type: 'warning' });
 		return;
 	}
-	let chap_num = 0;
-	novel_chapter.splice(0); //清空章节
-	novel_chapter.push([])
-	for (let i = 0; i < novel_lines.length; i++) {
-		if (IsTitle(novel_lines[i])) {
-			chap_num++;
-			//目录
-			mainpan_novel_cata.value.push({
-				name: novel_lines[i].trim(),
-				index: chap_num
-			});
-			novel_chapter.push([]);
-		}
-		novel_chapter[chap_num].push(novel_lines[i]);
-	}
-
-	let record = await invoke<Array<number>>("get_nov_prog", {
-		path: cur_novel_path
-	});
-	cur_chap_num = record[0]; //从记录章节开始加载
-	//如果小说第一章、第一行不为标题，则添加一个‘开始’作为标题
-	let first_chap = novel_chapter[0];
-	if (!IsTitle(first_chap[0])) {
-		novel_chapter[0].unshift("开始");
-		mainpan_novel_cata.value.unshift({
-			name: '开始',
-			index: 0
-		})
-	}
-	let cur_chapter = novel_chapter[cur_chap_num];
-	for (let i = 0; i < cur_chapter.length; i++) {
-		novel_show_lines.value.push(cur_chapter[i]);
-	}
-	mainpan_show_novel_cata.value = Array.from(mainpan_novel_cata.value);
-	//关闭加载图标
 	cenpan_show_loading.value = false;
-	//获取当前小说所有标签
-	mainpan_bookmark.value = await invoke('get_bookmark', { path: cur_novel_path });
 }
-function IsTitle(line: string) {
-	//开篇
-	const r1 = new RegExp(/^\s*开\s*篇.*\r?\n?$/);
-	if (r1.test(line)) {
-		return true;
-	}
-	//序章
-	const r2 = new RegExp(/^\s*序\s*章.*\r?\n?$/);
-	if (r2.test(line)) return true;
-	//第xxx章
-	const r3 = new RegExp(/^\s*第\s*[零一二三四五六七八九十百千万0-9]{1,10}\s*[章节幕卷集部回]\s*\r?\n?$/);
-	if (r3.test(line)) return true;
-	//第xxx章 章节名
-	const r4 = new RegExp(/^\s*第\s*[零一二三四五六七八九十百千万0-9]{1,10}\s*[章节幕卷集部回]\s+.*\r?\n?$/);
-	if (r4.test(line)) return true;
-	//Chapter xxx 章节名
-	const r5 = new RegExp(/^Chapter\s*[零一二三四五六七八九十百千万0-9]{1,10}\s+.*\r?\n?$/);
-	if (r5.test(line)) return true;
-	return false;
-}
+
 //获取文件名
 function get_file_name(path: string) {
 	var idx = path.lastIndexOf('\\');
@@ -345,6 +269,8 @@ async function next_chapter() {
 		popmsg.error('已经是最后一章了');
 		return;
 	}
+	popmsg.success('已加载下一章');
+	await nextTick();
 	cur_chap_num++;
 	novel_show_lines.value.splice(0);
 	let cur_chap = novel_chapter[cur_chap_num];
@@ -371,6 +297,7 @@ async function prev_chapter() {
 		popmsg.error('已经是第一章了');;
 		return;
 	}
+	popmsg.success('已返回上一章');
 	cur_chap_num--;
 	novel_show_lines.value.splice(0);
 	let cur_chap = novel_chapter[cur_chap_num];
@@ -487,6 +414,39 @@ async function onPositiveClick() {
 }
 </script>
 
+<template>
+	<Scrollbar class="View" id="div_view" :style="{
+		'font-family': mainpan_font_family,
+		'font-weight': mainpan_font_weight,
+
+	}" @onWheel="process_wheel" @onScroll="process_scroll">
+		<div class="title">{{ show_chapter.title }}</div>
+		<div class="content" :style="{
+			'font-size': mainpan_font_size + 'px',
+			'line-height': mainpan_line_height / 10 + 'em',
+			'background-size': '15px ' + mainpan_line_height / 10 + 'em'
+		}">
+			<div class="line" v-for="(item, index) in show_chapter.lines" :key="index">
+				{{ item }}
+			</div>
+		</div>
+
+		<div class="opt_menu" ref="dev_menu" v-show="is_show_menu">
+			<div class="item" @click="fun_add_bookmark">添加书签</div>
+		</div>
+		<n-modal v-model:show="show_edit_remark" preset="dialog" title="dialog" :mask-closable="false"
+			positive-text="确定" negative-text="取消" :closable="false" @positive-click="onPositiveClick"
+			@negative-click="onNegativeClick">
+			<template #header>
+				<div>书签备注</div>
+			</template>
+			<div>
+				<n-input placeholder="填写书签备注" v-model:value="bookmark.label"></n-input>
+			</div>
+		</n-modal>
+	</Scrollbar>
+</template>
+
 <style scoped lang="less">
 .View {
 	height: 100%;
@@ -507,7 +467,7 @@ async function onPositiveClick() {
 		font-weight: inherit;
 	}
 
-	.paragraph {
+	.line {
 		word-break: break-all;
 		color: var(--text-c3);
 		user-select: text;

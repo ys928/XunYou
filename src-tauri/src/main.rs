@@ -1,14 +1,15 @@
-// Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+mod common;
 mod config;
+mod novel;
 mod tool;
 mod types;
-mod common;
 use tauri::{Manager, PhysicalSize, Size};
 
-// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 fn main() {
+    novel::init();
+
     //config::init_log();
     tauri::Builder::default()
         .setup(move |app| {
@@ -23,7 +24,7 @@ fn main() {
                 .unwrap();
             #[cfg(any(windows, target_os = "macos"))]
             window_shadows::set_shadow(&window, true).expect("Unsupported platform!");
-            
+
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -43,7 +44,9 @@ fn main() {
             config::set_setting,
             config::get_bookmark,
             config::add_bookmark,
-            config::del_bookmark
+            config::del_bookmark,
+            novel::novel_open_txt,
+            novel::novel_get_chapter,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

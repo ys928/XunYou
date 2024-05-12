@@ -24,14 +24,16 @@
         "all": true
       },
       "globalShortcut": {
-        "all": true 
+        "all": true
       },
       "clipboard": {
         "all": true
       },
       "fs": {
         "all": true,
-        "scope": ["**"]
+        "scope": [
+          "**"
+        ]
       }
     },
     "bundle": {
@@ -60,7 +62,8 @@
         "title": "寻幽",
         "width": 900,
         "height": 530,
-        "decorations":false
+        "decorations": false,
+        "transparent": true
       }
     ]
   }

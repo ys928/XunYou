@@ -24,8 +24,3 @@
 ## 亮色调主题：
 
 ![image](https://github.com/ys928/XunYou/assets/80371119/c13082b6-0f8f-4dfe-9419-f8a67f357765)
-
-
-# 支持作者
-
-如果你对学习编程感兴趣，欢迎前去我的自建站点购买会员，支持作者：[酷编程](https://www.kucoding.com)
