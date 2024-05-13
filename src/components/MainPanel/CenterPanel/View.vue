@@ -4,11 +4,14 @@ import { dialog, event, fs, invoke } from '@tauri-apps/api';
 import { useDialog, useMessage, NModal, NInput, NScrollbar } from "naive-ui"
 import { useNovelStore } from '../../../store/novel';
 import { useStyleStore } from '../../../store/style';
+import { useShowStore } from '../../../store/show';
 
 
 const novel_store = useNovelStore();
 
 const style_store = useStyleStore();
+
+const show_store = useShowStore();
 
 type book_mark = {
 	id: string, //识别该书签的唯一id
@@ -48,15 +51,6 @@ const bookmark: book_mark = reactive({
 	datetime: '',
 	content: '',
 });
-
-
-/**
- * 取出父组件传递下来的变量
- */
-//用于控制提示消息是否显示
-const cenpan_show_prompt = inject("cenpan_show_prompt") as Ref<boolean>;
-//用于控制是否显示加载图标
-const cenpan_show_loading = inject("cenpan_show_loading") as Ref<boolean>;
 
 /*
 普通变量
@@ -181,8 +175,9 @@ async function fun_open_novel(path: string) {
 	}
 
 	//关闭显示提示信息
-	cenpan_show_prompt.value = false;
-	cenpan_show_loading.value = true; //显示加载图案
+	show_store.set_prompt(false);
+	//显示加载动图
+	show_store.set_loading(true);
 	//console.log(novel_loading.value);
 	cur_novel_path = path;
 	//更新文件名
@@ -196,7 +191,7 @@ async function fun_open_novel(path: string) {
 		await dialog.message('不支持该类型文件！', { title: '打开失败', type: 'warning' });
 		return;
 	}
-	cenpan_show_loading.value = false;
+	show_store.set_loading(false);
 }
 
 //翻到下一章
@@ -253,7 +248,7 @@ async function prev_chapter() {
 }
 
 async function fun_jump(cur_chapter: number, cur_line: number) {
-	cenpan_show_loading.value = true;
+	show_store.set_loading(true);
 	cur_chap_num = cur_chapter;
 	novel_show_lines.value.splice(0);
 	let cur_chap = novel_chapter[cur_chap_num];
@@ -263,7 +258,7 @@ async function fun_jump(cur_chapter: number, cur_line: number) {
 	await nextTick(); //等待渲染完成
 	let p1 = div_view.querySelector(`:nth-child(${cur_line + 1})`) as Element;
 	p1.scrollIntoView();
-	cenpan_show_loading.value = false;
+	show_store.set_loading(false);
 	//每次跳转都要记录一下数据
 	invoke("set_nov_prog", {
 		path: cur_novel_path,

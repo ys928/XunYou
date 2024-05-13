@@ -1,6 +1,6 @@
 import { invoke } from '@tauri-apps/api';
 import { defineStore } from 'pinia'
-import { Ref, ref } from 'vue'
+import { ref } from 'vue'
 
 export const useStyleStore = defineStore('style', () => {
     //字体大小
