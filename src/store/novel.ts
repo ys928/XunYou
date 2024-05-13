@@ -38,7 +38,6 @@ export const useNovelStore = defineStore('novel', () => {
     // 书签
     const bookmark = ref([]) as Ref<Array<Bookmark>>
 
-
     // 打开小说
     async function open(filepath: string) {
         let b = await fs.exists(filepath);
@@ -83,5 +82,22 @@ export const useNovelStore = defineStore('novel', () => {
         });
     }
 
-    return { name, path, cur_ch_idx, cur_line_idx, show_chapter, bookmark, open, close, add_bookmark };
+    async function next_chapter() {
+        show_chapter.value = await Novel.get_chapter(cur_ch_idx.value + 1);
+        cur_ch_idx.value += 1;
+    }
+
+    async function prev_chapter() {
+        if (cur_ch_idx.value > 0) {
+            show_chapter.value = await Novel.get_chapter(cur_ch_idx.value - 1);
+            cur_ch_idx.value -= 1;
+        }
+    }
+
+    async function set_show_chapter(chap: number) {
+        show_chapter.value = await Novel.get_chapter(chap);
+        cur_ch_idx.value = chap;
+    }
+
+    return { name, path, cur_ch_idx, cur_line_idx, show_chapter, bookmark, open, close, add_bookmark, next_chapter, prev_chapter, set_show_chapter };
 })

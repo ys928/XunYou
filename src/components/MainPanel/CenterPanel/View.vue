@@ -6,12 +6,15 @@ import { useNovelStore } from '../../../store/novel';
 import { useStyleStore } from '../../../store/style';
 import { useShowStore } from '../../../store/show';
 
-
 const novel_store = useNovelStore();
 
 const style_store = useStyleStore();
 
 const show_store = useShowStore();
+
+const ref_div_title = ref() as Ref<HTMLElement>;
+
+const ref_div_content = ref() as Ref<HTMLElement>;
 
 type book_mark = {
 	id: string, //识别该书签的唯一id
@@ -21,12 +24,7 @@ type book_mark = {
 	datetime: string, //创建日期
 	content: string, //简短文章内容
 }
-type Chapter = {
-	/// 每章标题
-	title: string,
-	/// 每章内容，按行分割
-	lines: Array<string>,
-}
+
 /*
 绑定标签
 */
@@ -40,8 +38,6 @@ const is_show_menu = ref(false);
 //控制是否显示添加备注
 const show_edit_remark = ref(false);
 
-//程序要进行显示的小说行数内容
-const novel_show_lines = ref([]) as Ref<Array<string>>;
 //保存当前书签内容
 const bookmark: book_mark = reactive({
 	id: '',
@@ -52,17 +48,6 @@ const bookmark: book_mark = reactive({
 	content: '',
 });
 
-/*
-普通变量
-*/
-//存放读取到的所有小说内容
-let novel_lines: Array<string> = [];
-//存放读取到的小说所有内容，并按章节划分存放，每章第一节为标题。
-let novel_chapter: Array<Array<string>> = [];
-//当前阅读章节
-let cur_chap_num: number;
-//存放当前打开的小说的路径
-let cur_novel_path: string;
 //存放当前用户右键点击到的div标签
 let p_div: EventTarget | null;
 
@@ -179,13 +164,9 @@ async function fun_open_novel(path: string) {
 	//显示加载动图
 	show_store.set_loading(true);
 	//console.log(novel_loading.value);
-	cur_novel_path = path;
 	//更新文件名
 	if (path.endsWith(".novel")) {
-		//打开文件进行展示
-		novel_lines = await invoke("open_novel", { filename: path });
 	} else if (path.endsWith(".txt")) {
-		//打开文件进行展示
 		await novel_store.open(path);
 	} else {
 		await dialog.message('不支持该类型文件！', { title: '打开失败', type: 'warning' });
@@ -196,83 +177,27 @@ async function fun_open_novel(path: string) {
 
 //翻到下一章
 async function next_chapter() {
-	if (novel_lines.length <= 0) {
-		popmsg.error('当前还未打开小说');
-		return;
-	}
-	if (cur_chap_num >= novel_chapter.length - 1) {
-		popmsg.error('已经是最后一章了');
-		return;
-	}
-	popmsg.success('已加载下一章');
+	novel_store.next_chapter();
 	await nextTick();
-	cur_chap_num++;
-	novel_show_lines.value.splice(0);
-	let cur_chap = novel_chapter[cur_chap_num];
-	for (let i = 0; i < cur_chap.length; i++) {
-		novel_show_lines.value.push(cur_chap[i]);
-	}
-	await nextTick(); //等待渲染完成
-	let p1 = div_view.firstElementChild as Element;
-	p1.scrollIntoView();
-	//记录翻章
-	invoke("set_nov_prog", {
-		path: cur_novel_path,
-		line: 0,
-		chapter: cur_chap_num
-	});
+	ref_div_title.value.scrollIntoView();
 }
 //翻到上一章
 async function prev_chapter() {
-	if (novel_lines.length <= 0) {
-		popmsg.error('当前还未打开小说');
-		return;
-	}
-	if (cur_chap_num <= 0) {
-		popmsg.error('已经是第一章了');;
-		return;
-	}
-	popmsg.success('已返回上一章');
-	cur_chap_num--;
-	novel_show_lines.value.splice(0);
-	let cur_chap = novel_chapter[cur_chap_num];
-	for (let i = 0; i < cur_chap.length; i++) {
-		novel_show_lines.value.push(cur_chap[i]);
-	}
-	//记录翻章
-	invoke("set_nov_prog", {
-		path: cur_novel_path,
-		line: 0,
-		chapter: cur_chap_num
-	});
+	novel_store.prev_chapter();
+	await nextTick();
+	ref_div_title.value.scrollIntoView();
 }
 
 async function fun_jump(cur_chapter: number, cur_line: number) {
 	show_store.set_loading(true);
-	cur_chap_num = cur_chapter;
-	novel_show_lines.value.splice(0);
-	let cur_chap = novel_chapter[cur_chap_num];
-	for (let i = 0; i < cur_chap.length; i++) {
-		novel_show_lines.value.push(cur_chap[i]);
-	}
+	novel_store.set_show_chapter(cur_chapter);
 	await nextTick(); //等待渲染完成
-	let p1 = div_view.querySelector(`:nth-child(${cur_line + 1})`) as Element;
-	p1.scrollIntoView();
+	let p = ref_div_content.value.querySelector(`:nth-child(${cur_line + 1})`) as Element;
+	p.scrollIntoView();
 	show_store.set_loading(false);
-	//每次跳转都要记录一下数据
-	invoke("set_nov_prog", {
-		path: cur_novel_path,
-		line: cur_line,
-		chapter: cur_chapter
-	});
 }
 //添加书签函数
 async function fun_add_bookmark() {
-	if (novel_lines === undefined || novel_lines.length === 0) {
-		popmsg.error("请先打开一本小说！");
-		is_show_menu.value = false;
-		return;
-	}
 	//获取所有段落
 	let ps = div_view.querySelectorAll('div');
 	// 遍历子标签div
@@ -291,10 +216,10 @@ async function fun_add_bookmark() {
 	let time = getCurrentDateTime();
 	let id = generateUUID();
 	bookmark.id = id;
-	bookmark.chapter = cur_chap_num;
+	bookmark.chapter = novel_store.cur_ch_idx;
 	bookmark.line = cur_p;
 	bookmark.datetime = time;
-	bookmark.content = novel_chapter[cur_chap_num][cur_p].trim();
+	bookmark.content = novel_store.show_chapter.lines[cur_p].trim();
 	show_edit_remark.value = true;
 	is_show_menu.value = false;
 }
@@ -341,8 +266,8 @@ async function onPositiveClick() {
 <template>
 	<div class="View" id="div_view">
 		<n-scrollbar @onWheel="process_wheel" @onScroll="process_scroll">
-			<div class="title">{{ novel_store.show_chapter.title }}</div>
-			<div class="content" :style="style_store.style">
+			<div class="title" ref="ref_div_title">{{ novel_store.show_chapter.title }}</div>
+			<div class="content" ref="ref_div_content" :style="style_store.style">
 				<div class="line" v-for="(item, index) in novel_store.show_chapter.lines" :key="index">
 					{{ item }}
 				</div>
