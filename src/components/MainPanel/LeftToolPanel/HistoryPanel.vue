@@ -19,8 +19,13 @@
 
 <script setup lang="ts">
 import { invoke } from '@tauri-apps/api';
-import { Ref, inject, onMounted, reactive, ref } from 'vue';
-import { NInput,NScrollbar } from "naive-ui";
+import { onMounted, reactive, ref } from 'vue';
+import { NInput, NScrollbar } from "naive-ui";
+import { useNovelStore } from '../../../store/novel';
+
+const novel_store = useNovelStore();
+
+
 //相关变量类型
 type type_record_novel = {
     name: string, //小说名字
@@ -30,12 +35,6 @@ type type_record_novel = {
     all_line: number, //小说总行数
 }
 
-/**
- * 从父组件取出的变量
- */
-
-//取出存放打开小说的函数变量，本组件用来使用该函数
-const root_fun_open_novel = inject('root_fun_open_novel') as Ref<Function>;
 /**
  * 取得父变量
  */
@@ -72,7 +71,7 @@ let cur_index: number;
 
 //双击代表要打开的小说文件
 function dclick_novel(index: number) {
-    root_fun_open_novel.value(show_records_novel[index].path);
+    novel_store.open(show_records_novel[index].path);
 }
 
 /**
@@ -131,7 +130,7 @@ function search_fun(v: string) {
     if (v.length === 0) { //为空，显示所有内容
         show_records_novel.push(...records_novel);
     } else {
-        show_records_novel.length=0; //先清空
+        show_records_novel.length = 0; //先清空
         show_records_novel.push(...records_novel.filter(e => e.name!.includes(v)));
     }
 }

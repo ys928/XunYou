@@ -47,6 +47,7 @@ fn main() {
             config::del_bookmark,
             novel::novel_open_txt,
             novel::novel_get_chapter,
+            novel::novel_get_record,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

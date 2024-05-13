@@ -3,14 +3,22 @@ import { Ref, ref, onMounted, inject, nextTick, reactive } from 'vue';
 import { dialog, event, fs, invoke } from '@tauri-apps/api';
 import { useDialog, useMessage, NModal, NInput, NScrollbar } from "naive-ui"
 import { Novel } from '../../../api/novel';
-/**
- * 自定义类型
- */
-//目录类型
-type type_cata_obj = {
-	name: string,
-	index: number
-};
+import { useNovelStore } from '../../../store/novel';
+import { useStyleStore } from '../../../store/style';
+
+
+const novel_store = useNovelStore();
+
+const style_store = useStyleStore();
+
+const content_style = ref({
+	fontSize: style_store.font_size + 'px',
+	lineHeight: style_store.line_height / 10 + 'em',
+	backgroundSize: '15px ' + style_store.line_height / 10 + 'em',
+	fontFamily: style_store.font_family,
+	fontWeight: style_store.font_weight,
+});
+
 type book_mark = {
 	id: string, //识别该书签的唯一id
 	label: string, //该标签的额外标注信息
@@ -56,32 +64,10 @@ const bookmark: book_mark = reactive({
 /**
  * 取出父组件传递下来的变量
  */
-//取出存放打开小说的函数变量，本组件用来存放该函数
-const root_fun_open_novel = inject('root_fun_open_novel') as Ref<Function>;
-//当前打开的小说名称,本组件修改它
-const app_title = inject("app_title") as Ref<string>;
 //用于控制提示消息是否显示
 const cenpan_show_prompt = inject("cenpan_show_prompt") as Ref<boolean>;
 //用于控制是否显示加载图标
 const cenpan_show_loading = inject("cenpan_show_loading") as Ref<boolean>;
-//存放所有遍历到的小说目录
-const mainpan_novel_cata = inject("mainpan_novel_cata") as Ref<Array<type_cata_obj>>
-//配合搜索功能，存放要显示的目录
-const mainpan_show_novel_cata = inject('mainpan_show_novel_cata') as Ref<Array<type_cata_obj>>;
-//存放跳转函数
-const mainpan_nov_jump_fun = inject("mainpan_nov_jump_fun") as Ref<Function>;
-//字体大小
-const mainpan_font_size = inject('mainpan_font_size') as Ref<number>;
-//字体粗细
-const mainpan_font_weight = inject("mainpan_font_weight") as Ref<number>
-//字体
-const mainpan_font_family = inject("mainpan_font_family") as Ref<string>;
-//行高
-const mainpan_line_height = inject("mainpan_line_height") as Ref<number>;
-//存放当前小说所有书签
-const mainpan_bookmark = inject("mainpan_bookmark") as Ref<Array<book_mark>>
-//存放当前小说路径
-const mainpan_nov_path = inject("mainpan_nov_path") as Ref<string>
 
 /*
 普通变量
@@ -103,12 +89,8 @@ const popmsg = useMessage();
  * 初始化函数
  */
 onMounted(async () => {
-	// //初始化跳转函数
-	mainpan_nov_jump_fun.value = fun_jump;
 	// //初始化跳转组件的按键处理函数
 	// cenpan_pro_jump_input.value=process_jump_input;
-	//初始化打开小说的函数
-	root_fun_open_novel.value = fun_open_novel;
 	//初始化view对象
 	div_view = document.getElementById('div_view') as HTMLElement;
 	div_view.oncontextmenu = function (e) {
@@ -146,19 +128,7 @@ onMounted(async () => {
 				positiveText: '确定',
 				negativeText: '取消',
 				onPositiveClick: () => {
-					if (app_title.value === undefined || app_title.value.length === 0) {
-						popmsg.info("当前没有打开小说");
-						return;
-					}
-					novel_show_lines.value = []; //清空界面内容
-					app_title.value = ""; //清除当前显示的文件名
-					cenpan_show_prompt.value = true; //重新显示提示信息
-					mainpan_bookmark.value = []; //清空书签
-					mainpan_show_novel_cata.value = []; //清空目录
-					mainpan_novel_cata.value = []; //清空目录
-					if (novel_lines !== undefined) {
-						novel_lines = []; //清空读取到的小说内容
-					}
+					novel_store.close();
 					popmsg.info("关闭成功");
 				},
 				onNegativeClick: () => {
@@ -223,16 +193,13 @@ async function fun_open_novel(path: string) {
 		return;
 	}
 
-	mainpan_novel_cata.value.splice(0);
 	//关闭显示提示信息
 	cenpan_show_prompt.value = false;
 	novel_show_lines.value.splice(0); //清空显示的章节
 	cenpan_show_loading.value = true; //显示加载图案
 	//console.log(novel_loading.value);
 	cur_novel_path = path;
-	mainpan_nov_path.value = path;
 	//更新文件名
-	app_title.value = get_file_name(path);
 	if (path.endsWith(".novel")) {
 		//打开文件进行展示
 		novel_lines = await invoke("open_novel", { filename: path });
@@ -245,17 +212,6 @@ async function fun_open_novel(path: string) {
 		return;
 	}
 	cenpan_show_loading.value = false;
-}
-
-//获取文件名
-function get_file_name(path: string) {
-	var idx = path.lastIndexOf('\\');
-	idx = idx > -1 ? idx : path.lastIndexOf('/');
-	if (idx < 0) {
-		return path
-	}
-	path = path.substring(idx + 1);
-	return path.substring(0, path.lastIndexOf('.'));
 }
 
 //翻到下一章
@@ -396,36 +352,17 @@ function onNegativeClick() {
 }
 //模态框，确认添加书签
 async function onPositiveClick() {
-	mainpan_bookmark.value.push({
-		label: bookmark.label,
-		datetime: bookmark.datetime,
-		id: bookmark.id,
-		chapter: bookmark.chapter,
-		line: bookmark.line,
-		content: bookmark.content
-	});
-	await invoke('add_bookmark', {
-		path: cur_novel_path,
-		mark: bookmark
-	});
+	novel_store.add_bookmark(bookmark);
 	bookmark.label = "";
 	popmsg.success('成功添加书签!');
 }
 </script>
 
 <template>
-	<n-scrollbar class="View" :style="{
-		'font-family': mainpan_font_family,
-		'font-weight': mainpan_font_weight,
-
-	}" @onWheel="process_wheel" @onScroll="process_scroll">
-		<div class="title">{{ show_chapter.title }}</div>
-		<div class="content" :style="{
-			'font-size': mainpan_font_size + 'px',
-			'line-height': mainpan_line_height / 10 + 'em',
-			'background-size': '15px ' + mainpan_line_height / 10 + 'em'
-		}">
-			<div class="line" v-for="(item, index) in show_chapter.lines" :key="index">
+	<n-scrollbar class="View" id="div_view" @onWheel="process_wheel" @onScroll="process_scroll">
+		<div class="title">{{ novel_store.show_chapter.title }}</div>
+		<div class="content" :style="content_style">
+			<div class="line" v-for="(item, index) in novel_store.show_chapter.lines" :key="index">
 				{{ item }}
 			</div>
 		</div>

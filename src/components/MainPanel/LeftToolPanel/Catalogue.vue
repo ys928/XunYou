@@ -5,7 +5,7 @@
             <n-input size="tiny" round @input="search_fun" placeholder="搜目录"></n-input>
         </div>
         <n-scrollbar class="catal">
-            <div v-for="item in mainpan_show_novel_cata" class="cata_item" @dblclick="dclick_cata_item(item.index)">
+            <div v-for="item in show_novel_cata" class="cata_item" @dblclick="dclick_cata_item(item.index)">
                 {{ item.name }}
             </div>
         </n-scrollbar>
@@ -13,44 +13,38 @@
 </template>
 
 <script setup lang="ts">
-import { Ref, inject, watch } from 'vue';
-import { NInput,NScrollbar } from "naive-ui"
+import { Ref, ref, watch } from 'vue';
+import { NInput, NScrollbar } from "naive-ui"
 //目录类型
 type type_cata_obj = {
     name: string,
     index: number
 };
 
-/**
- * ref变量
- */
-/**
- * 从父组件取出的变量
- */
 //存放所有遍历到的小说目录
-const mainpan_novel_cata = inject("mainpan_novel_cata") as Ref<Array<type_cata_obj>>
+const novel_cata = ref() as Ref<Array<type_cata_obj>>
 //存放跳转函数
-const mainpan_nov_jump_fun = inject("mainpan_nov_jump_fun") as Ref<Function>;
+const nov_jump_fun = ref() as Ref<Function>;
 //配合搜索功能，存放要显示的目录
-const mainpan_show_novel_cata = inject('mainpan_show_novel_cata') as Ref<Array<type_cata_obj>>;
+const show_novel_cata = ref() as Ref<Array<type_cata_obj>>;
 
-watch(mainpan_novel_cata, () => {
-    mainpan_show_novel_cata.value = Array.from(mainpan_novel_cata.value);
+watch(novel_cata, () => {
+    show_novel_cata.value = Array.from(novel_cata.value);
 });
 
 /**
  * 函数
  */
 function dclick_cata_item(index: number) {
-    mainpan_nov_jump_fun.value(index, 0);
+    nov_jump_fun.value(index, 0);
 }
 
 function search_fun(v: string) {
     if (v.length === 0) { //为空，显示所有内容
-        mainpan_show_novel_cata.value = Array.from(mainpan_novel_cata.value);
+        show_novel_cata.value = Array.from(novel_cata.value);
     } else {
-        mainpan_show_novel_cata.value.splice(0); //先清空
-        mainpan_show_novel_cata.value = mainpan_novel_cata.value.filter(e => e.name!.includes(v));
+        show_novel_cata.value.splice(0); //先清空
+        show_novel_cata.value = novel_cata.value.filter(e => e.name!.includes(v));
     }
 }
 

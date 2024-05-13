@@ -7,7 +7,7 @@
                 <span data-tauri-drag-region style="color: var(--text-color2);">{{ prop.name }}</span>
             </div>
             <div data-tauri-drag-region class="app_title" style="color:var(--text-color1)">
-                {{ prop.title }}
+                {{ novel_store.name }}
             </div>
             <div class="app_opt">
                 <n-switch :value="style_switch" @click="switch_sty">
@@ -37,10 +37,15 @@ import { NSwitch, NIcon, useMessage, darkTheme, } from "naive-ui"
 import { Moon, SunnyOutline, Close } from "@vicons/ionicons5"
 import { Maximize16Regular } from "@vicons/fluent"
 import { MinusOutlined } from "@vicons/antd"
+import { useNovelStore } from "../store/novel";
+
+
+const novel_store = useNovelStore();
+
 /**
  * 绑定相关标签的变量
  */
-const prop = defineProps(['name', 'title', 'style', 'cursor']);
+const prop = defineProps(['name', 'style', 'cursor']);
 const emit = defineEmits(['update:style', 'update:cursor', 'pop_msg']);
 /**
  * ref变量
@@ -88,7 +93,7 @@ let dark = {
     '--text-color': '#fff',
     '--text-color1': 'rgba(255, 255, 255, 0.52)',
     '--text-color2': '#63e2b7',
-    '--text-c3':'#eaeaea',
+    '--text-c3': '#eaeaea',
     '--thumb-color': '#959595',
     '--track-color': '#333',
     '--border-color': '#3e3e3e',
@@ -97,7 +102,7 @@ let dark = {
     '--menu-color': '#999',
     '--mih-color': '#5f5f5f',
     '--error-color': '#f00',
-    '--selected-color':'#273d59'
+    '--selected-color': '#273d59'
 }
 let light = {
     '--base-bgc': '#fff',
@@ -106,7 +111,7 @@ let light = {
     '--text-color': '#3e3e3e',
     '--text-color1': 'rgb(118, 124, 130)',
     '--text-color2': '#18a058',
-    '--text-c3':'#28313b',
+    '--text-c3': '#28313b',
     '--thumb-color': '#ddd',
     '--track-color': '#eee',
     '--border-color': '#e7e7e7',
@@ -115,7 +120,7 @@ let light = {
     '--menu-color': '#2e2e2e',
     '--mih-color': '#aaa',
     '--error-color': '#f00',
-    '--selected-color':'#c6d6f2'
+    '--selected-color': '#c6d6f2'
 
 }
 

@@ -6,12 +6,6 @@ import { onMounted, provide, ref, watch } from 'vue';
 import { event, invoke, window } from '@tauri-apps/api';
 import { darkTheme, NMessageProvider, NConfigProvider, GlobalTheme, NDialogProvider } from 'naive-ui'
 
-//用与打开文件显示在页面的函数,在view组件中为其赋值，然后给其它组件调用
-const root_fun_open_novel = ref();
-provide("root_fun_open_novel", root_fun_open_novel);
-//用于显示当前打开的小说名称
-const app_title = ref();
-provide("app_title", app_title);
 //用于控制当前鼠标样式
 const app_cursor = ref("none");
 provide("app_cursor", app_cursor);
@@ -96,7 +90,7 @@ onMounted(() => {
     <n-message-provider>
       <n-dialog-provider>
         <div class="MainWindow" ref="div_main_window">
-          <Titlebar name="寻幽" :title="app_title" v-model:style="app_style" v-model:cursor="app_cursor">
+          <Titlebar name="寻幽" v-model:style="app_style" v-model:cursor="app_cursor">
           </Titlebar>
           <MainPanel></MainPanel>
           <Statusbar></Statusbar>

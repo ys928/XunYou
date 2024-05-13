@@ -2,7 +2,7 @@
     <div class="Bookmark">
         <div class="title">书签</div>
         <n-scrollbar class="content" id="div_marks">
-            <template v-for="(item, index) in mainpan_bookmark">
+            <template v-for="(item, index) in novel_store.bookmark">
                 <n-popover trigger="hover" :keep-alive-on-hover="false">
                     <template #trigger>
                         <div class="mark_item" @dblclick="dclick_mark(index)">
@@ -26,35 +26,23 @@
 </template>
 
 <script setup lang="ts">
-import { Ref, inject, ref ,onMounted } from 'vue';
-import { NPopover,NScrollbar } from "naive-ui";
-import { invoke } from '@tauri-apps/api';
-type book_mark = {
-    id: string, //识别该书签的唯一id
-    label: string, //该标签的额外标注信息
-    chapter: Number, //所属章节
-    line: Number, //所属行
-    datetime: string, //创建日期
-    content: string, //简短文章内容
-}
-//存放当前小说所有书签
-const mainpan_bookmark = inject("mainpan_bookmark") as Ref<Array<book_mark>>
-//存放当前小说路径
-const mainpan_nov_path = inject("mainpan_nov_path") as Ref<string>
-//存放跳转函数
-const mainpan_nov_jump_fun = inject("mainpan_nov_jump_fun") as Ref<Function>;
+import { ref, onMounted } from 'vue';
+import { NPopover, NScrollbar } from "naive-ui";
+import { useNovelStore } from '../../../store/novel';
+
+const novel_store = useNovelStore();
 
 //是否显示右键菜单
 const is_show_menu = ref(false);
 //菜单标签
 const dev_menu = ref();
 //绑定书签列表标签
-let div_bookmarks:HTMLElement;
+let div_bookmarks: HTMLElement;
 //保存当前右键点击到的标签项索引
-let cur_index=-1;
+let cur_index = -1;
 
-onMounted(()=>{
-    div_bookmarks =document.querySelector('#div_marks') as HTMLElement;
+onMounted(() => {
+    div_bookmarks = document.querySelector('#div_marks') as HTMLElement;
 
     div_bookmarks.oncontextmenu = (e: MouseEvent) => {
         let index = -1;
@@ -84,17 +72,17 @@ onMounted(()=>{
 });
 
 function dclick_mark(index: number) {
-    mainpan_nov_jump_fun.value(mainpan_bookmark.value[index].chapter,mainpan_bookmark.value[index].line);
+    // mainpan_nov_jump_fun.value(mainpan_bookmark.value[index].chapter, mainpan_bookmark.value[index].line);
 }
 
 //删除一个记录项，
 async function del_mark() {
-    if(cur_index == -1) return;
-    await invoke("del_bookmark", {
-        path: mainpan_nov_path.value,
-        id:mainpan_bookmark.value[cur_index].id,
-    });
-    mainpan_bookmark.value.splice(cur_index, 1);
+    // if (cur_index == -1) return;
+    // await invoke("del_bookmark", {
+    //     path: mainpan_nov_path.value,
+    //     id: mainpan_bookmark.value[cur_index].id,
+    // });
+    // mainpan_bookmark.value.splice(cur_index, 1);
     is_show_menu.value = false;
 }
 </script>
@@ -127,6 +115,7 @@ async function del_mark() {
             cursor: pointer;
             overflow: hidden;
             margin: 10px 2px;
+
             &:hover {
                 background-color: var(--hover-color);
             }
@@ -147,6 +136,7 @@ async function del_mark() {
 
         }
     }
+
     .opt_menu {
         position: fixed;
         border-radius: 5px;

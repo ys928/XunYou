@@ -3,7 +3,6 @@ use core::panic;
 use crate::common;
 use crate::types::*;
 
-
 //获取历史小说文件记录
 #[tauri::command]
 pub fn get_record() -> Vec<Novel> {
@@ -14,16 +13,24 @@ pub fn get_record() -> Vec<Novel> {
 //获取指定小说的行数
 #[tauri::command]
 pub fn get_nov_prog(path: &str) -> (u64, u64) {
-    let md5 = common::md5_file(path).unwrap_or_else(|| {
-        //warn!("get md5 failed:{}",path);
-        panic!();
-    });
     let cfg_info = config_info();
-    for i in cfg_info.record {
+
+    // 优先按路径匹配
+    for i in cfg_info.record.iter() {
+        if i.path == path {
+            return (i.cur_chapter, i.cur_line);
+        }
+    }
+
+    // 其次按md5值匹配
+    let md5 = common::md5_file(path).unwrap_or_default();
+
+    for i in cfg_info.record.iter() {
         if i.md5 == md5 {
             return (i.cur_chapter, i.cur_line);
         }
     }
+
     return (0, 0);
 }
 #[tauri::command]
@@ -83,7 +90,7 @@ pub fn set_nov_prog(path: &str, line: u64, chapter: u64) {
             md5: md5,
             cur_line: line,
             cur_chapter: chapter,
-            bookmark:Vec::new()
+            bookmark: Vec::new(),
         });
     }
     //保存到文件中
@@ -93,7 +100,7 @@ pub fn set_nov_prog(path: &str, line: u64, chapter: u64) {
 
 //获取配置信息
 fn config_info() -> ConfigInfo {
-    let cf_path =common::config_dir("XunYou");
+    let cf_path = common::config_dir("XunYou");
     let p = cf_path.join("profile");
     let p = p.as_path().to_str().unwrap_or_else(|| {
         //warn!("get config file failed");
@@ -185,32 +192,32 @@ pub fn get_setting() -> AppSet {
 }
 //设置小说界面相关设置
 #[tauri::command]
-pub fn set_setting(fs: u32, fw: u32, lh: u32,ff:&str) {
+pub fn set_setting(fs: u32, fw: u32, lh: u32, ff: &str) {
     let mut cfg = config_info();
     cfg.appset.font_size = fs;
     cfg.appset.font_weight = fw;
     cfg.appset.line_height = lh;
-    cfg.appset.font_family=ff.to_string();
+    cfg.appset.font_family = ff.to_string();
     record_config(cfg);
 }
 
 //获取当前小说标签
 #[tauri::command]
-pub fn get_bookmark(path: &str) ->Vec<Bookmark>{
+pub fn get_bookmark(path: &str) -> Vec<Bookmark> {
     let cfg = config_info();
-    for n in cfg.record{
-        if n.path==path{
+    for n in cfg.record {
+        if n.path == path {
             return n.bookmark;
         }
     }
-    Vec::new()    
+    Vec::new()
 }
 //添加当前小说书签
 #[tauri::command]
-pub fn add_bookmark(path: &str,mark:Bookmark) {
+pub fn add_bookmark(path: &str, mark: Bookmark) {
     let mut cfg = config_info();
-    for n in cfg.record.iter_mut(){
-        if n.path==path{
+    for n in cfg.record.iter_mut() {
+        if n.path == path {
             n.bookmark.push(mark);
             break;
         }
@@ -220,14 +227,14 @@ pub fn add_bookmark(path: &str,mark:Bookmark) {
 
 //删除当前小说书签
 #[tauri::command]
-pub fn del_bookmark(path: &str,id:String) {
+pub fn del_bookmark(path: &str, id: String) {
     let mut cfg = config_info();
-    for n in cfg.record.iter_mut(){
-        if n.path!=path{
+    for n in cfg.record.iter_mut() {
+        if n.path != path {
             continue;
         }
-        for b in 0..n.bookmark.len(){
-            if n.bookmark[b].id==id{
+        for b in 0..n.bookmark.len() {
+            if n.bookmark[b].id == id {
                 n.bookmark.remove(b);
                 break;
             }

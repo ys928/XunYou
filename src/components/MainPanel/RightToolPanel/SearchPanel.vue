@@ -19,15 +19,11 @@ import { Ref, ref, inject, onMounted } from 'vue';
 import { FileEntry, readDir } from '@tauri-apps/api/fs';
 import { dialog, invoke } from '@tauri-apps/api';
 import { fs } from '@tauri-apps/api';
-import { NIcon, NInput, NSpin,NScrollbar } from "naive-ui"
+import { NIcon, NInput, NSpin, NScrollbar } from "naive-ui"
 import { FolderMinus } from "@vicons/tabler"
-/**
- * 相关变量类型
- */
+import { useNovelStore } from '../../../store/novel';
 
-/**
- * vue变量
- */
+const novel_store = useNovelStore();
 
 //控制要显示的小说列表项
 let show_novel_list = ref([]) as Ref<Array<FileEntry>>;
@@ -45,13 +41,6 @@ const show_loading = ref(false);
 
 //存储所有可搜索的小说项
 let all_novel: Array<FileEntry> = [];
-
-/**
- * 从父组件取出的变量
- */
-
-//取出存放打开小说的函数变量，本组件用来使用该函数
-const root_fun_open_novel = inject('root_fun_open_novel') as Ref<Function>;
 
 async function search_fun(v: string) {
     if (v.length === 0) { //为空，直接展示前一百条
@@ -110,7 +99,7 @@ async function choose_dir() {
 }
 
 function dclick_novel(index: number) {
-    root_fun_open_novel.value(show_novel_list.value[index].path);
+    novel_store.open(show_novel_list.value[index].path);
 }
 
 </script>

@@ -4,58 +4,35 @@
         <div class="set_item">
             <div>
                 <n-tag :bordered="false" size="small">字体大小:</n-tag>
-                <n-input-number v-model:value="mainpan_font_size" :min="10" :max="25" button-placement="both"
+                <n-input-number v-model:value="font_size" :min="10" :max="25" button-placement="both"
                     size="tiny"></n-input-number>
             </div>
             <div>
                 <n-tag :bordered="false" size="small">字体粗细:</n-tag>
-                <n-input-number v-model:value="mainpan_font_weight" :min="100" :max="900" :step="100"
-                    button-placement="both" size="tiny"></n-input-number>
+                <n-input-number v-model:value="font_weight" :min="100" :max="900" :step="100" button-placement="both"
+                    size="tiny"></n-input-number>
             </div>
             <div>
                 <n-tag :bordered="false" size="small">字体行高:</n-tag>
-                <n-input-number v-model:value="mainpan_line_height" :min="10" :max="25" :step="1" button-placement="both"
+                <n-input-number v-model:value="line_height" :min="10" :max="25" :step="1" button-placement="both"
                     size="tiny"></n-input-number>
             </div>
             <div>
                 <n-tag :bordered="false" size="small">正文字体:</n-tag>
-                <n-select v-model:value="mainpan_font_family" size="tiny" :options="fonts" />
+                <n-select v-model:value="font_family" size="tiny" :options="fonts" />
             </div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { invoke } from '@tauri-apps/api';
-import { Ref, inject, watch } from 'vue';
-import { NInputNumber, NTag, NSelect ,useMessage } from "naive-ui"
-/**
- * 普通变量
- */
+import { onBeforeMount, ref, watch } from 'vue';
+import { NInputNumber, NTag, NSelect, useMessage } from "naive-ui"
+import { useStyleStore } from '../../../store/style';
 
-const popmsg=useMessage();
+const style_store = useStyleStore();
 
-/**
- * 相关变量类型
- */
-
-
-/**
- * vue变量
- */
-
-/**
- * 从父组件取得的变量
- */
-//字体大小
-const mainpan_font_size = inject('mainpan_font_size') as Ref<number>;
-//字体粗细
-const mainpan_font_weight = inject("mainpan_font_weight") as Ref<number>
-//行高
-const mainpan_line_height = inject("mainpan_line_height") as Ref<number>;
-//字体
-const mainpan_font_family = inject("mainpan_font_family") as Ref<string>;
-
+const popmsg = useMessage();
 
 const fonts = [
     {
@@ -76,29 +53,38 @@ const fonts = [
     },
 ];
 
-/**
- * 函数
- */
-watch(mainpan_font_size, () => {
-    save_setting();
+const font_size = ref(0);
+
+const font_weight = ref(0);
+
+const line_height = ref(0);
+
+const font_family = ref("");
+
+watch(font_size, () => {
+    style_store.set_font_size(font_size.value);
+    style_store.save();
 })
-watch(mainpan_font_weight, () => {
-    save_setting();
+watch(font_weight, () => {
+    style_store.set_font_weight(font_weight.value);
+    style_store.save();
 })
-watch(mainpan_line_height, () => {
-    save_setting();
+watch(line_height, () => {
+    style_store.set_line_height(line_height.value);
+    style_store.save();
 })
-watch(mainpan_font_family, () => {
-    save_setting();
+watch(font_family, () => {
+    style_store.set_font_family(font_family.value);
+    style_store.save();
 })
-function save_setting() {
-    invoke("set_setting", {
-        fs: mainpan_font_size.value,
-        fw: mainpan_font_weight.value,
-        lh: mainpan_line_height.value,
-        ff: mainpan_font_family.value
-    });
-}
+
+
+onBeforeMount(() => {
+    font_size.value = style_store.font_size;
+    font_family.value = style_store.font_family;
+    font_weight.value = style_store.font_weight;
+    line_height.value = style_store.line_height;
+});
 
 </script>
 

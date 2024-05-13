@@ -6,7 +6,10 @@ use std::{
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 
-use crate::{config::get_bookmark, types::Bookmark};
+use crate::{
+    config::{get_bookmark, get_nov_prog},
+    types::Bookmark,
+};
 
 static OPENED_NOVEL: Mutex<Option<Novel>> = Mutex::new(None);
 
@@ -20,12 +23,21 @@ pub struct Chapter {
     pub lines: Vec<String>,
 }
 
+#[derive(Debug, Default, Clone, Deserialize, Serialize)]
+pub struct Record {
+    /// 章节索引
+    chapter: u64,
+    /// 章节内的行数
+    line: u64,
+}
+
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct Novel {
     path: String,
     name: String,
     chapters: Vec<Chapter>,
     bookmarks: Vec<Bookmark>,
+    record: Record,
 }
 
 /// 使用该模块前必须调用
@@ -76,12 +88,9 @@ pub fn novel_open_txt(filepath: &str) -> bool {
         .to_string_lossy()
         .to_string();
 
-    let mut nov = Novel {
-        path: filepath.to_string(),
-        name: filename,
-        chapters: Vec::new(),
-        bookmarks: Vec::new(),
-    };
+    let mut nov = Novel::default();
+    nov.path = filepath.to_string();
+    nov.name = filename;
 
     let str = str.unwrap();
     let str = str.replace("\r", "");
@@ -111,6 +120,11 @@ pub fn novel_open_txt(filepath: &str) -> bool {
     // 获取书签
     nov.bookmarks = get_bookmark(filepath);
 
+    // 获取记录
+    let (c, l) = get_nov_prog(filepath);
+    nov.record.chapter = c;
+    nov.record.line = l;
+
     let mut novel = OPENED_NOVEL.lock().unwrap();
     *novel = Some(nov);
     true
@@ -131,6 +145,20 @@ pub fn novel_get_chapter(idx: usize) -> Result<Chapter, String> {
     }
     let chap = nov.chapters[idx].clone();
     Ok(chap)
+}
+
+/// 获取小说记录
+#[tauri::command]
+pub fn novel_get_record() -> Result<Record, String> {
+    let novel = OPENED_NOVEL.lock().unwrap();
+    if novel.is_none() {
+        return Err("还没有打开该小说".to_string());
+    }
+
+    let nov = novel.as_ref().unwrap();
+
+    let record = nov.record.clone();
+    Ok(record)
 }
 
 /// 判断是否为标题

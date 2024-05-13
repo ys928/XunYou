@@ -12,6 +12,7 @@
   "dependencies": {
     "@tauri-apps/api": "^1.4.0",
     "less-loader": "^11.1.2",
+    "pinia": "^2.1.7",
     "vue": "^3.2.45"
   },
   "devDependencies": {
