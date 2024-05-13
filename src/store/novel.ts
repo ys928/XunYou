@@ -54,7 +54,8 @@ export const useNovelStore = defineStore('novel', () => {
         let com_path = filepath.replaceAll('\\', '/');
         let idx = com_path.lastIndexOf('/');
         let filename = com_path.substring(idx + 1);
-        name.value = com_path.substring(0, com_path.lastIndexOf('.'));
+        name.value = filename.substring(0, filename.lastIndexOf('.'));
+        console.log(name.value);
 
         if (filepath.endsWith('.txt')) {
             let ret = await Novel.open_txt(filepath);
@@ -62,6 +63,7 @@ export const useNovelStore = defineStore('novel', () => {
                 let re = await Novel.get_record();
                 cur_ch_idx.value = re.chapter;
                 cur_line_idx.value = re.line;
+                show_chapter.value = await Novel.get_chapter(cur_ch_idx.value);
             } else {
                 return false;
             }

@@ -2,7 +2,6 @@
 import { Ref, ref, onMounted, inject, nextTick, reactive } from 'vue';
 import { dialog, event, fs, invoke } from '@tauri-apps/api';
 import { useDialog, useMessage, NModal, NInput, NScrollbar } from "naive-ui"
-import { Novel } from '../../../api/novel';
 import { useNovelStore } from '../../../store/novel';
 import { useStyleStore } from '../../../store/style';
 
@@ -10,14 +9,6 @@ import { useStyleStore } from '../../../store/style';
 const novel_store = useNovelStore();
 
 const style_store = useStyleStore();
-
-const content_style = ref({
-	fontSize: style_store.font_size + 'px',
-	lineHeight: style_store.line_height / 10 + 'em',
-	backgroundSize: '15px ' + style_store.line_height / 10 + 'em',
-	fontFamily: style_store.font_family,
-	fontWeight: style_store.font_weight,
-});
 
 type book_mark = {
 	id: string, //识别该书签的唯一id
@@ -45,8 +36,6 @@ let dev_menu = ref();
 const is_show_menu = ref(false);
 //控制是否显示添加备注
 const show_edit_remark = ref(false);
-// 当前显示的小说
-const show_chapter = ref({ title: '', lines: [] }) as Ref<Chapter>;
 
 //程序要进行显示的小说行数内容
 const novel_show_lines = ref([]) as Ref<Array<string>>;
@@ -89,8 +78,6 @@ const popmsg = useMessage();
  * 初始化函数
  */
 onMounted(async () => {
-	// //初始化跳转组件的按键处理函数
-	// cenpan_pro_jump_input.value=process_jump_input;
 	//初始化view对象
 	div_view = document.getElementById('div_view') as HTMLElement;
 	div_view.oncontextmenu = function (e) {
@@ -195,7 +182,6 @@ async function fun_open_novel(path: string) {
 
 	//关闭显示提示信息
 	cenpan_show_prompt.value = false;
-	novel_show_lines.value.splice(0); //清空显示的章节
 	cenpan_show_loading.value = true; //显示加载图案
 	//console.log(novel_loading.value);
 	cur_novel_path = path;
@@ -205,8 +191,7 @@ async function fun_open_novel(path: string) {
 		novel_lines = await invoke("open_novel", { filename: path });
 	} else if (path.endsWith(".txt")) {
 		//打开文件进行展示
-		let ret = await Novel.open_txt(path);
-		show_chapter.value = await Novel.get_chapter(0);
+		await novel_store.open(path);
 	} else {
 		await dialog.message('不支持该类型文件！', { title: '打开失败', type: 'warning' });
 		return;
@@ -359,28 +344,30 @@ async function onPositiveClick() {
 </script>
 
 <template>
-	<n-scrollbar class="View" id="div_view" @onWheel="process_wheel" @onScroll="process_scroll">
-		<div class="title">{{ novel_store.show_chapter.title }}</div>
-		<div class="content" :style="content_style">
-			<div class="line" v-for="(item, index) in novel_store.show_chapter.lines" :key="index">
-				{{ item }}
+	<div class="View" id="div_view">
+		<n-scrollbar @onWheel="process_wheel" @onScroll="process_scroll">
+			<div class="title">{{ novel_store.show_chapter.title }}</div>
+			<div class="content" :style="style_store.style">
+				<div class="line" v-for="(item, index) in novel_store.show_chapter.lines" :key="index">
+					{{ item }}
+				</div>
 			</div>
-		</div>
 
-		<div class="opt_menu" ref="dev_menu" v-show="is_show_menu">
-			<div class="item" @click="fun_add_bookmark">添加书签</div>
-		</div>
-		<n-modal v-model:show="show_edit_remark" preset="dialog" title="dialog" :mask-closable="false"
-			positive-text="确定" negative-text="取消" :closable="false" @positive-click="onPositiveClick"
-			@negative-click="onNegativeClick">
-			<template #header>
-				<div>书签备注</div>
-			</template>
-			<div>
-				<n-input placeholder="填写书签备注" v-model:value="bookmark.label"></n-input>
+			<div class="opt_menu" ref="dev_menu" v-show="is_show_menu">
+				<div class="item" @click="fun_add_bookmark">添加书签</div>
 			</div>
-		</n-modal>
-	</n-scrollbar>
+			<n-modal v-model:show="show_edit_remark" preset="dialog" title="dialog" :mask-closable="false"
+				positive-text="确定" negative-text="取消" :closable="false" @positive-click="onPositiveClick"
+				@negative-click="onNegativeClick">
+				<template #header>
+					<div>书签备注</div>
+				</template>
+				<div>
+					<n-input placeholder="填写书签备注" v-model:value="bookmark.label"></n-input>
+				</div>
+			</n-modal>
+		</n-scrollbar>
+	</div>
 </template>
 
 <style scoped lang="less">
@@ -409,7 +396,6 @@ async function onPositiveClick() {
 		user-select: text;
 		font-family: inherit;
 		font-weight: inherit;
-		background-repeat: repeat;
 		margin: 15px 0;
 
 		&::selection {
