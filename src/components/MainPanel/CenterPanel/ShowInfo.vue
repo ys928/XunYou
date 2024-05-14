@@ -1,3 +1,7 @@
+<script setup lang="ts">
+
+</script>
+
 <template>
   <div class="Init_info">
     <div>Ctrl+O:打开小说</div>
@@ -6,15 +10,6 @@
     <div>PageDown:下一章</div>
   </div>
 </template>
-
-<script setup lang="ts">
-
-/**
- * 取出父组件传递下来的变量
- */
-
-</script>
-
 
 <style scoped lang="less">
 .Init_info {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Ref, ref, onMounted, inject, nextTick, reactive } from 'vue';
-import { dialog, event, fs, invoke } from '@tauri-apps/api';
+import { Ref, ref, onMounted, nextTick, reactive } from 'vue';
+import { dialog, event, fs } from '@tauri-apps/api';
 import { useDialog, useMessage, NModal, NInput, NScrollbar } from "naive-ui"
 import { useNovelStore } from '../../../store/novel';
 import { useStyleStore } from '../../../store/style';

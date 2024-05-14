@@ -1,17 +1,3 @@
-<template>
-    <div class="Catalogue">
-        <div class="title">目录</div>
-        <div class="top_pos">
-            <n-input size="tiny" round @input="search_fun" placeholder="搜目录"></n-input>
-        </div>
-        <n-scrollbar class="catal">
-            <div v-for="item in show_novel_cata" class="cata_item" @dblclick="dclick_cata_item(item.index)">
-                {{ item.name }}
-            </div>
-        </n-scrollbar>
-    </div>
-</template>
-
 <script setup lang="ts">
 import { Ref, ref, watch } from 'vue';
 import { NInput, NScrollbar } from "naive-ui"
@@ -50,6 +36,20 @@ function search_fun(v: string) {
 
 
 </script>
+
+<template>
+    <div class="Catalogue">
+        <div class="title">目录</div>
+        <div class="top_pos">
+            <n-input size="tiny" round @input="search_fun" placeholder="搜目录"></n-input>
+        </div>
+        <n-scrollbar class="catal">
+            <div v-for="item in show_novel_cata" class="cata_item" @dblclick="dclick_cata_item(item.index)">
+                {{ item.name }}
+            </div>
+        </n-scrollbar>
+    </div>
+</template>
 
 <style scoped lang="less">
 .Catalogue {

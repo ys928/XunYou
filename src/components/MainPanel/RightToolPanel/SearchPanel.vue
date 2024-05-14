@@ -1,21 +1,5 @@
-<template>
-    <div class="SearchPanel">
-        <div class="title">搜索栏</div>
-        <div class="top_pos">
-            <n-input size="tiny" round @input="search_fun" placeholder="搜小说"></n-input>
-            <n-icon class="icon" size="20" color="#787878" :component="FolderMinus" @click="choose_dir"></n-icon>
-        </div>
-        <n-scrollbar class="novel_list">
-            <div v-for="(item, index) in show_novel_list" class="novel_item" @dblclick="dclick_novel(index)">
-                {{ item.name!.substring(0, item.name!.lastIndexOf('.')) }}
-            </div>
-            <n-spin class="loading" size="medium" v-show="show_loading"></n-spin>
-        </n-scrollbar>
-    </div>
-</template>
-
 <script setup lang="ts">
-import { Ref, ref, inject, onMounted } from 'vue';
+import { Ref, ref, onMounted } from 'vue';
 import { FileEntry, readDir } from '@tauri-apps/api/fs';
 import { dialog, invoke } from '@tauri-apps/api';
 import { fs } from '@tauri-apps/api';
@@ -29,15 +13,6 @@ const novel_store = useNovelStore();
 let show_novel_list = ref([]) as Ref<Array<FileEntry>>;
 //控制加载图标是否显示
 const show_loading = ref(false);
-/**
- * 绑定相关标签的变量
- */
-
-
-/**
- * 普通变量
- */
-
 
 //存储所有可搜索的小说项
 let all_novel: Array<FileEntry> = [];
@@ -104,6 +79,22 @@ function dclick_novel(index: number) {
 
 </script>
 
+<template>
+    <div class="SearchPanel">
+        <div class="title">搜索栏</div>
+        <div class="top_pos">
+            <n-input size="tiny" round @input="search_fun" placeholder="搜小说"></n-input>
+            <n-icon class="icon" size="20" color="#787878" :component="FolderMinus" @click="choose_dir"></n-icon>
+        </div>
+        <n-scrollbar class="novel_list">
+            <div v-for="(item, index) in show_novel_list" class="novel_item" @dblclick="dclick_novel(index)">
+                {{ item.name!.substring(0, item.name!.lastIndexOf('.')) }}
+            </div>
+            <n-spin class="loading" size="medium" v-show="show_loading"></n-spin>
+        </n-scrollbar>
+    </div>
+</template>
+
 <style scoped lang="less">
 .SearchPanel {
     display: flex;
@@ -157,6 +148,7 @@ function dclick_novel(index: number) {
             white-space: nowrap;
             transition: border 0.3s, color 0.3s;
             cursor: pointer;
+            color: var(--text-color1);
 
             &:hover {
                 border: #36ad6a solid 1px;

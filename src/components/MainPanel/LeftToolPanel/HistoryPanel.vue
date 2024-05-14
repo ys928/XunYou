@@ -1,22 +1,3 @@
-<template>
-    <div class="HistoryPanel">
-        <div class="title">历史记录</div>
-        <div class="top_pos">
-            <n-input size="tiny" round @input="search_fun" placeholder="搜记录"></n-input>
-        </div>
-        <n-scrollbar class="novels" id="div_history_list">
-            <div v-for="(item, index) in show_records_novel" class="novel_item" @dblclick="dclick_novel(index)">
-                <span class="novel_name">
-                    {{ item.name.substring(0, item.name.lastIndexOf('.')) }}
-                </span>
-            </div>
-        </n-scrollbar>
-        <div class="opt_menu" ref="dev_menu" v-show="is_show_menu">
-            <div class="item" @click="del_record">删除</div>
-        </div>
-    </div>
-</template>
-
 <script setup lang="ts">
 import { invoke } from '@tauri-apps/api';
 import { onMounted, reactive, ref } from 'vue';
@@ -136,6 +117,25 @@ function search_fun(v: string) {
 }
 
 </script>
+
+<template>
+    <div class="HistoryPanel">
+        <div class="title">历史记录</div>
+        <div class="top_pos">
+            <n-input size="tiny" round @input="search_fun" placeholder="搜记录"></n-input>
+        </div>
+        <n-scrollbar class="novels" id="div_history_list">
+            <div v-for="(item, index) in show_records_novel" class="novel_item" @dblclick="dclick_novel(index)">
+                <span class="novel_name">
+                    {{ item.name.substring(0, item.name.lastIndexOf('.')) }}
+                </span>
+            </div>
+        </n-scrollbar>
+        <div class="opt_menu" ref="dev_menu" v-show="is_show_menu">
+            <div class="item" @click="del_record">删除</div>
+        </div>
+    </div>
+</template>
 
 <style scoped lang="less">
 .HistoryPanel {

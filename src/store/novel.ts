@@ -2,6 +2,9 @@ import { defineStore } from 'pinia'
 import { Ref, ref } from 'vue'
 import { Novel } from '../api/novel'
 import { dialog, fs, invoke } from '@tauri-apps/api'
+import { useShowStore } from './show'
+
+
 type Chapter = {
     /// 每章标题
     title: string,
@@ -19,6 +22,8 @@ type Bookmark = {
 }
 
 export const useNovelStore = defineStore('novel', () => {
+
+    const show_store = useShowStore();
 
     // 当前小说名
     const name = ref('');
@@ -45,7 +50,7 @@ export const useNovelStore = defineStore('novel', () => {
             await dialog.message('小说不存在！', { title: '打开失败', type: 'warning' });
             return;
         }
-
+        show_store.set_loading(true);
         // 保存路径
         path.value = filepath;
 
@@ -63,11 +68,16 @@ export const useNovelStore = defineStore('novel', () => {
                 cur_ch_idx.value = re.chapter;
                 cur_line_idx.value = re.line;
                 show_chapter.value = await Novel.get_chapter(cur_ch_idx.value);
+                show_store.set_loading(false);
+                show_store.set_prompt(false);
+                return true;
             } else {
+                show_store.set_loading(false);
                 return false;
             }
         }
-
+        show_store.set_loading(false);
+        return false;
     }
 
     async function close() {

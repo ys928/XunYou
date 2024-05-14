@@ -1,20 +1,3 @@
-<template>
-    <div class="Toolbar">
-        <div class="top">
-            <n-icon class="icon" size="18" :component="History" title="历史记录" @click="switch_panel('HistoryPanel')"
-                color="#585858"></n-icon>
-            <n-icon class="icon" size="23" :component="List16Filled" title="目录" @click="switch_panel('Catalogue')"
-                color="#585858"></n-icon>
-            <n-icon class="icon" size="20" :component="Tag" title="书签" @click="switch_panel('Tag')"
-                color="#585858"></n-icon>
-        </div>
-        <div class="bottom">
-            <n-icon class="icon" size="20" :component="Toolbox20Regular" title="工具箱" @click="switch_panel('Toolbox')"
-                color="#585858"></n-icon>
-        </div>
-    </div>
-</template>
-
 <script setup lang="ts">
 import { inject } from 'vue';
 import { History } from "@vicons/fa"
@@ -55,6 +38,23 @@ function switch_panel(name: string) {
 
 
 </script>
+
+<template>
+    <div class="Toolbar">
+        <div class="top">
+            <n-icon class="icon" size="18" :component="History" title="历史记录" @click="switch_panel('HistoryPanel')"
+                color="#585858"></n-icon>
+            <n-icon class="icon" size="23" :component="List16Filled" title="目录" @click="switch_panel('Catalogue')"
+                color="#585858"></n-icon>
+            <n-icon class="icon" size="20" :component="Tag" title="书签" @click="switch_panel('Tag')"
+                color="#585858"></n-icon>
+        </div>
+        <div class="bottom">
+            <n-icon class="icon" size="20" :component="Toolbox20Regular" title="工具箱" @click="switch_panel('Toolbox')"
+                color="#585858"></n-icon>
+        </div>
+    </div>
+</template>
 
 <style scoped lang="less">
 .Toolbar {
