@@ -48,6 +48,7 @@ fn main() {
             novel::novel_open_txt,
             novel::novel_get_chapter,
             novel::novel_get_record,
+            novel::novel_get_num_chapters,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

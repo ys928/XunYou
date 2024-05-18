@@ -102,6 +102,7 @@ onMounted(async () => {
 				}
 			})
 		}
+
 	});
 	document.addEventListener("keyup", async e => {
 		if (e.key === "PageUp") {
@@ -109,11 +110,31 @@ onMounted(async () => {
 		} else if (e.key === 'PageDown') {
 			next_chapter();
 		}
-		// }else if(e.key==='ArrowUp'){
 
-		// }else if(e.key==='ArrowDown'){
-
-		// }
+		// 右键、下一章
+		if (e.key == 'ArrowRight') {
+			e.preventDefault();
+			if (!novel_store.isopen) {
+				popmsg.warning('你还未打开小说');
+				return;
+			}
+			let ret = await novel_store.next_chapter();
+			if (!ret) {
+				popmsg.warning('已经到最后一章了');
+			}
+		}
+		// 左键、上一章
+		if (e.key == 'ArrowLeft') {
+			e.preventDefault();
+			if (!novel_store.isopen) {
+				popmsg.warning('你还未打开小说');
+				return;
+			}
+			let ret = await novel_store.prev_chapter();
+			if (!ret) {
+				popmsg.warning('已经是第一章了~~~');
+			}
+		}
 	})
 
 	//处理文件拖拽

@@ -161,6 +161,15 @@ pub fn novel_get_record() -> Result<Record, String> {
     Ok(record)
 }
 
+#[tauri::command]
+pub fn novel_get_num_chapters() -> Result<usize, String> {
+    let novel = OPENED_NOVEL.lock().unwrap();
+    if novel.is_none() {
+        return Err("还没有打开该小说".to_string());
+    }
+    return Ok(novel.as_ref().unwrap().chapters.len());
+}
+
 /// 判断是否为标题
 fn is_title(line: &str) -> bool {
     let re_title = RE_TITLE.get().unwrap();

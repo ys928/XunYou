@@ -25,4 +25,8 @@ export class Novel {
     static async get_record() {
         return await invoke<Record>("novel_get_record");
     }
+
+    static async get_num_chapters() {
+        return await invoke<number>("novel_get_num_chapters");
+    }
 }

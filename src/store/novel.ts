@@ -25,6 +25,9 @@ export const useNovelStore = defineStore('novel', () => {
 
     const show_store = useShowStore();
 
+    // 当前是否已经打开小说
+    const isopen = ref(false);
+
     // 当前小说名
     const name = ref('');
 
@@ -33,6 +36,9 @@ export const useNovelStore = defineStore('novel', () => {
 
     // 当前显示的章节索引
     const cur_ch_idx = ref(0);
+
+    // 小说章节数量
+    let num_chapters = 0;
 
     // 章节内行数索引
     const cur_line_idx = ref(0);
@@ -70,6 +76,8 @@ export const useNovelStore = defineStore('novel', () => {
                 show_chapter.value = await Novel.get_chapter(cur_ch_idx.value);
                 show_store.set_loading(false);
                 show_store.set_prompt(false);
+                num_chapters = await Novel.get_num_chapters();
+                isopen.value = true;
                 return true;
             } else {
                 show_store.set_loading(false);
@@ -81,7 +89,7 @@ export const useNovelStore = defineStore('novel', () => {
     }
 
     async function close() {
-
+        isopen.value = false;
     }
 
     async function add_bookmark(mark: Bookmark) {
@@ -93,15 +101,21 @@ export const useNovelStore = defineStore('novel', () => {
     }
 
     async function next_chapter() {
+        if (cur_ch_idx.value >= num_chapters - 1) {
+            return false;
+        }
         show_chapter.value = await Novel.get_chapter(cur_ch_idx.value + 1);
         cur_ch_idx.value += 1;
+        return true;
     }
 
     async function prev_chapter() {
         if (cur_ch_idx.value > 0) {
             show_chapter.value = await Novel.get_chapter(cur_ch_idx.value - 1);
             cur_ch_idx.value -= 1;
+            return true;
         }
+        return false;
     }
 
     async function set_show_chapter(chap: number) {
@@ -109,5 +123,5 @@ export const useNovelStore = defineStore('novel', () => {
         cur_ch_idx.value = chap;
     }
 
-    return { name, path, cur_ch_idx, cur_line_idx, show_chapter, bookmark, open, close, add_bookmark, next_chapter, prev_chapter, set_show_chapter };
+    return { name, path, cur_ch_idx, cur_line_idx, show_chapter, bookmark, isopen, open, close, add_bookmark, next_chapter, prev_chapter, set_show_chapter };
 })
