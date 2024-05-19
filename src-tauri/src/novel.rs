@@ -40,6 +40,15 @@ pub struct Novel {
     record: Record,
 }
 
+/// 目录项
+#[derive(Debug, Default, Clone, Serialize, Deserialize)]
+pub struct CataItem {
+    // 标题
+    title: String,
+    // 索引
+    idx: usize,
+}
+
 /// 使用该模块前必须调用
 pub fn init() {
     RE_TITLE.get_or_init(|| {
@@ -168,6 +177,22 @@ pub fn novel_get_num_chapters() -> Result<usize, String> {
         return Err("还没有打开该小说".to_string());
     }
     return Ok(novel.as_ref().unwrap().chapters.len());
+}
+
+#[tauri::command]
+pub fn novel_get_cata() -> Result<Vec<CataItem>, String> {
+    let novel = OPENED_NOVEL.lock().unwrap();
+    if novel.is_none() {
+        return Err("还没有打开该小说".to_string());
+    }
+    let mut cata = Vec::new();
+    for (idx, c) in novel.as_ref().unwrap().chapters.iter().enumerate() {
+        cata.push(CataItem {
+            title: c.title.clone(),
+            idx,
+        });
+    }
+    Ok(cata)
 }
 
 /// 判断是否为标题

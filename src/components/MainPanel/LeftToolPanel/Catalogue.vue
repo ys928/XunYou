@@ -1,36 +1,29 @@
 <script setup lang="ts">
-import { Ref, ref, watch } from 'vue';
+import { Ref, onMounted, ref } from 'vue';
 import { NInput, NScrollbar } from "naive-ui"
-//目录类型
-type type_cata_obj = {
-    name: string,
-    index: number
-};
+import { useNovelStore } from '../../../store/novel';
+import { CataItem } from '../../../api/novel';
 
-//存放所有遍历到的小说目录
-const novel_cata = ref() as Ref<Array<type_cata_obj>>
-//存放跳转函数
-const nov_jump_fun = ref() as Ref<Function>;
+
+const novel_store = useNovelStore();
+
 //配合搜索功能，存放要显示的目录
-const show_novel_cata = ref() as Ref<Array<type_cata_obj>>;
+const show_novel_cata = ref([]) as Ref<Array<CataItem>>;
 
-watch(novel_cata, () => {
-    show_novel_cata.value = Array.from(novel_cata.value);
-});
+onMounted(() => {
+    show_novel_cata.value = Array.from(novel_store.cata);
+})
 
-/**
- * 函数
- */
 function dclick_cata_item(index: number) {
-    nov_jump_fun.value(index, 0);
+    novel_store.set_show_chapter(index);
 }
 
 function search_fun(v: string) {
     if (v.length === 0) { //为空，显示所有内容
-        show_novel_cata.value = Array.from(novel_cata.value);
+        show_novel_cata.value = Array.from(novel_store.cata);
     } else {
         show_novel_cata.value.splice(0); //先清空
-        show_novel_cata.value = novel_cata.value.filter(e => e.name!.includes(v));
+        show_novel_cata.value = novel_store.cata.filter(e => e.title!.includes(v));
     }
 }
 
@@ -44,8 +37,8 @@ function search_fun(v: string) {
             <n-input size="tiny" round @input="search_fun" placeholder="搜目录"></n-input>
         </div>
         <n-scrollbar class="catal">
-            <div v-for="item in show_novel_cata" class="cata_item" @dblclick="dclick_cata_item(item.index)">
-                {{ item.name }}
+            <div v-for="item in show_novel_cata" class="cata_item" @dblclick="dclick_cata_item(item.idx)">
+                {{ item.title }}
             </div>
         </n-scrollbar>
     </div>
@@ -91,6 +84,7 @@ function search_fun(v: string) {
             line-height: 25px;
             padding-left: 5px;
             cursor: pointer;
+            color: var(--text-color1);
 
             &:hover {
                 background-color: var(--hover-color);

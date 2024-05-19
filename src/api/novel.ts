@@ -13,6 +13,11 @@ type Record = {
     line: number,
 }
 
+export type CataItem = {
+    title: string,
+    idx: number
+}
+
 export class Novel {
     static async open_txt(filepath: string): Promise<boolean> {
         return await invoke<boolean>("novel_open_txt", { filepath: filepath });
@@ -28,5 +33,9 @@ export class Novel {
 
     static async get_num_chapters() {
         return await invoke<number>("novel_get_num_chapters");
+    }
+
+    static async get_cata() {
+        return await invoke<Array<CataItem>>("novel_get_cata");
     }
 }

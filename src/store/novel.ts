@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { Ref, ref } from 'vue'
-import { Novel } from '../api/novel'
+import { CataItem, Novel } from '../api/novel'
 import { dialog, fs, invoke } from '@tauri-apps/api'
 import { useShowStore } from './show'
 
@@ -36,6 +36,9 @@ export const useNovelStore = defineStore('novel', () => {
 
     // 当前显示的章节索引
     const cur_ch_idx = ref(0);
+
+    // 小说目录
+    const cata = ref([]) as Ref<Array<CataItem>>;
 
     // 小说章节数量
     let num_chapters = 0;
@@ -77,6 +80,7 @@ export const useNovelStore = defineStore('novel', () => {
                 show_store.set_loading(false);
                 show_store.set_prompt(false);
                 num_chapters = await Novel.get_num_chapters();
+                cata.value = await Novel.get_cata();
                 isopen.value = true;
                 return true;
             } else {
@@ -90,6 +94,7 @@ export const useNovelStore = defineStore('novel', () => {
 
     async function close() {
         isopen.value = false;
+        cata.value = [];
     }
 
     async function add_bookmark(mark: Bookmark) {
@@ -123,5 +128,5 @@ export const useNovelStore = defineStore('novel', () => {
         cur_ch_idx.value = chap;
     }
 
-    return { name, path, cur_ch_idx, cur_line_idx, show_chapter, bookmark, isopen, open, close, add_bookmark, next_chapter, prev_chapter, set_show_chapter };
+    return { name, path, cur_ch_idx, cur_line_idx, show_chapter, bookmark, isopen, cata, open, close, add_bookmark, next_chapter, prev_chapter, set_show_chapter };
 })
