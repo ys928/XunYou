@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import View from './CenterPanel/View.vue';
-import ShowInfo from './CenterPanel/ShowInfo.vue';
+import View from '../components/Center/View.vue';
+import ShowInfo from '../components/Center/ShowInfo.vue';
 import { Ref, ref, onMounted, inject } from 'vue';
 import { NSpin } from "naive-ui"
-import { useShowStore } from '../../store/show';
+import { useShowStore } from '../store/show';
 
 const show_store = useShowStore();
+
 
 /**
  * 绑定标签
@@ -26,10 +27,11 @@ onMounted(async () => {
     })
 });
 
+
 </script>
 
 <template>
-    <div class="CenterPanel" ref="div_center_panel">
+    <div class="CenterView" ref="div_center_panel">
         <View></View>
         <ShowInfo v-show="show_store.show_prompt"></ShowInfo>
         <n-spin class="loading" size="medium" v-show="show_store.show_loading"></n-spin>
@@ -37,7 +39,7 @@ onMounted(async () => {
 </template>
 
 <style scoped lang="less">
-.CenterPanel {
+.CenterView {
     position: relative;
     flex-grow: 1;
     height: 100%;

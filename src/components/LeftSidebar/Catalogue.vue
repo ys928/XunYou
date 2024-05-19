@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { Ref, onMounted, ref } from 'vue';
 import { NInput, NScrollbar } from "naive-ui"
-import { useNovelStore } from '../../../store/novel';
-import { CataItem } from '../../../api/novel';
+import { useNovelStore } from '../../store/novel';
+import { CataItem } from '../../api/novel';
 
 
 const novel_store = useNovelStore();

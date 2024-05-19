@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { NPopover, NScrollbar } from "naive-ui";
-import { useNovelStore } from '../../../store/novel';
+import { useNovelStore } from '../../store/novel';
 
 const novel_store = useNovelStore();
 

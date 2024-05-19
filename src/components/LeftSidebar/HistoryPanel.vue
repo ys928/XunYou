@@ -2,7 +2,7 @@
 import { invoke } from '@tauri-apps/api';
 import { onMounted, reactive, ref } from 'vue';
 import { NInput, NScrollbar } from "naive-ui";
-import { useNovelStore } from '../../../store/novel';
+import { useNovelStore } from '../../store/novel';
 
 const novel_store = useNovelStore();
 

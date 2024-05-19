@@ -28,7 +28,7 @@
 <script setup lang="ts">
 import { onBeforeMount, ref, watch } from 'vue';
 import { NInputNumber, NTag, NSelect, useMessage } from "naive-ui"
-import { useStyleStore } from '../../../store/style';
+import { useStyleStore } from '../../store/style';
 
 const style_store = useStyleStore();
 

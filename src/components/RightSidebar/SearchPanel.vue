@@ -5,7 +5,7 @@ import { dialog, invoke } from '@tauri-apps/api';
 import { fs } from '@tauri-apps/api';
 import { NIcon, NInput, NSpin, NScrollbar } from "naive-ui"
 import { FolderMinus } from "@vicons/tabler"
-import { useNovelStore } from '../../../store/novel';
+import { useNovelStore } from '../../store/novel';
 
 const novel_store = useNovelStore();
 

@@ -1,10 +1,17 @@
 <script setup lang="ts">
 import Titlebar from './components/Titlebar.vue';
-import MainPanel from './components/MainPanel.vue';
 import Statusbar from './components/Statusbar.vue';
-import { onMounted, provide, ref, watch } from 'vue';
+import { onBeforeMount, onMounted, provide, ref, watch } from 'vue';
 import { event, invoke, window } from '@tauri-apps/api';
 import { darkTheme, NMessageProvider, NConfigProvider, GlobalTheme, NDialogProvider } from 'naive-ui'
+import { useStyleStore } from './store/style';
+
+type app_setting = {
+  font_size: number, //font-size
+  font_weight: number, //font-weight
+  line_height: number, //line-height
+  font_family: string, //font-family
+}
 
 //用于控制当前鼠标样式
 const app_cursor = ref("none");
@@ -13,6 +20,14 @@ provide("app_cursor", app_cursor);
 const app_style = ref<GlobalTheme | null>(darkTheme);
 provide("app_style", app_style);
 
+const style_store = useStyleStore();
+
+
+onBeforeMount(async () => {
+  //取得配置文件中的设置信息
+  let setting = await invoke<app_setting>("get_setting", {});
+  style_store.set(setting.font_size, setting.font_weight, setting.font_family, setting.line_height);
+});
 
 /**
  * 绑定标签
@@ -92,7 +107,11 @@ onMounted(() => {
         <div class="MainWindow" ref="div_main_window">
           <Titlebar name="寻幽" v-model:style="app_style" v-model:cursor="app_cursor">
           </Titlebar>
-          <MainPanel></MainPanel>
+          <div class="MainPanel">
+            <router-view class="view left-sidebar" name="LeftSidebar"></router-view>
+            <router-view class="view center"></router-view>
+            <router-view class="view right-sidebar" name="RightSidebar"></router-view>
+          </div>
           <Statusbar></Statusbar>
         </div>
       </n-dialog-provider>
@@ -107,6 +126,14 @@ onMounted(() => {
   flex-direction: column;
   height: 100vh;
   width: 100vw;
+
+  .MainPanel {
+    background-color: var(--base-bgc1);
+    flex-grow: 1;
+    height: 100px;
+    width: 100%;
+    display: flex;
+  }
 }
 </style>
 

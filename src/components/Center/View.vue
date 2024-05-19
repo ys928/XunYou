@@ -2,9 +2,9 @@
 import { Ref, ref, onMounted, nextTick, reactive } from 'vue';
 import { dialog, event, fs } from '@tauri-apps/api';
 import { useDialog, useMessage, NModal, NInput, NScrollbar } from "naive-ui"
-import { useNovelStore } from '../../../store/novel';
-import { useStyleStore } from '../../../store/style';
-import { useShowStore } from '../../../store/show';
+import { useNovelStore } from '../../store/novel';
+import { useStyleStore } from '../../store/style';
+import { useShowStore } from '../../store/show';
 
 const novel_store = useNovelStore();
 

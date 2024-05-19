@@ -1,34 +1,3 @@
-<template>
-    <div class="Titlebar" @mouseenter="emit('update:cursor', 'default');">
-        <div class="top_line"></div>
-        <div data-tauri-drag-region class="content">
-            <div class="app_info">
-                <img src="/src/assets/app-icon.png" alt="app-icon">
-                <span data-tauri-drag-region style="color: var(--text-color2);">{{ prop.name }}</span>
-            </div>
-            <div data-tauri-drag-region class="app_title" style="color:var(--text-color1)">
-                {{ novel_store.name }}
-            </div>
-            <div class="app_opt">
-                <n-switch :value="style_switch" @click="switch_sty">
-                    <template #checked-icon>
-                        <n-icon :component="SunnyOutline" />
-                    </template>
-                    <template #unchecked-icon>
-                        <n-icon :component="Moon" />
-                    </template>
-                </n-switch>
-                <div class="mmc">
-                    <n-icon class="min" color="#7f7f7f" size="20" :component="MinusOutlined" @click="WinMin"></n-icon>
-                    <n-icon class="max" color="#7f7f7f" size="20" :component="Maximize16Regular"
-                        @click="WinTogMax"></n-icon>
-                    <n-icon class="close" color="#7f7f7f" size="20" :component="Close" @click="WinClose"></n-icon>
-                </div>
-            </div>
-        </div>
-    </div>
-</template>
-
 <script setup lang="ts">
 import { nextTick, onMounted, ref } from "vue";
 import { appWindow } from "@tauri-apps/api/window";
@@ -142,6 +111,37 @@ async function WinTogMax() {
 }
 
 </script>
+
+<template>
+    <div class="Titlebar" @mouseenter="emit('update:cursor', 'default');">
+        <div class="top_line"></div>
+        <div data-tauri-drag-region class="content">
+            <div class="app_info">
+                <img src="/src/assets/app-icon.png" alt="app-icon">
+                <span data-tauri-drag-region style="color: var(--text-color2);">{{ prop.name }}</span>
+            </div>
+            <div data-tauri-drag-region class="app_title" style="color:var(--text-color1)">
+                {{ novel_store.name }}
+            </div>
+            <div class="app_opt">
+                <n-switch :value="style_switch" @click="switch_sty">
+                    <template #checked-icon>
+                        <n-icon :component="SunnyOutline" />
+                    </template>
+                    <template #unchecked-icon>
+                        <n-icon :component="Moon" />
+                    </template>
+                </n-switch>
+                <div class="mmc">
+                    <n-icon class="min" color="#7f7f7f" size="20" :component="MinusOutlined" @click="WinMin"></n-icon>
+                    <n-icon class="max" color="#7f7f7f" size="20" :component="Maximize16Regular"
+                        @click="WinTogMax"></n-icon>
+                    <n-icon class="close" color="#7f7f7f" size="20" :component="Close" @click="WinClose"></n-icon>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
 
 <style scoped lang="less">
 .Titlebar {
