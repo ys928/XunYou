@@ -1,43 +1,29 @@
-<template>
-<div @mouseenter="app_cursor='default';" class="StatusBar"  ref="div_statusbar">
-    <div class="left"></div>
-    <div class="right">
-    </div>
-</div>
-
-</template>
-
 <script setup lang="ts">
-import { Ref, inject, onMounted} from 'vue';
+import { useCursorStore } from '../store/cursor';
 
-/**
- * 绑定标签的变量
- */
-//绑定整个状态栏
-
-/**
- * 取出父组件传下来的变量
- */
-
-//鼠标样式
-const app_cursor=inject("app_cursor") as Ref<string>;
-//用于显示当前小说阅读进度的变量，本组件用于显示这个值
-//const root_novel_prog=inject("root_novel_prog");
-
-onMounted(()=>{
-
-});
+const cursor_store = useCursorStore();
 
 </script>
 
+<template>
+    <div @mouseenter="cursor_store.set_style('default')" class="StatusBar" ref="div_statusbar">
+        <div class="left"></div>
+        <div class="right">
+        </div>
+    </div>
+
+</template>
+
 <style scoped lang="less">
-.StatusBar.dark{
+.StatusBar.dark {
     background-color: #202020;
 }
-.StatusBar.white{
+
+.StatusBar.white {
     background-color: #fff;
 }
-.StatusBar{
+
+.StatusBar {
     background-color: var(--base-bgc);
     height: 30px;
     display: flex;

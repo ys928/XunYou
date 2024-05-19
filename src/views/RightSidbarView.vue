@@ -4,10 +4,10 @@ import { NIcon } from 'naive-ui';
 import { CalendarSearch20Regular, Settings24Regular } from "@vicons/fluent"
 import SearchPanel from '../components/RightSidebar/SearchPanel.vue';
 import Setting from '../components/RightSidebar/Setting.vue';
+import { useCursorStore } from '../store/cursor';
 
-/**
- * ref变量
- */
+const cursor_store = useCursorStore();
+
 const show_panel = ref(false);
 /**
  * 绑定的标签变量
@@ -15,12 +15,6 @@ const show_panel = ref(false);
 const div_divid_line = ref();
 const div_content = ref();
 const div_right_panel = ref();
-/**
- * 取出父组件提供的变量
- */
-const app_cursor = inject("app_cursor") as Ref<string>;
-const app_is_change_cursor = inject("app_is_change_cursor") as Ref<boolean>;
-
 
 let cur_show_panel = '';
 
@@ -43,14 +37,14 @@ onMounted(() => {
         if (e.target === div_divid_line.value) {
             act_divid = true; //激活
             div_divid_line.value.style.opacity = "#0.7";
-            app_is_change_cursor.value = false;
+            cursor_store.set_change(false);
             posX = e.pageX; //初始化坐标
             panelW = div_content.value.offsetWidth; //记录宽度
         }
     });
     document.addEventListener("mouseup", e => {
         act_divid = false; //关闭
-        app_is_change_cursor.value = true;
+        cursor_store.set_change(true);
         if (div_divid_line.value) {
             div_divid_line.value.style.opacity = '0';
         }
@@ -68,24 +62,24 @@ onMounted(() => {
         }
     });
     div_divid_line.value.addEventListener("mouseenter", () => {
-        if (app_is_change_cursor.value) {
-            app_cursor.value = "ew-resize";
+        if (cursor_store.need_change) {
+            cursor_store.set_style('ew-resize')
             div_divid_line.value.style.opacity = '0.7';
         }
     })
     div_divid_line.value.addEventListener("mouseleave", () => {
-        if (app_is_change_cursor.value) {
+        if (cursor_store.need_change) {
             div_divid_line.value.style.opacity = '0';
         }
     })
     div_content.value.addEventListener("mouseenter", () => {
-        if (app_is_change_cursor.value) {
-            app_cursor.value = "default";
+        if (cursor_store.need_change) {
+            cursor_store.set_style('default')
         }
     })
     div_right_panel.value.addEventListener("mouseenter", () => {
-        if (app_is_change_cursor.value) {
-            app_cursor.value = "default";
+        if (cursor_store.need_change) {
+            cursor_store.set_style('default')
         }
     });
 });

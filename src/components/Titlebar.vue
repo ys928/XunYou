@@ -7,15 +7,18 @@ import { Moon, SunnyOutline, Close } from "@vicons/ionicons5"
 import { Maximize16Regular } from "@vicons/fluent"
 import { MinusOutlined } from "@vicons/antd"
 import { useNovelStore } from "../store/novel";
+import { useCursorStore } from "../store/cursor";
 
 
 const novel_store = useNovelStore();
 
+const cursor_store = useCursorStore();
+
 /**
  * 绑定相关标签的变量
  */
-const prop = defineProps(['name', 'style', 'cursor']);
-const emit = defineEmits(['update:style', 'update:cursor', 'pop_msg']);
+const prop = defineProps(['name', 'style']);
+const emit = defineEmits(['update:style', 'pop_msg']);
 /**
  * ref变量
  */
@@ -113,7 +116,7 @@ async function WinTogMax() {
 </script>
 
 <template>
-    <div class="Titlebar" @mouseenter="emit('update:cursor', 'default');">
+    <div class="Titlebar" @mouseenter="cursor_store.set_style('default')">
         <div class="top_line"></div>
         <div data-tauri-drag-region class="content">
             <div class="app_info">

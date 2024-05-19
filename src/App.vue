@@ -5,6 +5,7 @@ import { onBeforeMount, onMounted, provide, ref, watch } from 'vue';
 import { event, invoke, window } from '@tauri-apps/api';
 import { darkTheme, NMessageProvider, NConfigProvider, GlobalTheme, NDialogProvider } from 'naive-ui'
 import { useStyleStore } from './store/style';
+import { useCursorStore } from './store/cursor';
 
 type app_setting = {
   font_size: number, //font-size
@@ -13,39 +14,20 @@ type app_setting = {
   font_family: string, //font-family
 }
 
-//用于控制当前鼠标样式
-const app_cursor = ref("none");
-provide("app_cursor", app_cursor);
+
+
 //全局应用样式
 const app_style = ref<GlobalTheme | null>(darkTheme);
 provide("app_style", app_style);
 
 const style_store = useStyleStore();
 
+const cursor_store = useCursorStore();
 
 onBeforeMount(async () => {
   //取得配置文件中的设置信息
   let setting = await invoke<app_setting>("get_setting", {});
   style_store.set(setting.font_size, setting.font_weight, setting.font_family, setting.line_height);
-});
-
-/**
- * 绑定标签
- */
-const div_main_window = ref();
-
-/**
- * 全局变量
- */
-
-//是否修改鼠标样式
-const app_is_change_cursor = ref(true);
-provide("app_is_change_cursor", app_is_change_cursor);
-/**
- * 监视变量变化
- */
-watch(app_cursor, (newv, oldv) => {
-  div_main_window.value.style.cursor = newv;
 });
 
 const lightThemeOverrides = {
@@ -104,8 +86,8 @@ onMounted(() => {
     :theme-overrides="app_style === null ? lightThemeOverrides : darkThemeOverrides">
     <n-message-provider>
       <n-dialog-provider>
-        <div class="MainWindow" ref="div_main_window">
-          <Titlebar name="寻幽" v-model:style="app_style" v-model:cursor="app_cursor">
+        <div class="MainWindow" :style="{ cursor: cursor_store.style }">
+          <Titlebar name="寻幽" v-model:style="app_style">
           </Titlebar>
           <div class="MainPanel">
             <router-view name="LeftSidebar"></router-view>

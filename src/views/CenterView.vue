@@ -4,22 +4,19 @@ import ShowInfo from '../components/Center/ShowInfo.vue';
 import { Ref, ref, onMounted, inject } from 'vue';
 import { NSpin } from "naive-ui"
 import { useShowStore } from '../store/show';
+import { useCursorStore } from '../store/cursor';
 
 const show_store = useShowStore();
 
+const cursor_store = useCursorStore();
 
-/**
- * 绑定标签
- */
 const div_center_panel = ref();
 
-//鼠标样式
-const app_cursor = inject("app_cursor") as Ref<string>;
-const app_is_change_cursor = inject("app_is_change_cursor") as Ref<boolean>;
 onMounted(async () => {
+
     div_center_panel.value.addEventListener("mouseenter", () => {
-        if (app_is_change_cursor.value) {
-            app_cursor.value = "text";
+        if (cursor_store.need_change) {
+            cursor_store.set_style('text')
         }
     })
     document.addEventListener("keyup", e => {
