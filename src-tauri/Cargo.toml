@@ -1,7 +1,7 @@
 [package]
 name = "xunyou"
 version = "2.0.2"
-description = "一个简约、小巧的看小说软件"
+description = "xunyou"
 authors = ["ys928"]
 license = "MIT"
 repository = "https://github.com/ys928/XunYou"

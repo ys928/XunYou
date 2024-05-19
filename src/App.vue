@@ -108,9 +108,9 @@ onMounted(() => {
           <Titlebar name="寻幽" v-model:style="app_style" v-model:cursor="app_cursor">
           </Titlebar>
           <div class="MainPanel">
-            <router-view class="view left-sidebar" name="LeftSidebar"></router-view>
-            <router-view class="view center"></router-view>
-            <router-view class="view right-sidebar" name="RightSidebar"></router-view>
+            <router-view name="LeftSidebar"></router-view>
+            <router-view></router-view>
+            <router-view name="RightSidebar"></router-view>
           </div>
           <Statusbar></Statusbar>
         </div>

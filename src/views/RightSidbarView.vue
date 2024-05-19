@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import Toolbar from '../components/RightSidebar/Toolbar.vue';
+import { Ref, h, inject, onMounted, reactive, ref, render } from 'vue';
+import { NIcon } from 'naive-ui';
+import { CalendarSearch20Regular, Settings24Regular } from "@vicons/fluent"
 import SearchPanel from '../components/RightSidebar/SearchPanel.vue';
 import Setting from '../components/RightSidebar/Setting.vue';
-import { Ref, inject, onMounted, provide, reactive, ref, watch } from 'vue';
+
 /**
  * ref变量
  */
-const show_divid = ref(false);
+const show_panel = ref(false);
 /**
  * 绑定的标签变量
  */
@@ -18,32 +20,20 @@ const div_right_panel = ref();
  */
 const app_cursor = inject("app_cursor") as Ref<string>;
 const app_is_change_cursor = inject("app_is_change_cursor") as Ref<boolean>;
-/**
- * 提供给子组件公用
- */
-const all_panel = reactive({
-    'SearchPanel': false,
-    'Setting': false
-});
-provide("all_panel", all_panel);
-/**
- * 监视vue变量
- */
 
-watch(all_panel, (newval, oldval) => {
-    //控制调整大小的分割线是否显示
-    let b = true;
-    Object.entries(all_panel).map(kv => {
-        if (kv[1]) {
-            show_divid.value = true;
-            b = false;
-        }
-    });
-    if (b) {
-        show_divid.value = false;
-    }
 
-});
+let cur_show_panel = '';
+
+const BarItems = reactive([
+    {
+        name: 'search',
+        show: false,
+    },
+    {
+        name: 'setting',
+        show: false,
+    },
+]);
 
 onMounted(() => {
     let posX: number; //记录当鼠标点击时的x坐标
@@ -61,7 +51,9 @@ onMounted(() => {
     document.addEventListener("mouseup", e => {
         act_divid = false; //关闭
         app_is_change_cursor.value = true;
-        div_divid_line.value.style.opacity = '0';
+        if (div_divid_line.value) {
+            div_divid_line.value.style.opacity = '0';
+        }
     });
     document.addEventListener("mousemove", e => {
         if (act_divid) { //如果处于激活状态，则更改面板的大小
@@ -98,16 +90,52 @@ onMounted(() => {
     });
 });
 
+function switch_panel(name: string) {
+    if (name == cur_show_panel) {
+        show_panel.value = !show_panel.value;
+        return;
+    }
+    for (let item of BarItems) {
+        item.show = false;
+    }
+    for (let item of BarItems) {
+        if (item.name === name) {
+            cur_show_panel = name;
+            show_panel.value = true;
+            item.show = true;
+            break;
+        }
+    }
+}
+
+function fun_is_show(name: string) {
+    for (let item of BarItems) {
+        if (item.name == name) {
+            return item.show;
+        }
+    }
+    return false;
+}
+
 </script>
 
 <template>
     <div class="RightSidbarView" ref="div_right_panel">
-        <div v-show="show_divid" class="divid_line" ref="div_divid_line"></div>
-        <div class="content" ref="div_content" v-show="show_divid">
-            <SearchPanel v-show="all_panel.SearchPanel"></SearchPanel>
-            <Setting v-show="all_panel.Setting"></Setting>
+        <div v-show="show_panel" class="divid_line" ref="div_divid_line"></div>
+        <div class="content" ref="div_content" v-show="show_panel">
+            <SearchPanel v-if="fun_is_show('search')"></SearchPanel>
+            <setting v-else-if="fun_is_show('setting')"></setting>
         </div>
-        <Toolbar></Toolbar>
+        <div class="Toolbar">
+            <div class="top">
+                <n-icon class="icon" size="25" color="#585858" :component="CalendarSearch20Regular" title="搜索小说"
+                    @click="switch_panel('search')"></n-icon>
+            </div>
+            <div class="bottom">
+                <n-icon class="icon" size="25" color="#585858" :component="Settings24Regular" title="设置"
+                    @click="switch_panel('setting')"></n-icon>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -116,6 +144,28 @@ onMounted(() => {
     display: flex;
     border-top: solid 2px var(--border-color);
     border-bottom: solid 2px var(--border-color);
+
+    .Toolbar {
+        width: 40px;
+        padding: 5px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        border-left: var(--border-color) 2px solid;
+        background-color: var(--base-bgc);
+
+        .icon {
+            width: 30px;
+            height: 30px;
+            padding: 3px;
+            border-radius: 5px;
+            cursor: pointer;
+
+            &:hover {
+                background-color: var(--hover-color);
+            }
+        }
+    }
 
     .content {
         width: 200px;

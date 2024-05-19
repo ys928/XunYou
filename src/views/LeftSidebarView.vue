@@ -1,58 +1,44 @@
 <script setup lang="ts">
-import Toolbar from '../components/LeftSidebar/Toolbar.vue';
+import { Ref, inject, onMounted, reactive, ref } from 'vue';
+import { History } from "@vicons/fa"
+import { List16Filled, Toolbox20Regular } from "@vicons/fluent"
+import { Tag } from "@vicons/carbon"
+import { NIcon } from 'naive-ui';
 import HistoryPanel from '../components/LeftSidebar/HistoryPanel.vue'
 import Catalogue from '../components/LeftSidebar/Catalogue.vue';
 import Toolbox from '../components/LeftSidebar/Toolbox.vue';
 import Bookmark from '../components/LeftSidebar/Bookmark.vue';
-import { Ref, inject, onMounted, provide, reactive, ref, watch } from 'vue';
-/**
- * ref变量
- */
-const show_divid = ref(false);
-/**
- * 绑定的标签变量
- */
+
+
+const show_panel = ref(false);
+
+
 const div_divid_line = ref();
-const div_content = ref();
+const div_content = ref() as Ref<HTMLElement>;
 const div_left_panel = ref();
-/**
- * 取出父组件提供的变量
- */
+
 const app_cursor = inject("app_cursor") as Ref<string>;
 const app_is_change_cursor = inject("app_is_change_cursor") as Ref<boolean>;
-/**
- * 提供给子组件公用
- */
-const all_panel = reactive({
-    'HistoryPanel': false,
-    'Catalogue': false,
-    'Toolbox': false,
-    'Tag': false,
-});
-provide("all_panel", all_panel);
 
-/**
- * 监视vue变量
- */
+let cur_show_panel = '';
 
-watch(all_panel, (newval, oldval) => {
-    //控制调整大小的分割线是否显示
-    let b = true;
-    Object.entries(all_panel).map(kv => {
-        if (kv[1]) {
-            show_divid.value = true;
-            b = false;
-        }
-    });
-    if (b) {
-        show_divid.value = false;
+const BarItems = reactive([
+    {
+        name: 'history',
+        show: false
+    },
+    {
+        name: 'catalogue',
+        show: false
+    },
+    {
+        name: 'toolbox',
+        show: false
+    }, {
+        name: 'bookmark',
+        show: false
     }
-
-});
-
-/**
- * 初始化
- */
+]);
 
 onMounted(() => {
     let posX: number; //记录当鼠标点击时的x坐标
@@ -70,7 +56,9 @@ onMounted(() => {
     document.addEventListener("mouseup", e => {
         act_divid = false; //关闭
         app_is_change_cursor.value = true;
-        div_divid_line.value.style.opacity = '0';
+        if(div_divid_line.value){
+            div_divid_line.value.style.opacity = '0';
+        }
     });
     document.addEventListener("mousemove", e => {
         if (act_divid) { //如果处于激活状态，则更改面板的大小
@@ -103,19 +91,59 @@ function left_panel_mo() {
     }
 }
 
+function switch_panel(name: string) {
+    if (name == cur_show_panel) {
+        show_panel.value = !show_panel.value;
+        return;
+    }
+    for (let item of BarItems) {
+        item.show = false;
+    }
+    for (let item of BarItems) {
+        if (item.name === name) {
+            cur_show_panel = name;
+            show_panel.value = true;
+            item.show = true;
+            break;
+        }
+    }
+}
+
+function fun_is_show(name: string) {
+    for (let item of BarItems) {
+        if (item.name == name) {
+            return item.show;
+        }
+    }
+    return false;
+}
+
 </script>
 
 
 <template>
     <div class="LeftSidbarView" ref="div_left_panel" @mouseover="left_panel_mo">
-        <Toolbar></Toolbar>
-        <div class="content" v-show="show_divid" ref="div_content">
-            <HistoryPanel v-show="all_panel.HistoryPanel"></HistoryPanel>
-            <Catalogue v-show="all_panel.Catalogue"></Catalogue>
-            <Toolbox v-show="all_panel.Toolbox"></Toolbox>
-            <Bookmark v-show="all_panel.Tag"></Bookmark>
+        <div class="Toolbar">
+            <div class="top">
+                <n-icon class="icon" size="18" :component="History" title="历史记录" @click="switch_panel('history')"
+                    color="#585858"></n-icon>
+                <n-icon class="icon" size="23" :component="List16Filled" title="目录" @click="switch_panel('catalogue')"
+                    color="#585858"></n-icon>
+                <n-icon class="icon" size="20" :component="Tag" title="书签" @click="switch_panel('bookmark')"
+                    color="#585858"></n-icon>
+            </div>
+            <div class="bottom">
+                <n-icon class="icon" size="20" :component="Toolbox20Regular" title="工具箱"
+                    @click="switch_panel('toolbox')" color="#585858"></n-icon>
+            </div>
         </div>
-        <div v-show="show_divid" class="divid_line" ref="div_divid_line"></div>
+        <div class="content" v-show="show_panel" ref="div_content">
+            <HistoryPanel v-if="fun_is_show('history')"></HistoryPanel>
+            <Catalogue v-else-if="fun_is_show('catalogue')"></Catalogue>
+            <Bookmark v-else-if="fun_is_show('bookmark')"></Bookmark>
+            <Toolbox v-else-if="fun_is_show('toolbox')"></Toolbox>
+        </div>
+        <div v-show="show_panel" class="divid_line" ref="div_divid_line"></div>
     </div>
 </template>
 
@@ -124,6 +152,28 @@ function left_panel_mo() {
     display: flex;
     border-top: solid 2px var(--border-color);
     border-bottom: solid 2px var(--border-color);
+
+    .Toolbar {
+        width: 40px;
+        padding: 5px;
+        display: flex;
+        border-right: var(--border-color) 2px solid;
+        background-color: var(--base-bgc);
+        flex-direction: column;
+        justify-content: space-between;
+
+        .icon {
+            width: 30px;
+            height: 30px;
+            padding: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+
+            &:hover {
+                background-color: var(--hover-color);
+            }
+        }
+    }
 
     .content {
         width: 200px;
