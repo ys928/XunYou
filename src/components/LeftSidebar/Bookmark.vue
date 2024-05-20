@@ -114,7 +114,9 @@ async function del_mark() {
             border-radius: 5px;
             cursor: pointer;
             overflow: hidden;
-            margin: 10px 2px;
+            margin: 5px 10px;
+            padding: 2px 5px;
+            color: var(--text-color1);
 
             &:hover {
                 background-color: var(--hover-color);

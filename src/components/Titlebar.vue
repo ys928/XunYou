@@ -117,7 +117,6 @@ async function WinTogMax() {
 
 <template>
     <div class="Titlebar" @mouseenter="cursor_store.set_style('default')">
-        <div class="top_line"></div>
         <div data-tauri-drag-region class="content">
             <div class="app_info">
                 <img src="/src/assets/app-icon.png" alt="app-icon">
@@ -148,11 +147,6 @@ async function WinTogMax() {
 
 <style scoped lang="less">
 .Titlebar {
-    .top_line {
-        height: 2px;
-        background-color: var(--base-bgc);
-    }
-
     .content {
         height: 30px;
         line-height: 30px;
@@ -187,12 +181,14 @@ async function WinTogMax() {
             .mmc {
                 height: 30px;
                 line-height: 30px;
+                display: flex;
 
                 .n-icon {
-                    margin: 3px 0 0 0;
-                    height: 25px;
+                    height: 30px;
                     width: 30px;
-                    line-height: 30px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
                 }
 
                 .max,
