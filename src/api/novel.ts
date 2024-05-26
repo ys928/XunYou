@@ -13,6 +13,15 @@ type Record = {
     line: number,
 }
 
+export type Bookmark = {
+    id: string, //识别该书签的唯一id
+    label: string, //该标签的额外标注信息
+    chapter: Number, //所属章节
+    line: Number, //所属行
+    datetime: string, //创建日期
+    content: string, //简短文章内容
+}
+
 export type CataItem = {
     title: string,
     idx: number
@@ -37,5 +46,13 @@ export class Novel {
 
     static async get_cata() {
         return await invoke<Array<CataItem>>("novel_get_cata");
+    }
+
+    static async get_bookmark() {
+        return await invoke<Array<Bookmark>>("novel_get_bookmark");
+    }
+
+    static async add_bookmark(mark: Bookmark) {
+        return await invoke<boolean>("novel_add_bookmark", { mark: mark });
     }
 }

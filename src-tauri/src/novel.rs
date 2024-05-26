@@ -7,7 +7,7 @@ use regex::Regex;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    config::{get_bookmark, get_nov_prog},
+    config::{add_bookmark, get_bookmark, get_nov_prog},
     types::Bookmark,
 };
 
@@ -127,10 +127,10 @@ pub fn novel_open_txt(filepath: &str) -> bool {
     nov.chapters.push(chap);
 
     // 获取书签
-    nov.bookmarks = get_bookmark(filepath);
+    nov.bookmarks = get_bookmark(filepath).unwrap();
 
     // 获取记录
-    let (c, l) = get_nov_prog(filepath);
+    let (c, l) = get_nov_prog(filepath).unwrap();
     nov.record.chapter = c;
     nov.record.line = l;
 
@@ -193,6 +193,27 @@ pub fn novel_get_cata() -> Result<Vec<CataItem>, String> {
         });
     }
     Ok(cata)
+}
+
+#[tauri::command]
+pub fn novel_get_bookmark() -> Result<Vec<Bookmark>, String> {
+    let novel = OPENED_NOVEL.lock().unwrap();
+    if novel.is_none() {
+        return Err("还没有打开该小说".to_string());
+    }
+    Ok(novel.as_ref().unwrap().bookmarks.clone())
+}
+
+#[tauri::command]
+pub fn novel_add_bookmark(mark: Bookmark) -> Result<(), String> {
+    let mut novel = OPENED_NOVEL.lock().unwrap();
+    if novel.is_none() {
+        return Err("还没有打开该小说".to_string());
+    }
+    let nov = novel.as_mut().unwrap();
+    nov.bookmarks.push(mark.clone());
+    add_bookmark(&nov.path, mark)?;
+    Ok(())
 }
 
 /// 判断是否为标题

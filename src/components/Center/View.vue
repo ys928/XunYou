@@ -5,6 +5,7 @@ import { useDialog, useMessage, NModal, NInput, NScrollbar } from "naive-ui"
 import { useNovelStore } from '../../store/novel';
 import { useStyleStore } from '../../store/style';
 import { useShowStore } from '../../store/show';
+import { Bookmark } from '../../api/novel';
 
 const novel_store = useNovelStore();
 
@@ -16,20 +17,10 @@ const ref_div_title = ref() as Ref<HTMLElement>;
 
 const ref_div_content = ref() as Ref<HTMLElement>;
 
-type book_mark = {
-	id: string, //识别该书签的唯一id
-	label: string, //该标签的额外标注信息
-	chapter: Number, //所属章节
-	line: Number, //所属行
-	datetime: string, //创建日期
-	content: string, //简短文章内容
-}
-
 /*
 绑定标签
 */
-let div_view: HTMLElement;
-let dev_menu = ref();
+let dev_menu = ref() as Ref<HTMLElement>;
 /*
 控制内容的变量数据
 */
@@ -39,7 +30,7 @@ const is_show_menu = ref(false);
 const show_edit_remark = ref(false);
 
 //保存当前书签内容
-const bookmark: book_mark = reactive({
+const bookmark: Bookmark = reactive({
 	id: '',
 	chapter: 0,
 	line: 0,
@@ -57,16 +48,14 @@ const popmsg = useMessage();
  * 初始化函数
  */
 onMounted(async () => {
-	//初始化view对象
-	div_view = document.getElementById('div_view') as HTMLElement;
-	div_view.oncontextmenu = function (e) {
+	ref_div_content.value.oncontextmenu = function (e) {
 		dev_menu.value.style.left = e.pageX + "px";
 		dev_menu.value.style.top = e.pageY + "px";
 		is_show_menu.value = true;
 		p_div = e.target;
 	}
 	document.addEventListener("click", e => {
-		if (dev_menu.value !== undefined && dev_menu.value !== null && !dev_menu.value.contains(e.target)) {
+		if (dev_menu.value !== undefined && dev_menu.value !== null && !dev_menu.value.contains(e.target as Node)) {
 			is_show_menu.value = false;
 		}
 	})
@@ -220,7 +209,7 @@ async function fun_jump(cur_chapter: number, cur_line: number) {
 //添加书签函数
 async function fun_add_bookmark() {
 	//获取所有段落
-	let ps = div_view.querySelectorAll('div');
+	let ps = ref_div_content.value.querySelectorAll('div');
 	// 遍历子标签div
 	let cur_p = -1;
 	for (var i = 0; i < ps.length; i++) {
@@ -278,14 +267,14 @@ function onNegativeClick() {
 }
 //模态框，确认添加书签
 async function onPositiveClick() {
-	novel_store.add_bookmark(bookmark);
+	await novel_store.add_bookmark(bookmark);
 	bookmark.label = "";
 	popmsg.success('成功添加书签!');
 }
 </script>
 
 <template>
-	<div class="View" id="div_view">
+	<div class="View">
 		<n-scrollbar @onWheel="process_wheel" @onScroll="process_scroll">
 			<div class="title" ref="ref_div_title">{{ novel_store.show_chapter.title }}</div>
 			<div class="content" ref="ref_div_content" :style="style_store.style">

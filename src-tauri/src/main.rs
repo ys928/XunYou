@@ -15,7 +15,7 @@ fn main() {
         .setup(move |app| {
             let window = app.get_window("MainWindow").unwrap();
             //初始化窗口大小
-            let (w, h) = config::get_wh();
+            let (w, h) = config::get_wh().unwrap();
             window
                 .set_size(Size::Physical(PhysicalSize {
                     width: w,
@@ -42,14 +42,14 @@ fn main() {
             config::get_novel_folder,
             config::get_setting,
             config::set_setting,
-            config::get_bookmark,
-            config::add_bookmark,
             config::del_bookmark,
             novel::novel_open_txt,
             novel::novel_get_chapter,
             novel::novel_get_record,
             novel::novel_get_num_chapters,
             novel::novel_get_cata,
+            novel::novel_get_bookmark,
+            novel::novel_add_bookmark,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

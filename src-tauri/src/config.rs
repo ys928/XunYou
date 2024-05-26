@@ -5,20 +5,20 @@ use crate::types::*;
 
 //获取历史小说文件记录
 #[tauri::command]
-pub fn get_record() -> Vec<Novel> {
-    let cfg = config_info();
-    cfg.record
+pub fn get_record() -> Result<Vec<Novel>, String> {
+    let cfg = config_info()?;
+    Ok(cfg.record)
 }
 
 //获取指定小说的行数
 #[tauri::command]
-pub fn get_nov_prog(path: &str) -> (u64, u64) {
-    let cfg_info = config_info();
+pub fn get_nov_prog(path: &str) -> Result<(u64, u64), String> {
+    let cfg_info = config_info()?;
 
     // 优先按路径匹配
     for i in cfg_info.record.iter() {
         if i.path == path {
-            return (i.cur_chapter, i.cur_line);
+            return Ok((i.cur_chapter, i.cur_line));
         }
     }
 
@@ -27,16 +27,16 @@ pub fn get_nov_prog(path: &str) -> (u64, u64) {
 
     for i in cfg_info.record.iter() {
         if i.md5 == md5 {
-            return (i.cur_chapter, i.cur_line);
+            return Ok((i.cur_chapter, i.cur_line));
         }
     }
 
-    return (0, 0);
+    return Ok((0, 0));
 }
 #[tauri::command]
-pub fn del_record(path: &str) {
+pub fn del_record(path: &str) -> Result<(), String> {
     //得到当前配置文件
-    let mut cfg = config_info();
+    let mut cfg = config_info()?;
     for i in 0..cfg.record.len() {
         if cfg.record[i].path == path {
             cfg.record.remove(i);
@@ -44,33 +44,36 @@ pub fn del_record(path: &str) {
         }
     }
     record_config(cfg);
+    Ok(())
 }
 //记录宽高
 #[tauri::command]
-pub fn set_wh(w: u32, h: u32) {
+pub fn set_wh(w: u32, h: u32) -> Result<(), String> {
     //得到当前配置文件
-    let mut cfg = config_info();
+    let mut cfg = config_info()?;
     cfg.app.width = w;
     cfg.app.height = h;
     //保存到配置文件中
     record_config(cfg);
+    Ok(())
 }
 
-pub fn get_wh() -> (u32, u32) {
+pub fn get_wh() -> Result<(u32, u32), String> {
     //得到当前配置文件
-    let cfg = config_info();
-    (cfg.app.width, cfg.app.height)
+    let cfg = config_info()?;
+    Ok((cfg.app.width, cfg.app.height))
 }
 
 #[tauri::command]
-pub fn set_nov_prog(path: &str, line: u64, chapter: u64) {
+pub fn set_nov_prog(path: &str, line: u64, chapter: u64) -> Result<(), String> {
     //info!("set_nov_prog:{},{},{}",path,line,all_lines);
-    let md5 = common::md5_file(path).unwrap_or_else(|| {
-        //warn!("error to get md5");
-        panic!("error to get md5");
-    });
+    let md5 = common::md5_file(path);
+    if md5.is_none() {
+        return Err("error to get md5".to_string());
+    }
+    let md5 = md5.unwrap();
     //得到当前配置文件
-    let mut cfg = config_info();
+    let mut cfg = config_info()?;
 
     let mut f = true;
     for i in &mut cfg.record {
@@ -95,34 +98,39 @@ pub fn set_nov_prog(path: &str, line: u64, chapter: u64) {
     }
     //保存到文件中
     record_config(cfg);
-    //info!("set_nov_prog:{},success",path);
+    Ok(())
 }
 
 //获取配置信息
-fn config_info() -> ConfigInfo {
+fn config_info() -> Result<ConfigInfo, String> {
     let cf_path = common::config_dir("XunYou");
-    let p = cf_path.join("profile");
-    let p = p.as_path().to_str().unwrap_or_else(|| {
-        //warn!("get config file failed");
-        panic!();
-    });
+    let p = cf_path.join("profile.json");
+    let p = p.as_path().to_str();
+    if p.is_none() {
+        return Err("get config file failed".to_string());
+    }
+    let p = p.unwrap();
+
     if !common::exist_file(p) {
         let c = ConfigInfo::default();
         //默认宽高
-        let s = serde_json::to_string(&c).unwrap_or_else(|_e| {
-            //warn!("serde_json failed:{}",e);
-            panic!("");
-        });
-        std::fs::write(p, s).unwrap_or_else(|_e| {
-            //warn!("write config info failed:{}",e);
-            panic!("");
-        });
-        return c;
+        let s = serde_json::to_string(&c);
+        if s.is_err() {
+            return Err(s.unwrap_err().to_string());
+        }
+        let s = s.unwrap();
+
+        let ret = std::fs::write(p, s);
+        if ret.is_err() {
+            return Err(ret.unwrap_err().to_string());
+        }
+        return Ok(c);
     }
-    let cfg_info = std::fs::read_to_string(p).unwrap_or_else(|_e| {
-        //warn!("get config file failed:{}",e);
-        panic!("");
-    });
+    let cfg_info = std::fs::read_to_string(p);
+    if cfg_info.is_err() {
+        return Err(cfg_info.unwrap_err().to_string());
+    }
+    let cfg_info = cfg_info.unwrap();
     let app_info: ConfigInfo = serde_json::from_str(&cfg_info).unwrap_or_else(|_e| {
         //warn!("serde_json failed:{}",e);
         let c = ConfigInfo::default();
@@ -136,7 +144,7 @@ fn config_info() -> ConfigInfo {
         });
         return c;
     });
-    app_info
+    Ok(app_info)
 }
 //保存配置信息到文件中
 fn record_config(cfg: ConfigInfo) {
@@ -159,63 +167,64 @@ fn record_config(cfg: ConfigInfo) {
 
 //获取配置文件中的主题信息
 #[tauri::command]
-pub fn get_theme() -> String {
-    let cfg = config_info();
-    cfg.app.theme
+pub fn get_theme() -> Result<String, String> {
+    let cfg = config_info()?;
+    Ok(cfg.app.theme)
 }
 
 //获取配置文件中的主题信息
 #[tauri::command]
-pub fn set_theme(theme: &str) {
-    let mut cfg = config_info();
+pub fn set_theme(theme: &str) -> Result<(), String> {
+    let mut cfg = config_info()?;
     cfg.app.theme = theme.to_string();
     record_config(cfg);
+    Ok(())
 }
 //设置存放小说的文件夹记录
 #[tauri::command]
-pub fn set_novel_folder(folder: &str) {
-    let mut cfg = config_info();
+pub fn set_novel_folder(folder: &str) -> Result<(), String> {
+    let mut cfg = config_info()?;
     cfg.app.novel_folder = folder.to_string();
     record_config(cfg);
+    Ok(())
 }
 //获取存放小说的文件夹记录
 #[tauri::command]
-pub fn get_novel_folder() -> String {
-    let cfg = config_info();
-    cfg.app.novel_folder
+pub fn get_novel_folder() -> Result<String, String> {
+    let cfg = config_info()?;
+    Ok(cfg.app.novel_folder)
 }
 //获取小说界面相关设置
 #[tauri::command]
-pub fn get_setting() -> AppSet {
-    let cfg = config_info();
-    cfg.appset
+pub fn get_setting() -> Result<AppSet, String> {
+    let cfg = config_info()?;
+    Ok(cfg.appset)
 }
 //设置小说界面相关设置
 #[tauri::command]
-pub fn set_setting(fs: u32, fw: u32, lh: u32, ff: &str) {
-    let mut cfg = config_info();
+pub fn set_setting(fs: u32, fw: u32, lh: u32, ff: &str) -> Result<(), String> {
+    let mut cfg = config_info()?;
     cfg.appset.font_size = fs;
     cfg.appset.font_weight = fw;
     cfg.appset.line_height = lh;
     cfg.appset.font_family = ff.to_string();
     record_config(cfg);
+    Ok(())
 }
 
 //获取当前小说标签
-#[tauri::command]
-pub fn get_bookmark(path: &str) -> Vec<Bookmark> {
-    let cfg = config_info();
+pub fn get_bookmark(path: &str) -> Result<Vec<Bookmark>, String> {
+    let cfg = config_info()?;
     for n in cfg.record {
         if n.path == path {
-            return n.bookmark;
+            return Ok(n.bookmark);
         }
     }
-    Vec::new()
+    Ok(Vec::new())
 }
 //添加当前小说书签
-#[tauri::command]
-pub fn add_bookmark(path: &str, mark: Bookmark) {
-    let mut cfg = config_info();
+pub fn add_bookmark(path: &str, mark: Bookmark) -> Result<(), String> {
+    let mut cfg = config_info()?;
     for n in cfg.record.iter_mut() {
         if n.path == path {
             n.bookmark.push(mark);
@@ -223,12 +232,13 @@ pub fn add_bookmark(path: &str, mark: Bookmark) {
         }
     }
     record_config(cfg);
+    Ok(())
 }
 
 //删除当前小说书签
 #[tauri::command]
-pub fn del_bookmark(path: &str, id: String) {
-    let mut cfg = config_info();
+pub fn del_bookmark(path: &str, id: String) -> Result<(), String> {
+    let mut cfg = config_info()?;
     for n in cfg.record.iter_mut() {
         if n.path != path {
             continue;
@@ -242,4 +252,5 @@ pub fn del_bookmark(path: &str, id: String) {
         break;
     }
     record_config(cfg);
+    Ok(())
 }

@@ -81,6 +81,8 @@ export const useNovelStore = defineStore('novel', () => {
                 show_store.set_prompt(false);
                 num_chapters = await Novel.get_num_chapters();
                 cata.value = await Novel.get_cata();
+                bookmark.value = await Novel.get_bookmark();
+
                 isopen.value = true;
                 return true;
             } else {
@@ -98,11 +100,11 @@ export const useNovelStore = defineStore('novel', () => {
     }
 
     async function add_bookmark(mark: Bookmark) {
-        bookmark.value.push(mark)
-        await invoke('add_bookmark', {
-            path: path.value,
-            mark: bookmark.value
-        });
+        let m = { ...mark };
+        bookmark.value.push(m)
+        console.log(bookmark.value);
+
+        await Novel.add_bookmark(m);
     }
 
     async function next_chapter() {
