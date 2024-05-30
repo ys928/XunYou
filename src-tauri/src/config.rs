@@ -1,5 +1,11 @@
 use core::panic;
 
+use log::warn;
+use log4rs::append::console::ConsoleAppender;
+use log4rs::config::Appender;
+use log4rs::config::Root;
+use log4rs::encode::pattern::PatternEncoder;
+
 use crate::common;
 use crate::types::*;
 
@@ -149,20 +155,27 @@ fn config_info() -> Result<ConfigInfo, String> {
 //保存配置信息到文件中
 fn record_config(cfg: ConfigInfo) {
     let cf_path = common::config_dir("XunYou");
-    let p = cf_path.join("profile");
-    let p = p.as_path().to_str().unwrap_or_else(|| {
-        //warn!("get config file failed");
-        panic!();
-    });
+    let p = cf_path.join("profile.json");
+    let p = p.to_str();
+    if p.is_none() {
+        warn!("get config path failed");
+        return;
+    }
 
-    let s = serde_json::to_string(&cfg).unwrap_or_else(|_e| {
-        //warn!("{}",e);
-        panic!("error for serde_json's to_string function");
-    });
-    std::fs::write(p, s).unwrap_or_else(|_e| {
-        //warn!("{}",e);
-        panic!("error for write config to file");
-    })
+    let p = p.unwrap();
+
+    let s = serde_json::to_string(&cfg);
+    if s.is_err() {
+        warn!("{}", s.unwrap_err());
+        return;
+    }
+
+    let s = s.unwrap();
+
+    let ret = std::fs::write(p, s);
+    if ret.is_err() {
+        warn!("{}", ret.unwrap_err());
+    }
 }
 
 //获取配置文件中的主题信息
@@ -253,4 +266,24 @@ pub fn del_bookmark(path: &str, id: String) -> Result<(), String> {
     }
     record_config(cfg);
     Ok(())
+}
+
+/// config the log
+pub fn init_log() {
+    let con = ConsoleAppender::builder()
+        .encoder(Box::new(PatternEncoder::new(
+            "{d(%H:%M:%S)} {h([{l}])} {M}:{L} => {m}{n}",
+        )))
+        .build();
+
+    let config = log4rs::Config::builder()
+        .appender(Appender::builder().build("stdout", Box::new(con)))
+        .build(
+            Root::builder()
+                .appender("stdout")
+                .build(log::LevelFilter::Debug),
+        )
+        .unwrap();
+
+    let _ = log4rs::init_config(config).unwrap();
 }

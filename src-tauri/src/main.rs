@@ -8,6 +8,7 @@ mod types;
 use tauri::{Manager, PhysicalSize, Size};
 
 fn main() {
+    config::init_log();
     novel::init();
 
     //config::init_log();

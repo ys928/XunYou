@@ -1,21 +1,21 @@
 <script setup lang="ts">
 import { Ref, ref, onMounted } from 'vue';
-import { FileEntry, readDir } from '@tauri-apps/api/fs';
-import { dialog, invoke } from '@tauri-apps/api';
+import { dialog } from '@tauri-apps/api';
 import { fs } from '@tauri-apps/api';
 import { NIcon, NInput, NSpin, NScrollbar } from "naive-ui"
 import { FolderMinus } from "@vicons/tabler"
 import { useNovelStore } from '../../store/novel';
+import { FS, NovelInfo } from '../../api/fs';
 
 const novel_store = useNovelStore();
 
 //控制要显示的小说列表项
-let show_novel_list = ref([]) as Ref<Array<FileEntry>>;
+let show_novel_list = ref([]) as Ref<Array<NovelInfo>>;
 //控制加载图标是否显示
 const show_loading = ref(false);
 
 //存储所有可搜索的小说项
-let all_novel: Array<FileEntry> = [];
+let all_novel: Array<NovelInfo> = [];
 
 async function search_fun(v: string) {
     if (v.length === 0) { //为空，直接展示前一百条
@@ -36,13 +36,13 @@ async function search_fun(v: string) {
 }
 
 onMounted(async () => {
-    let p: string = await invoke("get_novel_folder", {});
+    let p = await FS.get_root_path();
     //bug,还需要判断这个文件是不是目录
     let ret = await fs.exists(p);
     if (ret) {
         all_novel.splice(0); //清空
         show_novel_list.value.splice(0);
-        all_novel = await readDir(p as string); //重新获取数据
+        all_novel = await FS.read_dir(p as string);
         all_novel = all_novel.filter(e => e.name!.endsWith(".novel") || e.name!.endsWith(".txt"));
         show_loading.value = false;
         //优化性能，最多展示前100项
@@ -59,12 +59,15 @@ async function choose_dir() {
     });
     if (p === null) return;
     show_loading.value = true;
-    invoke("set_novel_folder", { folder: p });
-    //console.log(all_novel);
+
+    FS.set_root_path(p as string);
+
     all_novel.splice(0); //清空
     show_novel_list.value.splice(0);
-    all_novel = await readDir(p as string); //重新获取数据
+
+    all_novel = await FS.read_dir(p as string);
     all_novel = all_novel.filter(e => e.name!.endsWith(".novel") || e.name!.endsWith(".txt"));
+
     show_loading.value = false;
     //优化性能，最多展示前100项
     let max = 100 < all_novel.length ? 100 : all_novel.length;

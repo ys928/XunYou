@@ -173,7 +173,6 @@ async function fun_open_novel(path: string) {
 	show_store.set_prompt(false);
 	//显示加载动图
 	show_store.set_loading(true);
-	//console.log(novel_loading.value);
 	//更新文件名
 	if (path.endsWith(".novel")) {
 	} else if (path.endsWith(".txt")) {
