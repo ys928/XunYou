@@ -10,17 +10,8 @@ pub struct Bookmark {
     pub content: String,  //简短内容，用于快捷展示
 }
 
-#[derive(Serialize, Deserialize, Clone, Default)]
-pub struct Novel {
-    pub name: String,            //小说名字
-    pub path: String,            //小说文件路径
-    pub md5: String,             //小说md5值校验
-    pub cur_chapter: u64,        //当前章节（从0开始）
-    pub cur_line: u64,           //当前章节中读到的行数
-    pub bookmark: Vec<Bookmark>, //存放这本书中的所有书签
-}
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct AppInfo {
     pub width: u32,               //软件宽度
     pub height: u32,              //软件高度
@@ -43,7 +34,7 @@ impl Default for AppInfo {
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct AppSet {
     pub font_size: u32,      //字体大小
     pub font_weight: u32,    //字体粗细
@@ -61,9 +52,3 @@ impl Default for AppSet {
     }
 }
 
-#[derive(Serialize, Deserialize, Default)]
-pub struct ConfigInfo {
-    pub app: AppInfo,       //软件界面相关的配置信息
-    pub record: Vec<Novel>, //最近打开过的小说
-    pub appset: AppSet,     //相关的设置项
-}

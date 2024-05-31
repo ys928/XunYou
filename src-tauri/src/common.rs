@@ -1,5 +1,3 @@
-use md5::{Digest, Md5};
-use std::fmt::Write;
 use std::io::Read;
 
 /// compress a file with bzip2
@@ -35,32 +33,6 @@ pub fn decmpr_bzip2_file(filename: &str) -> Vec<u8> {
 pub fn file_name(path: &str) -> String {
     let p = std::path::Path::new(path);
     p.file_name().unwrap().to_str().unwrap().to_owned()
-}
-
-/// get md5 of a file
-/// # example
-/// ```
-/// println!("{}",md5_file("test.txt").unwrap());
-/// ```
-pub fn md5_file(file: &str) -> Option<String> {
-    let v_data = std::fs::read(file);
-    match v_data {
-        Ok(d) => {
-            // create a Md5 hasher instance
-            let mut hasher = Md5::new();
-            // process input message
-            hasher.update(d);
-            // acquire hash digest in the form of GenericArray,
-            // which in this case is equivalent to [u8; 16]
-            let result = hasher.finalize();
-            let mut output = String::new();
-            for byte in &result {
-                write!(&mut output, "{:02X}", byte).unwrap();
-            }
-            Some(output)
-        }
-        Err(_) => None,
-    }
 }
 
 /// get config directory path,if not exist,create it

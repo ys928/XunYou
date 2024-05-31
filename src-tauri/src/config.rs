@@ -1,13 +1,25 @@
 use core::panic;
 
+use log::info;
 use log::warn;
 use log4rs::append::console::ConsoleAppender;
 use log4rs::config::Appender;
 use log4rs::config::Root;
 use log4rs::encode::pattern::PatternEncoder;
+use serde::Deserialize;
+use serde::Serialize;
 
 use crate::common;
+use crate::novel::Novel;
+use crate::novel::Record;
 use crate::types::*;
+
+#[derive(Serialize, Deserialize, Default, Debug)]
+pub struct ConfigInfo {
+    pub app: AppInfo,       //软件界面相关的配置信息
+    pub record: Vec<Novel>, //最近打开过的小说
+    pub appset: AppSet,     //相关的设置项
+}
 
 //获取历史小说文件记录
 #[tauri::command]
@@ -16,28 +28,33 @@ pub fn get_record() -> Result<Vec<Novel>, String> {
     Ok(cfg.record)
 }
 
+//添加小说文件记录
+pub fn add_record(mut nov: Novel) -> Result<(), String> {
+    let mut cfg = config_info()?;
+    for n in cfg.record.iter() {
+        if n.path == nov.path {
+            return Ok(());
+        }
+    }
+    nov.chapters.clear();
+    cfg.record.push(nov);
+    record_config(cfg);
+    Ok(())
+}
+
 //获取指定小说的行数
 #[tauri::command]
-pub fn get_nov_prog(path: &str) -> Result<(u64, u64), String> {
+pub fn get_nov_prog(path: &str) -> Result<Record, String> {
     let cfg_info = config_info()?;
 
-    // 优先按路径匹配
+    // 按路径匹配
     for i in cfg_info.record.iter() {
         if i.path == path {
-            return Ok((i.cur_chapter, i.cur_line));
+            return Ok(i.record.clone());
         }
     }
 
-    // 其次按md5值匹配
-    let md5 = common::md5_file(path).unwrap_or_default();
-
-    for i in cfg_info.record.iter() {
-        if i.md5 == md5 {
-            return Ok((i.cur_chapter, i.cur_line));
-        }
-    }
-
-    return Ok((0, 0));
+    return Ok(Record::default());
 }
 #[tauri::command]
 pub fn del_record(path: &str) -> Result<(), String> {
@@ -72,21 +89,14 @@ pub fn get_wh() -> Result<(u32, u32), String> {
 
 #[tauri::command]
 pub fn set_nov_prog(path: &str, line: u64, chapter: u64) -> Result<(), String> {
-    //info!("set_nov_prog:{},{},{}",path,line,all_lines);
-    let md5 = common::md5_file(path);
-    if md5.is_none() {
-        return Err("error to get md5".to_string());
-    }
-    let md5 = md5.unwrap();
     //得到当前配置文件
     let mut cfg = config_info()?;
 
     let mut f = true;
     for i in &mut cfg.record {
-        if i.md5 == md5 {
-            i.cur_line = line;
-            i.cur_chapter = chapter;
-            i.path = path.to_string();
+        if i.path == path {
+            i.record.chapter = chapter;
+            i.record.line = line;
             f = false;
             break;
         }
@@ -96,10 +106,9 @@ pub fn set_nov_prog(path: &str, line: u64, chapter: u64) -> Result<(), String> {
         cfg.record.push(Novel {
             name: common::file_name(path),
             path: path.to_string(),
-            md5: md5,
-            cur_line: line,
-            cur_chapter: chapter,
-            bookmark: Vec::new(),
+            chapters: Vec::new(),
+            bookmarks: Vec::new(),
+            record: Record { chapter, line },
         });
     }
     //保存到文件中
@@ -230,7 +239,7 @@ pub fn get_bookmark(path: &str) -> Result<Vec<Bookmark>, String> {
     let cfg = config_info()?;
     for n in cfg.record {
         if n.path == path {
-            return Ok(n.bookmark);
+            return Ok(n.bookmarks);
         }
     }
     Ok(Vec::new())
@@ -240,10 +249,11 @@ pub fn add_bookmark(path: &str, mark: Bookmark) -> Result<(), String> {
     let mut cfg = config_info()?;
     for n in cfg.record.iter_mut() {
         if n.path == path {
-            n.bookmark.push(mark);
+            n.bookmarks.push(mark);
             break;
         }
     }
+    info!("{:?}", cfg);
     record_config(cfg);
     Ok(())
 }
@@ -256,9 +266,9 @@ pub fn del_bookmark(path: &str, id: String) -> Result<(), String> {
         if n.path != path {
             continue;
         }
-        for b in 0..n.bookmark.len() {
-            if n.bookmark[b].id == id {
-                n.bookmark.remove(b);
+        for b in 0..n.bookmarks.len() {
+            if n.bookmarks[b].id == id {
+                n.bookmarks.remove(b);
                 break;
             }
         }

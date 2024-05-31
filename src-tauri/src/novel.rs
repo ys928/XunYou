@@ -7,7 +7,7 @@ use regex::Regex;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    config::{add_bookmark, get_bookmark, get_nov_prog},
+    config::{add_bookmark, add_record, get_bookmark, get_nov_prog},
     types::Bookmark,
 };
 
@@ -26,18 +26,18 @@ pub struct Chapter {
 #[derive(Debug, Default, Clone, Deserialize, Serialize)]
 pub struct Record {
     /// 章节索引
-    chapter: u64,
+    pub chapter: u64,
     /// 章节内的行数
-    line: u64,
+    pub line: u64,
 }
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct Novel {
-    path: String,
-    name: String,
-    chapters: Vec<Chapter>,
-    bookmarks: Vec<Bookmark>,
-    record: Record,
+    pub path: String,
+    pub name: String,
+    pub chapters: Vec<Chapter>,
+    pub bookmarks: Vec<Bookmark>,
+    pub record: Record,
 }
 
 /// 目录项
@@ -130,9 +130,11 @@ pub fn novel_open_txt(filepath: &str) -> bool {
     nov.bookmarks = get_bookmark(filepath).unwrap();
 
     // 获取记录
-    let (c, l) = get_nov_prog(filepath).unwrap();
-    nov.record.chapter = c;
-    nov.record.line = l;
+    let record = get_nov_prog(filepath).unwrap();
+    nov.record = record;
+
+    // 保存在最近打开记录
+    add_record(nov.clone()).unwrap();
 
     let mut novel = OPENED_NOVEL.lock().unwrap();
     *novel = Some(nov);

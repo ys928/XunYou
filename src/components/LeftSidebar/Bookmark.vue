@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, Ref } from 'vue';
 import { NPopover, NScrollbar } from "naive-ui";
 import { useNovelStore } from '../../store/novel';
 
@@ -10,16 +10,15 @@ const is_show_menu = ref(false);
 //菜单标签
 const dev_menu = ref();
 //绑定书签列表标签
-let div_bookmarks: HTMLElement;
+const div_bookmarks = ref() as Ref<HTMLElement>;
 //保存当前右键点击到的标签项索引
 let cur_index = -1;
 
 onMounted(() => {
-    div_bookmarks = document.querySelector('#div_marks') as HTMLElement;
 
-    div_bookmarks.oncontextmenu = (e: MouseEvent) => {
+    div_bookmarks.value.oncontextmenu = (e: MouseEvent) => {
         let index = -1;
-        let all_history_item = div_bookmarks.querySelectorAll(".mark_item");
+        let all_history_item = div_bookmarks.value.querySelectorAll(".mark_item");
         for (let i = 0; i < all_history_item.length; i++) {
             if (all_history_item[i].contains(e.target as Node)) {
                 dev_menu.value.style.left = e.pageX + "px";
@@ -63,24 +62,26 @@ async function del_mark() {
 <template>
     <div class="Bookmark">
         <div class="title">书签</div>
-        <n-scrollbar class="content" id="div_marks">
-            <template v-for="(item, index) in novel_store.bookmark">
-                <n-popover trigger="hover" :keep-alive-on-hover="false">
-                    <template #trigger>
-                        <div class="mark_item" @dblclick="dclick_mark(index)">
-                            <div class="label">
-                                {{ item.content }}
+        <div class="content" ref="div_bookmarks">
+            <n-scrollbar>
+                <template v-for="(item, index) in novel_store.bookmark">
+                    <n-popover trigger="hover" :keep-alive-on-hover="false">
+                        <template #trigger>
+                            <div class="mark_item" @dblclick="dclick_mark(index)">
+                                <div class="label">
+                                    {{ item.content }}
+                                </div>
+                                <div class="bottom">
+                                    <span>第{{ item.chapter }}章{{ item.line }}行</span>
+                                    <span>{{ item.datetime }}</span>
+                                </div>
                             </div>
-                            <div class="bottom">
-                                <span>第{{ item.chapter }}章{{ item.line }}行</span>
-                                <span>{{ item.datetime }}</span>
-                            </div>
-                        </div>
-                    </template>
-                    <span>备注:{{ item.label }}</span>
-                </n-popover>
-            </template>
-        </n-scrollbar>
+                        </template>
+                        <span>备注:{{ item.label }}</span>
+                    </n-popover>
+                </template>
+            </n-scrollbar>
+        </div>
         <div class="opt_menu" ref="dev_menu" v-show="is_show_menu">
             <div class="item" @click="del_mark">删除</div>
         </div>
