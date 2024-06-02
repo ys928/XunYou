@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Titlebar from './components/Titlebar.vue';
 import Statusbar from './components/Statusbar.vue';
-import { onBeforeMount, onMounted, provide, ref, watch } from 'vue';
+import { onBeforeMount, onMounted, provide, ref } from 'vue';
 import { event, invoke, window } from '@tauri-apps/api';
 import { darkTheme, NMessageProvider, NConfigProvider, GlobalTheme, NDialogProvider } from 'naive-ui'
 import { useStyleStore } from './store/style';
@@ -13,8 +13,6 @@ type app_setting = {
   line_height: number, //line-height
   font_family: string, //font-family
 }
-
-
 
 //全局应用样式
 const app_style = ref<GlobalTheme | null>(darkTheme);

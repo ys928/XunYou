@@ -185,13 +185,7 @@ function search_fun(v: string) {
 
             .novel_name {
                 overflow: hidden;
-            }
-
-            .novel_progress {
-                color: #4fccb0;
-                margin: 0 5px;
-                padding: 0 5px;
-                border-radius: 5px;
+                color: var(--text-color1);
             }
         }
     }
