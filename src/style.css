@@ -14,7 +14,7 @@ html.light {
     --menu-color: #2e2e2e;
     --mih-color: #aaa;
     --error-color: #f00;
-    --selected-color: #c6d6f2
+    --selected-color: #c6d6f2;
 }
 
 html.dark {
@@ -33,5 +33,5 @@ html.dark {
     --menu-color: #999;
     --mih-color: #5f5f5f;
     --error-color: #f00;
-    --selected-color: #273d59
+    --selected-color: #273d59;
 }

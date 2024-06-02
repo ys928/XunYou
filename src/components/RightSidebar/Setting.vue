@@ -3,23 +3,22 @@
         <div class="title">设置</div>
         <div class="set_item">
             <div>
-                <n-tag :bordered="false" size="small">字体大小:</n-tag>
-                <n-input-number v-model:value="font_size" :min="10" :max="25" button-placement="both"
-                    size="tiny"></n-input-number>
+                <el-text>字体大小:</el-text>
+                <el-input-number v-model="font_size" :min="10" :max="25" size="small" />
             </div>
             <div>
-                <n-tag :bordered="false" size="small">字体粗细:</n-tag>
-                <n-input-number v-model:value="font_weight" :min="100" :max="900" :step="100" button-placement="both"
-                    size="tiny"></n-input-number>
+                <el-text>字体粗细:</el-text>
+                <el-input-number v-model="font_weight" :min="100" :max="900" :step="100" step-strictly size="small" />
             </div>
             <div>
-                <n-tag :bordered="false" size="small">字体行高:</n-tag>
-                <n-input-number v-model:value="line_height" :min="10" :max="25" :step="1" button-placement="both"
-                    size="tiny"></n-input-number>
+                <el-text>字体行高:</el-text>
+                <el-input-number v-model="line_height" :min="10" :max="25" :step="1" step-strictly size="small" />
             </div>
             <div>
-                <n-tag :bordered="false" size="small">正文字体:</n-tag>
-                <n-select v-model:value="font_family" size="tiny" :options="fonts" />
+                <el-text>正文字体:</el-text>
+                <el-select v-model="font_family" placeholder="选择字体" size="small">
+                    <el-option v-for="item in fonts" :key="item.value" :label="item.label" :value="item.value" />
+                </el-select>
             </div>
         </div>
     </div>
@@ -27,12 +26,10 @@
 
 <script setup lang="ts">
 import { onBeforeMount, ref, watch } from 'vue';
-import { NInputNumber, NTag, NSelect, useMessage } from "naive-ui"
 import { useStyleStore } from '../../store/style';
+import { ElInputNumber, ElSelect, ElOption, ElText } from 'element-plus';
 
 const style_store = useStyleStore();
-
-const popmsg = useMessage();
 
 const fonts = [
     {
@@ -106,10 +103,9 @@ onBeforeMount(() => {
     .set_item {
         display: flex;
         flex-direction: column;
-        color: #757575;
         padding: 10px;
 
-        .n-tag {
+        .el-text {
             margin-right: 5px;
         }
 
