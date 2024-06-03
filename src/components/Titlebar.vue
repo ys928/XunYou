@@ -55,15 +55,22 @@ function loadTheme() {
         localStorage.setItem('style_mode', 'light');
         document.documentElement.classList.remove('dark');
         document.documentElement.classList.add('light');
-        ElMessage.success("白日模式");
     } else {
         localStorage.setItem('style_mode', 'dark');
         document.documentElement.classList.remove('light');
         document.documentElement.classList.add('dark');
-        ElMessage.success("黑夜模式");
     }
     // 将新的样式表添加到 head 中
     document.head.appendChild(link);
+}
+
+function change_theme(){
+    if (style_mode.value == false) {
+        ElMessage.success("白日模式");
+    } else {
+        ElMessage.success("黑夜模式");
+    }
+    loadTheme();
 }
 
 </script>
@@ -78,7 +85,7 @@ function loadTheme() {
             {{ novel_store.name }}
         </div>
         <div class="app_opt">
-            <el-switch v-model="style_mode" @change="loadTheme" :active-action-icon="Moon" :inactive-action-icon="Sunny"
+            <el-switch v-model="style_mode" @change="change_theme" :active-action-icon="Moon" :inactive-action-icon="Sunny"
                 style="--el-switch-on-color: #2C2C2C; --el-switch-off-color: #F2F2F2;">
             </el-switch>
             <div class="mmc">

@@ -1,29 +1,3 @@
-<template>
-    <div class="Setting">
-        <div class="title">设置</div>
-        <div class="set_item">
-            <div>
-                <el-text>字体大小:</el-text>
-                <el-input-number v-model="font_size" :min="10" :max="25" size="small" />
-            </div>
-            <div>
-                <el-text>字体粗细:</el-text>
-                <el-input-number v-model="font_weight" :min="100" :max="900" :step="100" step-strictly size="small" />
-            </div>
-            <div>
-                <el-text>字体行高:</el-text>
-                <el-input-number v-model="line_height" :min="10" :max="25" :step="1" step-strictly size="small" />
-            </div>
-            <div>
-                <el-text>正文字体:</el-text>
-                <el-select v-model="font_family" placeholder="选择字体" size="small">
-                    <el-option v-for="item in fonts" :key="item.value" :label="item.label" :value="item.value" />
-                </el-select>
-            </div>
-        </div>
-    </div>
-</template>
-
 <script setup lang="ts">
 import { onBeforeMount, ref, watch } from 'vue';
 import { useStyleStore } from '../../store/style';
@@ -84,6 +58,32 @@ onBeforeMount(() => {
 });
 
 </script>
+
+<template>
+    <div class="Setting">
+        <div class="title">设置</div>
+        <div class="set_item">
+            <div>
+                <el-text>字体大小:</el-text>
+                <el-input-number v-model="font_size" :min="10" :max="25" size="small" />
+            </div>
+            <div>
+                <el-text>字体粗细:</el-text>
+                <el-input-number v-model="font_weight" :min="100" :max="900" :step="100" step-strictly size="small" />
+            </div>
+            <div>
+                <el-text>字体行高:</el-text>
+                <el-input-number v-model="line_height" :min="10" :max="25" :step="1" step-strictly size="small" />
+            </div>
+            <div>
+                <el-text>正文字体:</el-text>
+                <el-select v-model="font_family" placeholder="选择字体" size="small">
+                    <el-option v-for="item in fonts" :key="item.value" :label="item.label" :value="item.value" />
+                </el-select>
+            </div>
+        </div>
+    </div>
+</template>
 
 <style scoped lang="less">
 .Setting {

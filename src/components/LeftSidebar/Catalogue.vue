@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { Ref, onMounted, ref } from 'vue';
-import { NInput, NScrollbar } from "naive-ui"
 import { useNovelStore } from '../../store/novel';
 import { CataItem } from '../../api/novel';
+import { ElScrollbar, ElInput } from 'element-plus';
 
+
+const search_input = ref('');
 
 const novel_store = useNovelStore();
 
@@ -34,13 +36,15 @@ function search_fun(v: string) {
     <div class="Catalogue">
         <div class="title">目录</div>
         <div class="top_pos">
-            <n-input size="tiny" round @input="search_fun" placeholder="搜目录"></n-input>
+            <el-input v-model="search_input" @input="search_fun" placeholder="搜目录" size="small"></el-input>
         </div>
-        <n-scrollbar class="catal">
-            <div v-for="item in show_novel_cata" class="cata_item" @dblclick="dclick_cata_item(item.idx)">
-                {{ item.title }}
-            </div>
-        </n-scrollbar>
+        <div class="catal">
+            <el-scrollbar>
+                <div v-for="item in show_novel_cata" class="cata_item" @dblclick="dclick_cata_item(item.idx)">
+                    {{ item.title }}
+                </div>
+            </el-scrollbar>
+        </div>
     </div>
 </template>
 
@@ -68,6 +72,7 @@ function search_fun(v: string) {
 
     .catal {
         margin: 0 5px;
+        height: 100px;
         flex-grow: 1;
         border-bottom: none;
 

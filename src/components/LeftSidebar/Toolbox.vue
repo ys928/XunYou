@@ -1,22 +1,6 @@
-<template>
-    <div class="Toolbox">
-        <div class="title">工具箱</div>
-        <div class="tools">
-            <n-button @click="fun_txt_to_bzip2">txt转换</n-button>
-        </div>
-    </div>
-</template>
-
 <script setup lang="ts">
 import { dialog, invoke } from '@tauri-apps/api';
 import { NButton } from 'naive-ui';
-//相关变量类型
-
-/**
- * 从父组件取出的变量
- */
-
-//函数
 
 async function fun_txt_to_bzip2() {
     const selected = await dialog.open({
@@ -31,6 +15,15 @@ async function fun_txt_to_bzip2() {
 }
 
 </script>
+
+<template>
+    <div class="Toolbox">
+        <div class="title">工具箱</div>
+        <div class="tools">
+            <n-button @click="fun_txt_to_bzip2">txt转换</n-button>
+        </div>
+    </div>
+</template>
 
 <style scoped lang="less">
 .Toolbox {
