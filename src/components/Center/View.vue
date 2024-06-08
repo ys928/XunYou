@@ -94,35 +94,12 @@ onMounted(async () => {
 
 	});
 	document.addEventListener("keyup", async e => {
-		if (e.key === "PageUp") {
+		if (e.key === "PageUp" || e.key == "ArrowLeft") {
+			e.preventDefault();
 			prev_chapter();
-		} else if (e.key === 'PageDown') {
+		} else if (e.key === 'PageDown' || e.key == "ArrowRight") {
+			e.preventDefault();
 			next_chapter();
-		}
-
-		// 右键、下一章
-		if (e.key == 'ArrowRight') {
-			e.preventDefault();
-			if (!novel_store.isopen) {
-				popmsg.warning('你还未打开小说');
-				return;
-			}
-			let ret = await novel_store.next_chapter();
-			if (!ret) {
-				popmsg.warning('已经到最后一章了');
-			}
-		}
-		// 左键、上一章
-		if (e.key == 'ArrowLeft') {
-			e.preventDefault();
-			if (!novel_store.isopen) {
-				popmsg.warning('你还未打开小说');
-				return;
-			}
-			let ret = await novel_store.prev_chapter();
-			if (!ret) {
-				popmsg.warning('已经是第一章了~~~');
-			}
 		}
 	})
 
@@ -186,14 +163,31 @@ async function fun_open_novel(path: string) {
 
 //翻到下一章
 async function next_chapter() {
-	novel_store.next_chapter();
+	if (!novel_store.isopen) {
+		popmsg.warning('你还未打开小说');
+		return;
+	}
+
+	const ret = novel_store.next_chapter();
+	if (!ret) {
+		popmsg.warning('已经到最后一章了');
+	}
 	await nextTick();
 	ref_div_title.value.scrollIntoView();
 }
 //翻到上一章
 async function prev_chapter() {
-	novel_store.prev_chapter();
+	if (!novel_store.isopen) {
+		popmsg.warning('你还未打开小说');
+		return;
+	}
+
+	let ret = await novel_store.prev_chapter();
+	if (!ret) {
+		popmsg.warning('已经是第一章了~~~');
+	}
 	await nextTick();
+
 	ref_div_title.value.scrollIntoView();
 }
 
@@ -281,21 +275,20 @@ async function onPositiveClick() {
 					{{ item }}
 				</div>
 			</div>
-
-			<div class="opt_menu" ref="dev_menu" v-show="is_show_menu">
-				<div class="item" @click="fun_add_bookmark">添加书签</div>
-			</div>
-			<n-modal v-model:show="show_edit_remark" preset="dialog" title="dialog" :mask-closable="false"
-				positive-text="确定" negative-text="取消" :closable="false" @positive-click="onPositiveClick"
-				@negative-click="onNegativeClick">
-				<template #header>
-					<div>书签备注</div>
-				</template>
-				<div>
-					<n-input placeholder="填写书签备注" v-model:value="bookmark.label"></n-input>
-				</div>
-			</n-modal>
 		</n-scrollbar>
+		<div class="opt_menu" ref="dev_menu" v-show="is_show_menu">
+			<div class="item" @click="fun_add_bookmark">添加书签</div>
+		</div>
+		<n-modal v-model:show="show_edit_remark" preset="dialog" title="dialog" :mask-closable="false"
+			positive-text="确定" negative-text="取消" :closable="false" @positive-click="onPositiveClick"
+			@negative-click="onNegativeClick">
+			<template #header>
+				<div>书签备注</div>
+			</template>
+			<div>
+				<n-input placeholder="填写书签备注" v-model:value="bookmark.label"></n-input>
+			</div>
+		</n-modal>
 	</div>
 </template>
 

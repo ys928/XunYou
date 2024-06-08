@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { dialog, invoke } from '@tauri-apps/api';
-import { NButton } from 'naive-ui';
+import { ElButton } from 'element-plus';
 
 async function fun_txt_to_bzip2() {
     const selected = await dialog.open({
@@ -20,7 +20,7 @@ async function fun_txt_to_bzip2() {
     <div class="Toolbox">
         <div class="title">工具箱</div>
         <div class="tools">
-            <n-button @click="fun_txt_to_bzip2">txt转换</n-button>
+            <el-button @click="fun_txt_to_bzip2">txt转换</el-button>
         </div>
     </div>
 </template>

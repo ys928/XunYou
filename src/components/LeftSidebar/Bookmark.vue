@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted, Ref } from 'vue';
-import { NPopover, NScrollbar } from "naive-ui";
+import { NPopover } from "naive-ui";
 import { useNovelStore } from '../../store/novel';
-
+import { ElScrollbar } from 'element-plus';
 const novel_store = useNovelStore();
 
 //是否显示右键菜单
@@ -63,7 +63,7 @@ async function del_mark() {
     <div class="Bookmark">
         <div class="title">书签</div>
         <div class="content" ref="div_bookmarks">
-            <n-scrollbar>
+            <el-scrollbar>
                 <template v-for="(item, index) in novel_store.bookmark">
                     <n-popover trigger="hover" :keep-alive-on-hover="false">
                         <template #trigger>
@@ -80,7 +80,7 @@ async function del_mark() {
                         <span>备注:{{ item.label }}</span>
                     </n-popover>
                 </template>
-            </n-scrollbar>
+            </el-scrollbar>
         </div>
         <div class="opt_menu" ref="dev_menu" v-show="is_show_menu">
             <div class="item" @click="del_mark">删除</div>
@@ -106,6 +106,7 @@ async function del_mark() {
     .content {
         margin: 0 5px;
         flex-grow: 1;
+        height: 100px;
         border-bottom: none;
 
         .mark_item {
