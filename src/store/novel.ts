@@ -107,6 +107,13 @@ export const useNovelStore = defineStore('novel', () => {
         await Novel.add_bookmark(m);
     }
 
+    async function del_bookmark(index: number) {
+        await invoke("novel_del_bookmark", {
+            id: bookmark.value[index].id,
+        });
+        bookmark.value.splice(index, 1);
+    }
+
     async function next_chapter() {
         if (cur_ch_idx.value >= num_chapters - 1) {
             return false;
@@ -130,5 +137,5 @@ export const useNovelStore = defineStore('novel', () => {
         cur_ch_idx.value = chap;
     }
 
-    return { name, path, cur_ch_idx, cur_line_idx, show_chapter, bookmark, isopen, cata, open, close, add_bookmark, next_chapter, prev_chapter, set_show_chapter };
+    return { name, path, cur_ch_idx, cur_line_idx, show_chapter, bookmark, isopen, cata, open, close, add_bookmark, del_bookmark, next_chapter, prev_chapter, set_show_chapter };
 })

@@ -49,12 +49,8 @@ function dclick_mark(index: number) {
 
 //删除一个记录项，
 async function del_mark() {
-    // if (cur_index == -1) return;
-    // await invoke("del_bookmark", {
-    //     path: mainpan_nov_path.value,
-    //     id: mainpan_bookmark.value[cur_index].id,
-    // });
-    // mainpan_bookmark.value.splice(cur_index, 1);
+    if (cur_index == -1) return;
+    await novel_store.del_bookmark(cur_index);
     is_show_menu.value = false;
 }
 </script>

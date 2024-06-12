@@ -7,7 +7,7 @@ use regex::Regex;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    config::{add_bookmark, add_record, get_bookmark, get_nov_prog},
+    config::{add_bookmark, add_record, del_bookmark, get_bookmark, get_nov_prog},
     types::Bookmark,
 };
 
@@ -215,6 +215,23 @@ pub fn novel_add_bookmark(mark: Bookmark) -> Result<(), String> {
     let nov = novel.as_mut().unwrap();
     nov.bookmarks.push(mark.clone());
     add_bookmark(&nov.path, mark)?;
+    Ok(())
+}
+
+#[tauri::command]
+pub fn novel_del_bookmark(id: String) -> Result<(), String> {
+    let mut novel = OPENED_NOVEL.lock().unwrap();
+    if novel.is_none() {
+        return Err("还没有打开该小说".to_string());
+    }
+    let nov = novel.as_mut().unwrap();
+    for (index, b) in nov.bookmarks.iter().enumerate() {
+        if b.id == id {
+            nov.bookmarks.remove(index);
+            break;
+        }
+    }
+    del_bookmark(&nov.path, id)?;
     Ok(())
 }
 

@@ -51,6 +51,7 @@ fn main() {
             novel::novel_get_cata,
             novel::novel_get_bookmark,
             novel::novel_add_bookmark,
+            novel::novel_del_bookmark,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
