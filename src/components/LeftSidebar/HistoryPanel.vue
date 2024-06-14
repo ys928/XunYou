@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { invoke } from '@tauri-apps/api';
 import { onMounted, reactive, ref } from 'vue';
-import { NInput, NScrollbar } from "naive-ui";
 import { useNovelStore } from '../../store/novel';
+import { ElScrollbar, ElInput } from 'element-plus';
 
 const novel_store = useNovelStore();
-
 
 //相关变量类型
 type type_record_novel = {
@@ -16,21 +15,12 @@ type type_record_novel = {
     all_line: number, //小说总行数
 }
 
-/**
- * 取得父变量
- */
-
-
-/**
- * vue 绑定标签变量
- */
 
 let div_record: HTMLElement;
+
 const dev_menu = ref();
 
-/**
- * vue变量
- */
+const search_input = ref('');
 
 //记录所有打开过的小说
 const records_novel = reactive([]) as Array<type_record_novel>;
@@ -39,9 +29,6 @@ const show_records_novel = reactive([]) as Array<type_record_novel>;
 //是否显示右键菜单
 const is_show_menu = ref(false);
 
-/**
- * 普通变量
- */
 //记录当前右键点击的历史项
 let cur_index: number;
 
@@ -49,15 +36,9 @@ let cur_index: number;
  * 双击打开某个记录
  * @param index 这条记录的索引项，将在records_novel变量中取出
  */
-
-//双击代表要打开的小说文件
 function dclick_novel(index: number) {
     novel_store.open(show_records_novel[index].path);
 }
-
-/**
- * 初始化记录
- */
 
 onMounted(async () => {
     let record: Array<type_record_novel> = await invoke("get_record", {});
@@ -122,15 +103,17 @@ function search_fun(v: string) {
     <div class="HistoryPanel">
         <div class="title">历史记录</div>
         <div class="top_pos">
-            <n-input size="tiny" round @input="search_fun" placeholder="搜记录"></n-input>
+            <el-input v-model="search_input" @input="search_fun" placeholder="搜记录" size="small"></el-input>
         </div>
-        <n-scrollbar class="novels" id="div_history_list">
-            <div v-for="(item, index) in show_records_novel" class="novel_item" @dblclick="dclick_novel(index)">
-                <span class="novel_name">
-                    {{ item.name.substring(0, item.name.lastIndexOf('.')) }}
-                </span>
-            </div>
-        </n-scrollbar>
+        <div class="novels" id="div_history_list">
+            <el-scrollbar>
+                <div v-for="(item, index) in show_records_novel" class="novel_item" @dblclick="dclick_novel(index)">
+                    <span class="novel_name">
+                        {{ item.name.substring(0, item.name.lastIndexOf('.')) }}
+                    </span>
+                </div>
+            </el-scrollbar>
+        </div>
         <div class="opt_menu" ref="dev_menu" v-show="is_show_menu">
             <div class="item" @click="del_record">删除</div>
         </div>
