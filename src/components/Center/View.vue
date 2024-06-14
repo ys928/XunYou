@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { Ref, ref, onMounted, nextTick, reactive } from 'vue';
 import { dialog, event, fs } from '@tauri-apps/api';
-import { useDialog, useMessage, NModal, NInput, NScrollbar } from "naive-ui"
+import { NModal, NInput, NScrollbar } from "naive-ui"
 import { useNovelStore } from '../../store/novel';
 import { useStyleStore } from '../../store/style';
 import { useShowStore } from '../../store/show';
 import { Bookmark } from '../../api/novel';
+import { ElMessage, ElMessageBox } from 'element-plus';
 
 const novel_store = useNovelStore();
 
@@ -17,13 +18,8 @@ const ref_div_title = ref() as Ref<HTMLElement>;
 
 const ref_div_content = ref() as Ref<HTMLElement>;
 
-/*
-绑定标签
-*/
 let dev_menu = ref() as Ref<HTMLElement>;
-/*
-控制内容的变量数据
-*/
+
 //控制菜单是否显示的变量
 const is_show_menu = ref(false);
 //控制是否显示添加备注
@@ -42,11 +38,6 @@ const bookmark: Bookmark = reactive({
 //存放当前用户右键点击到的div标签
 let p_div: EventTarget | null;
 
-const ndialog = useDialog();
-const popmsg = useMessage();
-/**
- * 初始化函数
- */
 onMounted(async () => {
 	ref_div_content.value.oncontextmenu = function (e) {
 		dev_menu.value.style.left = e.pageX + "px";
@@ -77,19 +68,16 @@ onMounted(async () => {
 		//关闭当前小说
 		if (e.ctrlKey && e.key === 'x') {
 			e.preventDefault();
-			ndialog.info({
-				title: '提示',
-				content: '确定要关闭当前小说？',
-				positiveText: '确定',
-				negativeText: '取消',
-				onPositiveClick: () => {
-					novel_store.close();
-					popmsg.info("关闭成功");
-				},
-				onNegativeClick: () => {
-
-				}
-			})
+			const ret = await ElMessageBox.confirm("确定要关闭当前小说？", '注意', {
+				confirmButtonText: '关闭',
+				cancelButtonText: '取消',
+				type: 'warning'
+			});
+			if (ret == 'confirm') {
+				novel_store.close();
+				show_store.set_prompt(true);
+				ElMessage.success("关闭成功");
+			}
 		}
 
 	});
@@ -164,13 +152,13 @@ async function fun_open_novel(path: string) {
 //翻到下一章
 async function next_chapter() {
 	if (!novel_store.isopen) {
-		popmsg.warning('你还未打开小说');
+		ElMessage.warning('你还未打开小说');
 		return;
 	}
 
 	const ret = novel_store.next_chapter();
 	if (!ret) {
-		popmsg.warning('已经到最后一章了');
+		ElMessage.warning('已经到最后一章了');
 	}
 	await nextTick();
 	ref_div_title.value.scrollIntoView();
@@ -178,13 +166,13 @@ async function next_chapter() {
 //翻到上一章
 async function prev_chapter() {
 	if (!novel_store.isopen) {
-		popmsg.warning('你还未打开小说');
+		ElMessage.warning('你还未打开小说');
 		return;
 	}
 
 	let ret = await novel_store.prev_chapter();
 	if (!ret) {
-		popmsg.warning('已经是第一章了~~~');
+		ElMessage.warning('已经是第一章了~~~');
 	}
 	await nextTick();
 
@@ -213,7 +201,7 @@ async function fun_add_bookmark() {
 	}
 	if (cur_p == -1) {
 		is_show_menu.value = false;
-		popmsg.info("右键到指定的内容才可添加标签");
+		ElMessage.info("右键到指定的内容才可添加标签");
 		return;
 	}
 	let time = getCurrentDateTime();
@@ -256,13 +244,13 @@ function generateUUID() {
 //模态框，取消添加书签
 function onNegativeClick() {
 	show_edit_remark.value = false;
-	popmsg.info('已取消添加书签')
+	ElMessage.info('已取消添加书签');
 }
 //模态框，确认添加书签
 async function onPositiveClick() {
 	await novel_store.add_bookmark(bookmark);
 	bookmark.label = "";
-	popmsg.success('成功添加书签!');
+	ElMessage.success('成功添加书签!');
 }
 </script>
 

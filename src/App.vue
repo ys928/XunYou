@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import Titlebar from './components/Titlebar.vue';
 import Statusbar from './components/Statusbar.vue';
-import { onBeforeMount, onMounted, provide, ref } from 'vue';
+import { onBeforeMount, onMounted } from 'vue';
 import { event, invoke, window } from '@tauri-apps/api';
-import { darkTheme, NMessageProvider, NConfigProvider, GlobalTheme, NDialogProvider } from 'naive-ui'
 import { useStyleStore } from './store/style';
 import { useCursorStore } from './store/cursor';
 
@@ -13,10 +12,6 @@ type app_setting = {
   line_height: number, //line-height
   font_family: string, //font-family
 }
-
-//全局应用样式
-const app_style = ref<GlobalTheme | null>(darkTheme);
-provide("app_style", app_style);
 
 const style_store = useStyleStore();
 
@@ -28,17 +23,6 @@ onBeforeMount(async () => {
   style_store.set(setting.font_size, setting.font_weight, setting.font_family, setting.line_height);
 });
 
-const lightThemeOverrides = {
-  common: {
-    baseColor: '#fff',
-  }
-}
-
-const darkThemeOverrides = {
-  common: {
-    baseColor: '#202020',
-  }
-}
 //初始化
 onMounted(() => {
   document.oncontextmenu = () => {
@@ -80,23 +64,16 @@ onMounted(() => {
 </script>
 
 <template>
-  <n-config-provider :theme="app_style"
-    :theme-overrides="app_style === null ? lightThemeOverrides : darkThemeOverrides">
-    <n-message-provider>
-      <n-dialog-provider>
-        <div class="MainWindow" :style="{ cursor: cursor_store.style }">
-          <Titlebar name="寻幽" v-model:style="app_style">
-          </Titlebar>
-          <div class="MainPanel">
-            <router-view name="LeftSidebar"></router-view>
-            <router-view></router-view>
-            <router-view name="RightSidebar"></router-view>
-          </div>
-          <Statusbar></Statusbar>
-        </div>
-      </n-dialog-provider>
-    </n-message-provider>
-  </n-config-provider>
+  <div class="MainWindow" :style="{ cursor: cursor_store.style }">
+    <Titlebar name="寻幽">
+    </Titlebar>
+    <div class="MainPanel">
+      <router-view name="LeftSidebar"></router-view>
+      <router-view></router-view>
+      <router-view name="RightSidebar"></router-view>
+    </div>
+    <Statusbar></Statusbar>
+  </div>
 </template>
 
 

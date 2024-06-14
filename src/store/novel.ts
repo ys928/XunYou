@@ -97,6 +97,8 @@ export const useNovelStore = defineStore('novel', () => {
     async function close() {
         isopen.value = false;
         cata.value = [];
+        show_chapter.value.lines = [];
+        show_chapter.value.title = '';
     }
 
     async function add_bookmark(mark: Bookmark) {
