@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { Ref, inject, onMounted, reactive, ref } from 'vue';
+import { Ref, onMounted, reactive, ref } from 'vue';
 import { History } from "@vicons/fa"
 import { List16Filled, Toolbox20Regular } from "@vicons/fluent"
 import { Tag } from "@vicons/carbon"
-import { NIcon } from 'naive-ui';
 import HistoryPanel from '../components/LeftSidebar/HistoryPanel.vue'
 import Catalogue from '../components/LeftSidebar/Catalogue.vue';
 import Toolbox from '../components/LeftSidebar/Toolbox.vue';
 import Bookmark from '../components/LeftSidebar/Bookmark.vue';
 import { useCursorStore } from '../store/cursor';
+import { ElIcon } from 'element-plus';
 
 const cursor_store = useCursorStore();
 
@@ -123,16 +123,20 @@ function fun_is_show(name: string) {
     <div class="LeftSidbarView" ref="div_left_panel" @mouseover="left_panel_mo">
         <div class="Toolbar">
             <div class="top">
-                <n-icon class="icon" size="18" :component="History" title="历史记录" @click="switch_panel('history')"
-                    color="#585858"></n-icon>
-                <n-icon class="icon" size="23" :component="List16Filled" title="目录" @click="switch_panel('catalogue')"
-                    color="#585858"></n-icon>
-                <n-icon class="icon" size="20" :component="Tag" title="书签" @click="switch_panel('bookmark')"
-                    color="#585858"></n-icon>
+                <el-icon class="icon" size="18" title="历史记录" @click="switch_panel('history')" color="#585858">
+                    <History />
+                </el-icon>
+                <el-icon class="icon" size="23" title="目录" @click="switch_panel('catalogue')" color="#585858">
+                    <List16Filled />
+                </el-icon>
+                <el-icon class="icon" size="20" title="书签" @click="switch_panel('bookmark')" color="#585858">
+                    <Tag />
+                </el-icon>
             </div>
             <div class="bottom">
-                <n-icon class="icon" size="20" :component="Toolbox20Regular" title="工具箱"
-                    @click="switch_panel('toolbox')" color="#585858"></n-icon>
+                <el-icon class="icon" size="20" title="工具箱" @click="switch_panel('toolbox')" color="#585858">
+                    <Toolbox20Regular />
+                </el-icon>
             </div>
         </div>
         <div class="content" v-show="show_panel" ref="div_content">

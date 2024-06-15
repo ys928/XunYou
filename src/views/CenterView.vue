@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import View from '../components/Center/View.vue';
 import ShowInfo from '../components/Center/ShowInfo.vue';
-import { Ref, ref, onMounted, inject } from 'vue';
-import { NSpin } from "naive-ui"
+import { ref, onMounted } from 'vue';
 import { useShowStore } from '../store/show';
 import { useCursorStore } from '../store/cursor';
 
@@ -28,10 +27,9 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="CenterView" ref="div_center_panel">
+    <div class="CenterView" ref="div_center_panel" v-loading="show_store.show_loading">
         <View></View>
         <ShowInfo v-show="show_store.show_prompt"></ShowInfo>
-        <n-spin class="loading" size="medium" v-show="show_store.show_loading"></n-spin>
     </div>
 </template>
 
@@ -41,12 +39,5 @@ onMounted(async () => {
     flex-grow: 1;
     height: 100%;
     background-color: var(--base-bgc1);
-
-    .loading {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-    }
 }
 </style>

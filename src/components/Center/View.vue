@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { Ref, ref, onMounted, nextTick, reactive } from 'vue';
 import { dialog, event, fs } from '@tauri-apps/api';
-import { NModal, NInput, NScrollbar } from "naive-ui"
 import { useNovelStore } from '../../store/novel';
 import { useStyleStore } from '../../store/style';
 import { useShowStore } from '../../store/show';
 import { Bookmark } from '../../api/novel';
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ElMessage, ElMessageBox, ElScrollbar, ElInput, ElDialog, ElButton } from 'element-plus';
 
 const novel_store = useNovelStore();
 
@@ -245,38 +244,52 @@ function generateUUID() {
 function onNegativeClick() {
 	show_edit_remark.value = false;
 	ElMessage.info('已取消添加书签');
+	show_edit_remark.value = false;
 }
 //模态框，确认添加书签
 async function onPositiveClick() {
 	await novel_store.add_bookmark(bookmark);
 	bookmark.label = "";
 	ElMessage.success('成功添加书签!');
+	show_edit_remark.value = false;
 }
 </script>
 
 <template>
 	<div class="View">
-		<n-scrollbar @onWheel="process_wheel" @onScroll="process_scroll">
+		<el-scrollbar>
 			<div class="title" ref="ref_div_title">{{ novel_store.show_chapter.title }}</div>
 			<div class="content" ref="ref_div_content" :style="style_store.style">
 				<div class="line" v-for="(item, index) in novel_store.show_chapter.lines" :key="index">
 					{{ item }}
 				</div>
 			</div>
-		</n-scrollbar>
+		</el-scrollbar>
 		<div class="opt_menu" ref="dev_menu" v-show="is_show_menu">
 			<div class="item" @click="fun_add_bookmark">添加书签</div>
 		</div>
-		<n-modal v-model:show="show_edit_remark" preset="dialog" title="dialog" :mask-closable="false"
+		<!-- <el-dialog v-model:show="show_edit_remark" preset="dialog" title="dialog" :mask-closable="false"
 			positive-text="确定" negative-text="取消" :closable="false" @positive-click="onPositiveClick"
 			@negative-click="onNegativeClick">
 			<template #header>
 				<div>书签备注</div>
 			</template>
-			<div>
-				<n-input placeholder="填写书签备注" v-model:value="bookmark.label"></n-input>
-			</div>
-		</n-modal>
+<div>
+	<el-input placeholder="填写书签备注" v-model:value="bookmark.label"></el-input>
+</div>
+</el-dialog> -->
+		<el-dialog v-model="show_edit_remark" width="500">
+			<template #header>
+				<div>书签备注</div>
+			</template>
+			<el-input placeholder="填写书签备注" v-model="bookmark.label"></el-input>
+			<template #footer>
+				<div class="dialog-footer">
+					<el-button @click="onNegativeClick">取消</el-button>
+					<el-button type="primary" @click="onPositiveClick">确定</el-button>
+				</div>
+			</template>
+		</el-dialog>
 	</div>
 </template>
 

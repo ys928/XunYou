@@ -2,14 +2,13 @@
 import { nextTick, onMounted, ref } from "vue";
 import { appWindow } from "@tauri-apps/api/window";
 import { invoke } from "@tauri-apps/api";
-import { NIcon } from "naive-ui"
 import { Close } from "@vicons/ionicons5"
 import { Maximize16Regular } from "@vicons/fluent"
 import { MinusOutlined } from "@vicons/antd"
 import { useNovelStore } from "../store/novel";
 import { useCursorStore } from "../store/cursor";
 import { Sunny, Moon } from "@element-plus/icons-vue"
-import { ElMessage, ElSwitch } from 'element-plus'
+import { ElMessage, ElSwitch, ElIcon } from 'element-plus'
 
 const novel_store = useNovelStore();
 
@@ -64,7 +63,7 @@ function loadTheme() {
     document.head.appendChild(link);
 }
 
-function change_theme(){
+function change_theme() {
     if (style_mode.value == false) {
         ElMessage.success("白日模式");
     } else {
@@ -85,14 +84,19 @@ function change_theme(){
             {{ novel_store.name }}
         </div>
         <div class="app_opt">
-            <el-switch v-model="style_mode" @change="change_theme" :active-action-icon="Moon" :inactive-action-icon="Sunny"
-                style="--el-switch-on-color: #2C2C2C; --el-switch-off-color: #F2F2F2;">
+            <el-switch v-model="style_mode" @change="change_theme" :active-action-icon="Moon"
+                :inactive-action-icon="Sunny" style="--el-switch-on-color: #2C2C2C; --el-switch-off-color: #F2F2F2;">
             </el-switch>
             <div class="mmc">
-                <n-icon class="min" color="#7f7f7f" size="20" :component="MinusOutlined" @click="WinMin"></n-icon>
-                <n-icon class="max" color="#7f7f7f" size="20" :component="Maximize16Regular"
-                    @click="WinTogMax"></n-icon>
-                <n-icon class="close" color="#7f7f7f" size="20" :component="Close" @click="WinClose"></n-icon>
+                <el-icon class="min" color="#7f7f7f" size="20" @click="WinMin">
+                    <MinusOutlined />
+                </el-icon>
+                <el-icon class="max" color="#7f7f7f" size="20" @click="WinTogMax">
+                    <Maximize16Regular />
+                </el-icon>
+                <el-icon class="close" color="#7f7f7f" size="20" @click="WinClose">
+                    <Close />
+                </el-icon>
             </div>
         </div>
     </div>
@@ -163,7 +167,7 @@ function change_theme(){
             line-height: 30px;
             display: flex;
 
-            .n-icon {
+            .el-icon {
                 height: 30px;
                 width: 30px;
                 display: flex;

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { Ref, h, inject, onMounted, reactive, ref, render } from 'vue';
-import { NIcon } from 'naive-ui';
+import { onMounted, reactive, ref } from 'vue';
 import { CalendarSearch20Regular, Settings24Regular } from "@vicons/fluent"
 import SearchPanel from '../components/RightSidebar/SearchPanel.vue';
 import Setting from '../components/RightSidebar/Setting.vue';
 import { useCursorStore } from '../store/cursor';
+import { ElIcon } from 'element-plus';
 
 const cursor_store = useCursorStore();
 
@@ -122,12 +122,14 @@ function fun_is_show(name: string) {
         </div>
         <div class="Toolbar">
             <div class="top">
-                <n-icon class="icon" size="25" color="#585858" :component="CalendarSearch20Regular" title="搜索小说"
-                    @click="switch_panel('search')"></n-icon>
+                <el-icon class="icon" size="25" color="#585858" title="搜索小说" @click="switch_panel('search')">
+                    <CalendarSearch20Regular />
+                </el-icon>
             </div>
             <div class="bottom">
-                <n-icon class="icon" size="25" color="#585858" :component="Settings24Regular" title="设置"
-                    @click="switch_panel('setting')"></n-icon>
+                <el-icon class="icon" size="25" color="#585858" title="设置" @click="switch_panel('setting')">
+                    <Settings24Regular />
+                </el-icon>
             </div>
         </div>
     </div>
