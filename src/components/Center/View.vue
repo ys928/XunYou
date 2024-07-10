@@ -38,6 +38,9 @@ const bookmark: Bookmark = reactive({
 let p_div: EventTarget | null;
 
 onMounted(async () => {
+
+	novel_store.set_jump_fun(fun_jump);
+
 	ref_div_content.value.oncontextmenu = function (e) {
 		dev_menu.value.style.left = e.pageX + "px";
 		dev_menu.value.style.top = e.pageY + "px";
@@ -97,34 +100,6 @@ onMounted(async () => {
 	})
 });
 
-//当前是否已经处于边缘状态（顶部、或者底部）
-let IsEdeg: boolean = false;
-
-let timer: NodeJS.Timeout;
-//处理滑动事件
-async function process_wheel(e: WheelEvent) {
-	// 延迟处理wheel事件
-	if (timer) {
-		clearTimeout(timer);
-	}
-	timer = setTimeout(async () => {
-		if (IsEdeg === false) {
-			IsEdeg = true;
-			return;
-		}
-		//如果已经到了边缘
-		if (e.deltaY > 0) { //向下滚动，下边缘，翻到下一章
-			next_chapter();
-		} else if (e.deltaY < 0) { //向上滚动，上边缘，翻到上一章
-			prev_chapter();
-		}
-	}, 300);
-}
-//处理页面滚动事件
-async function process_scroll(e: Event) {
-	IsEdeg = false; //只要有scroll事件发生，就说明没有到底部
-}
-
 //专门用于打开一个小说的函数，并将其内容显示在界面上
 async function fun_open_novel(path: string) {
 	let b = await fs.exists(path);
@@ -179,13 +154,31 @@ async function prev_chapter() {
 }
 
 async function fun_jump(cur_chapter: number, cur_line: number) {
+	console.log(cur_chapter, cur_line);
+
 	show_store.set_loading(true);
 	novel_store.set_show_chapter(cur_chapter);
-	await nextTick(); //等待渲染完成
-	let p = ref_div_content.value.querySelector(`:nth-child(${cur_line + 1})`) as Element;
-	p.scrollIntoView();
-	show_store.set_loading(false);
+
+
+	setTimeout(() => {
+		if (scroll_line_to_view(cur_line)) {
+		} else {
+			ElMessage.warning('跳转到指定行失败，请检查小说是否有足够长的段落');
+		}
+		show_store.set_loading(false);
+	}, 300);
+
 }
+
+function scroll_line_to_view(line: number): boolean {
+	let p = ref_div_content.value.querySelector(`:nth-child(${line + 1})`) as Element;
+	if (!p) {
+		return false;
+	}
+	p.scrollIntoView();
+	return true;
+}
+
 //添加书签函数
 async function fun_add_bookmark() {
 	//获取所有段落
@@ -268,16 +261,6 @@ async function onPositiveClick() {
 		<div class="opt_menu" ref="dev_menu" v-show="is_show_menu">
 			<div class="item" @click="fun_add_bookmark">添加书签</div>
 		</div>
-		<!-- <el-dialog v-model:show="show_edit_remark" preset="dialog" title="dialog" :mask-closable="false"
-			positive-text="确定" negative-text="取消" :closable="false" @positive-click="onPositiveClick"
-			@negative-click="onNegativeClick">
-			<template #header>
-				<div>书签备注</div>
-			</template>
-<div>
-	<el-input placeholder="填写书签备注" v-model:value="bookmark.label"></el-input>
-</div>
-</el-dialog> -->
 		<el-dialog v-model="show_edit_remark" width="500">
 			<template #header>
 				<div>书签备注</div>

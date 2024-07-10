@@ -12,14 +12,10 @@ const cursor_store = useCursorStore();
 const div_center_panel = ref();
 
 onMounted(async () => {
-
     div_center_panel.value.addEventListener("mouseenter", () => {
         if (cursor_store.need_change) {
             cursor_store.set_style('text')
         }
-    })
-    document.addEventListener("keyup", e => {
-
     })
 });
 

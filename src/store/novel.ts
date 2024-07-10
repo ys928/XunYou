@@ -1,24 +1,14 @@
 import { defineStore } from 'pinia'
 import { Ref, ref } from 'vue'
-import { CataItem, Novel } from '../api/novel'
+import { Bookmark, CataItem, Novel } from '../api/novel'
 import { dialog, fs, invoke } from '@tauri-apps/api'
 import { useShowStore } from './show'
-
 
 type Chapter = {
     /// 每章标题
     title: string,
     /// 每章内容，按行分割
     lines: Array<string>,
-}
-
-type Bookmark = {
-    id: string, //识别该书签的唯一id
-    label: string, //该标签的额外标注信息
-    chapter: Number, //所属章节
-    line: Number, //所属行
-    datetime: string, //创建日期
-    content: string, //简短文章内容
 }
 
 export const useNovelStore = defineStore('novel', () => {
@@ -51,6 +41,9 @@ export const useNovelStore = defineStore('novel', () => {
 
     // 书签
     const bookmark = ref([]) as Ref<Array<Bookmark>>
+
+    // 跳转函数
+    let jump_novel_fun = (chap: number, line: number) => { };
 
     // 打开小说
     async function open(filepath: string) {
@@ -139,5 +132,13 @@ export const useNovelStore = defineStore('novel', () => {
         cur_ch_idx.value = chap;
     }
 
-    return { name, path, cur_ch_idx, cur_line_idx, show_chapter, bookmark, isopen, cata, open, close, add_bookmark, del_bookmark, next_chapter, prev_chapter, set_show_chapter };
+    async function set_jump_fun(fun_jump: (chap: number, line: number) => Promise<void>) {
+        jump_novel_fun = fun_jump;
+    }
+
+    async function call_jump_fun(index: number) {
+        jump_novel_fun(bookmark.value[index].chapter, bookmark.value[index].line);
+    }
+
+    return { name, path, cur_ch_idx, cur_line_idx, show_chapter, bookmark, isopen, cata, open, close, add_bookmark, del_bookmark, next_chapter, prev_chapter, set_show_chapter, set_jump_fun, call_jump_fun };
 })

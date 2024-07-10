@@ -65,8 +65,7 @@ onMounted(() => {
 
 <template>
   <div class="MainWindow" :style="{ cursor: cursor_store.style }">
-    <Titlebar name="寻幽">
-    </Titlebar>
+    <Titlebar name="寻幽"></Titlebar>
     <div class="MainPanel">
       <router-view name="LeftSidebar"></router-view>
       <router-view></router-view>

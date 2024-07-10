@@ -14,7 +14,6 @@ const div_bookmarks = ref() as Ref<HTMLElement>;
 let cur_index = -1;
 
 onMounted(() => {
-
     div_bookmarks.value.oncontextmenu = (e: MouseEvent) => {
         let index = -1;
         let all_history_item = div_bookmarks.value.querySelectorAll(".mark_item");
@@ -43,6 +42,7 @@ onMounted(() => {
 });
 
 function dclick_mark(index: number) {
+    novel_store.call_jump_fun(index);
     // mainpan_nov_jump_fun.value(mainpan_bookmark.value[index].chapter, mainpan_bookmark.value[index].line);
 }
 
@@ -60,8 +60,7 @@ async function del_mark() {
         <div class="content" ref="div_bookmarks">
             <el-scrollbar>
                 <template v-for="(item, index) in novel_store.bookmark">
-                    <el-popover placement="top" title="备注" :width="200" trigger="hover"
-                        :content="item.label">
+                    <el-popover placement="top" title="备注" :width="200" trigger="hover" :content="item.label">
                         <template #reference>
                             <div class="mark_item" @dblclick="dclick_mark(index)">
                                 <div class="label">
