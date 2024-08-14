@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Ref, ref, onMounted, nextTick, reactive } from 'vue';
+import { Ref, ref, onMounted, nextTick, reactive, watch } from 'vue';
 import { dialog, event, fs } from '@tauri-apps/api';
 import { useNovelStore } from '../../store/novel';
 import { useStyleStore } from '../../store/style';
@@ -123,6 +123,13 @@ async function fun_open_novel(path: string) {
 	show_store.set_loading(false);
 }
 
+
+let change_ch_prompt = '';
+
+watch(() => novel_store.cur_ch_idx, () => {
+	ElMessage.success(`${change_ch_prompt}: ${novel_store.show_chapter.title}`);
+});
+
 //翻到下一章
 async function next_chapter() {
 	if (!novel_store.isopen) {
@@ -133,9 +140,11 @@ async function next_chapter() {
 	const ret = novel_store.next_chapter();
 	if (!ret) {
 		ElMessage.warning('已经到最后一章了');
+	} else {
+		await nextTick();
+		ref_div_title.value.scrollIntoView();
+		change_ch_prompt = "下一章";
 	}
-	await nextTick();
-	ref_div_title.value.scrollIntoView();
 }
 //翻到上一章
 async function prev_chapter() {
@@ -147,10 +156,12 @@ async function prev_chapter() {
 	let ret = await novel_store.prev_chapter();
 	if (!ret) {
 		ElMessage.warning('已经是第一章了~~~');
+	} else {
+		await nextTick();
+		ref_div_title.value.scrollIntoView();
+		change_ch_prompt = "上一章";
 	}
-	await nextTick();
 
-	ref_div_title.value.scrollIntoView();
 }
 
 async function fun_jump(cur_chapter: number, cur_line: number) {
@@ -246,11 +257,30 @@ async function onPositiveClick() {
 	ElMessage.success('成功添加书签!');
 	show_edit_remark.value = false;
 }
+
+let change_page = 0;
+let timer: string | number | NodeJS.Timeout | undefined;
+
+function on_scroll() {
+	change_page = 0;
+}
+
+function on_whell(e: WheelEvent) {
+	change_page = e.deltaY;
+	if (timer) clearTimeout(timer);
+	timer = setTimeout(() => {
+		if (change_page > 0) {
+			next_chapter();
+		} else if (change_page < 0) {
+			prev_chapter();
+		}
+	}, 200);
+}
 </script>
 
 <template>
-	<div class="View">
-		<el-scrollbar>
+	<div class="View" @wheel="on_whell($event)">
+		<el-scrollbar @scroll="on_scroll">
 			<div class="title" ref="ref_div_title">{{ novel_store.show_chapter.title }}</div>
 			<div class="content" ref="ref_div_content" :style="style_store.style">
 				<div class="line" v-for="(item, index) in novel_store.show_chapter.lines" :key="index">
