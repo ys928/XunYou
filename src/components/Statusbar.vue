@@ -11,7 +11,6 @@ const cursor_store = useCursorStore();
         <div class="right">
         </div>
     </div>
-
 </template>
 
 <style scoped lang="less">

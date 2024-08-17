@@ -66,16 +66,14 @@ export const useNovelStore = defineStore('novel', () => {
         if (filepath.endsWith('.txt')) {
             let ret = await Novel.open_txt(filepath);
             if (ret) {
-                let re = await Novel.get_record();
-                cur_ch_idx.value = re.chapter;
-                cur_line_idx.value = re.line;
+                let re = await Novel.get_progress();
                 show_chapter.value = await Novel.get_chapter(cur_ch_idx.value);
                 show_store.set_loading(false);
                 show_store.set_prompt(false);
                 num_chapters = await Novel.get_num_chapters();
                 cata.value = await Novel.get_cata();
                 bookmark.value = await Novel.get_bookmark();
-
+                call_jump_fun(re.chapter, re.line);
                 isopen.value = true;
                 return true;
             } else {
@@ -115,6 +113,7 @@ export const useNovelStore = defineStore('novel', () => {
         }
         show_chapter.value = await Novel.get_chapter(cur_ch_idx.value + 1);
         cur_ch_idx.value += 1;
+        save_record();
         return true;
     }
 
@@ -122,6 +121,7 @@ export const useNovelStore = defineStore('novel', () => {
         if (cur_ch_idx.value > 0) {
             show_chapter.value = await Novel.get_chapter(cur_ch_idx.value - 1);
             cur_ch_idx.value -= 1;
+            save_record();
             return true;
         }
         return false;
@@ -130,15 +130,33 @@ export const useNovelStore = defineStore('novel', () => {
     async function set_show_chapter(chap: number) {
         show_chapter.value = await Novel.get_chapter(chap);
         cur_ch_idx.value = chap;
+        save_record();
     }
 
     async function set_jump_fun(fun_jump: (chap: number, line: number) => Promise<void>) {
         jump_novel_fun = fun_jump;
     }
 
-    async function call_jump_fun(index: number) {
-        jump_novel_fun(bookmark.value[index].chapter, bookmark.value[index].line);
+    async function call_jump_fun(chap: number, line: number) {
+        jump_novel_fun(chap, line);
+        save_record();
     }
 
-    return { name, path, cur_ch_idx, cur_line_idx, show_chapter, bookmark, isopen, cata, open, close, add_bookmark, del_bookmark, next_chapter, prev_chapter, set_show_chapter, set_jump_fun, call_jump_fun };
+    async function set_line(line: number) {
+        cur_line_idx.value = line;
+        await save_record();
+    }
+
+    async function save_record() {
+        await Novel.save_record({
+            chapter: cur_ch_idx.value,
+            line: cur_line_idx.value,
+        });
+    }
+
+    async function jump_to_bookmark(index: number) {
+        call_jump_fun(bookmark.value[index].chapter, bookmark.value[index].line);
+    }
+
+    return { name, path, cur_ch_idx, cur_line_idx, show_chapter, bookmark, isopen, cata, set_line, open, close, jump_to_bookmark, add_bookmark, del_bookmark, next_chapter, prev_chapter, set_show_chapter, set_jump_fun, call_jump_fun };
 })

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { invoke } from '@tauri-apps/api';
-import { onMounted, reactive, ref } from 'vue';
+import { onMounted, reactive, Ref, ref } from 'vue';
 import { useNovelStore } from '../../store/novel';
 import { ElScrollbar, ElInput } from 'element-plus';
 
@@ -10,13 +10,10 @@ const novel_store = useNovelStore();
 type type_record_novel = {
     name: string, //小说名字
     path: string, //小说文件路径
-    md5: string, //小说md5值校验
-    cur_line: number, //当前读到的行数
-    all_line: number, //小说总行数
 }
 
 
-let div_record: HTMLElement;
+const ref_div_history_list = ref() as Ref<HTMLElement>;
 
 const dev_menu = ref();
 
@@ -41,17 +38,17 @@ function dclick_novel(index: number) {
 }
 
 onMounted(async () => {
-    let record: Array<type_record_novel> = await invoke("get_record", {});
+    let record: Array<type_record_novel> = await invoke("cfg_nov_get_records", {});
     for (let i of record) {
         records_novel.push(i);
     }
     show_records_novel.push(...records_novel);
 
-    div_record = document.getElementById('div_history_list') as HTMLElement;
-
-    div_record.oncontextmenu = (e: MouseEvent) => {
+    ref_div_history_list.value.oncontextmenu = (e: MouseEvent) => {
         let index = -1;
-        let all_history_item = div_record.querySelectorAll("div");
+        let all_history_item = ref_div_history_list.value.querySelectorAll("div");
+        console.log(all_history_item);
+
         for (let i = 0; i < all_history_item.length; i++) {
             if (all_history_item[i].contains(e.target as Node)) {
                 dev_menu.value.style.left = e.pageX + "px";
@@ -78,8 +75,10 @@ onMounted(async () => {
 //删除一个记录项，
 async function del_record() {
     if (cur_index == -1) return;
-    await invoke("del_record", {
-        path: records_novel[cur_index].path
+    console.log(cur_index, records_novel);
+
+    await invoke("cfg_nov_del_record", {
+        name: records_novel[cur_index].name
     });
 
     records_novel.splice(cur_index, 1);
@@ -105,12 +104,14 @@ function search_fun(v: string) {
         <div class="top_pos">
             <el-input v-model="search_input" @input="search_fun" placeholder="搜记录" size="small"></el-input>
         </div>
-        <div class="novels" id="div_history_list">
+        <div class="novels">
             <el-scrollbar>
-                <div v-for="(item, index) in show_records_novel" class="novel_item" @dblclick="dclick_novel(index)">
-                    <span class="novel_name">
-                        {{ item.name.substring(0, item.name.lastIndexOf('.')) }}
-                    </span>
+                <div ref="ref_div_history_list">
+                    <div v-for="(item, index) in show_records_novel" class="novel_item" @dblclick="dclick_novel(index)">
+                        <span class="novel_name">
+                            {{ item.name }}
+                        </span>
+                    </div>
                 </div>
             </el-scrollbar>
         </div>

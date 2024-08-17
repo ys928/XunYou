@@ -6,7 +6,7 @@ import { event, invoke, window } from '@tauri-apps/api';
 import { useStyleStore } from './store/style';
 import { useCursorStore } from './store/cursor';
 
-type app_setting = {
+type app_style = {
   font_size: number, //font-size
   font_weight: number, //font-weight
   line_height: number, //line-height
@@ -19,7 +19,7 @@ const cursor_store = useCursorStore();
 
 onBeforeMount(async () => {
   //取得配置文件中的设置信息
-  let setting = await invoke<app_setting>("get_setting", {});
+  let setting = await invoke<app_style>("cfg_app_get_style", {});
   style_store.set(setting.font_size, setting.font_weight, setting.font_family, setting.line_height);
 });
 
@@ -52,7 +52,7 @@ onMounted(() => {
       f = await cur_win.isMinimized();
       if (f) return;
 
-      invoke("set_wh", {
+      invoke("cfg_set_windows_wh", {
         w: e.payload.width,
         h: e.payload.height
       });

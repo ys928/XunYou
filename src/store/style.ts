@@ -59,11 +59,13 @@ export const useStyleStore = defineStore('style', () => {
     }
 
     function save() {
-        invoke("set_setting", {
-            fs: font_size.value,
-            fw: font_weight.value,
-            lh: line_height.value,
-            ff: font_family.value
+        invoke("cfg_app_set_style", {
+            style: {
+                font_size: font_size.value,
+                font_weight: font_weight.value,
+                line_height: line_height.value,
+                font_family: font_family.value
+            }
         });
     }
 

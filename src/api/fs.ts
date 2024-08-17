@@ -21,10 +21,10 @@ export class FS {
     }
 
     static async set_root_path(p: string) {
-        invoke("set_novel_folder", { folder: p });
+        invoke("cfg_set_novel_folder", { folder: p });
     }
 
     static async get_root_path(): Promise<string> {
-        return await invoke<string>("get_novel_folder", {});
+        return await invoke<string>("cfg_get_novel_folder", {});
     }
 }

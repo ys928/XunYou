@@ -18,7 +18,7 @@ const style_mode = ref(false); //默认为亮模式：false
 
 onMounted(async () => {
     await nextTick();
-    let theme = await invoke("get_theme", {});
+    let theme = await invoke("cfg_get_app_theme");
     if (theme == "dark") {
         style_mode.value = true;
     } else {

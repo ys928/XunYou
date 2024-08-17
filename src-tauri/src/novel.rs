@@ -6,38 +6,16 @@ use std::{
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    config::{add_bookmark, add_record, del_bookmark, get_bookmark, get_nov_prog},
-    types::Bookmark,
+use crate::config::novel::{
+    add_nov_bookmark, add_nov_record, del_nov_bookmark, get_nov_bookmarks, get_nov_progress,
+    set_nov_progress, Bookmark, Chapter, Progress,
 };
-
-static OPENED_NOVEL: Mutex<Option<Novel>> = Mutex::new(None);
-
-static RE_TITLE: OnceLock<Vec<Regex>> = OnceLock::new();
-
-#[derive(Debug, Default, Clone, Deserialize, Serialize)]
-pub struct Chapter {
-    /// 每章标题
-    pub title: String,
-    /// 每章内容，按行分割
-    pub lines: Vec<String>,
-}
-
-#[derive(Debug, Default, Clone, Deserialize, Serialize)]
-pub struct Record {
-    /// 章节索引
-    pub chapter: u64,
-    /// 章节内的行数
-    pub line: u64,
-}
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct Novel {
     pub path: String,
     pub name: String,
     pub chapters: Vec<Chapter>,
-    pub bookmarks: Vec<Bookmark>,
-    pub record: Record,
 }
 
 /// 目录项
@@ -49,61 +27,19 @@ pub struct CataItem {
     idx: usize,
 }
 
-/// 使用该模块前必须调用
-pub fn init() {
-    RE_TITLE.get_or_init(|| {
-        let mut v = Vec::new();
+static OPENED_NOVEL: Mutex<Option<Novel>> = Mutex::new(None);
 
-        let r = Regex::new(r"^\s*开\s*篇.*\r?\n?$").unwrap();
-        v.push(r);
-        //序章
-        let r = Regex::new(r"^\s*序\s*章.*\r?\n?$").unwrap();
-        v.push(r);
-        //第xxx章
-        let r = Regex::new(
-            r"^\s*第\s*[零一二三四五六七八九十百千万0-9]{1,10}\s*[章节幕卷集部回]\s*\r?\n?$",
-        )
-        .unwrap();
-
-        v.push(r);
-
-        //第xxx章 章节名
-        let r = Regex::new(
-            r"^\s*第\s*[零一二三四五六七八九十百千万0-9]{1,10}\s*[章节幕卷集部回]\s+.*\r?\n?$",
-        )
-        .unwrap();
-
-        v.push(r);
-
-        //Chapter xxx 章节名
-        let r =
-            Regex::new(r"^Chapter\s*[零一二三四五六七八九十百千万0-9]{1,10}\s+.*\r?\n?$").unwrap();
-        v.push(r);
-
-        v
-    });
-}
 /// 打开文本格式小说内容
 #[tauri::command(async)]
 pub fn novel_open_txt(filepath: &str) -> bool {
-    let str = std::fs::read_to_string(filepath);
-    if str.is_err() {
+    let nov_content = std::fs::read_to_string(filepath);
+    if nov_content.is_err() {
         return false;
     }
+    let nov_content = nov_content.unwrap();
 
-    let filename = Path::new(filepath)
-        .file_name()
-        .unwrap()
-        .to_string_lossy()
-        .to_string();
-
-    let mut nov = Novel::default();
-    nov.path = filepath.to_string();
-    nov.name = filename;
-
-    let str = str.unwrap();
-    let str = str.replace("\r", "");
-    let lines: Vec<&str> = str.split("\n").collect();
+    let nov_content = nov_content.replace("\r", "");
+    let lines: Vec<&str> = nov_content.split("\n").collect();
 
     let mut chap = Chapter::default();
 
@@ -111,6 +47,8 @@ pub fn novel_open_txt(filepath: &str) -> bool {
     if !is_title(lines[0]) {
         chap.title = "开始".to_string();
     }
+
+    let mut nov = Novel::default();
 
     for line in lines {
         if is_title(line) {
@@ -125,16 +63,15 @@ pub fn novel_open_txt(filepath: &str) -> bool {
     }
     // 最后一章
     nov.chapters.push(chap);
-
-    // 获取书签
-    nov.bookmarks = get_bookmark(filepath).unwrap();
-
-    // 获取记录
-    let record = get_nov_prog(filepath).unwrap();
-    nov.record = record;
+    nov.name = Path::new(filepath)
+        .file_stem()
+        .unwrap()
+        .to_string_lossy()
+        .to_string();
+    nov.path = filepath.to_string();
 
     // 保存在最近打开记录
-    add_record(nov.clone()).unwrap();
+    add_nov_record(filepath);
 
     let mut novel = OPENED_NOVEL.lock().unwrap();
     *novel = Some(nov);
@@ -158,18 +95,16 @@ pub fn novel_get_chapter(idx: usize) -> Result<Chapter, String> {
     Ok(chap)
 }
 
-/// 获取小说记录
+/// 获取小说阅读记录
 #[tauri::command]
-pub fn novel_get_record() -> Result<Record, String> {
+pub fn novel_get_progress() -> Result<Progress, String> {
     let novel = OPENED_NOVEL.lock().unwrap();
     if novel.is_none() {
         return Err("还没有打开该小说".to_string());
     }
-
     let nov = novel.as_ref().unwrap();
-
-    let record = nov.record.clone();
-    Ok(record)
+    let rec = get_nov_progress(&nov.name)?;
+    Ok(rec)
 }
 
 #[tauri::command]
@@ -203,7 +138,8 @@ pub fn novel_get_bookmark() -> Result<Vec<Bookmark>, String> {
     if novel.is_none() {
         return Err("还没有打开该小说".to_string());
     }
-    Ok(novel.as_ref().unwrap().bookmarks.clone())
+    let bookmarks = get_nov_bookmarks(&novel.as_ref().unwrap().name);
+    Ok(bookmarks)
 }
 
 #[tauri::command]
@@ -213,30 +149,51 @@ pub fn novel_add_bookmark(mark: Bookmark) -> Result<(), String> {
         return Err("还没有打开该小说".to_string());
     }
     let nov = novel.as_mut().unwrap();
-    nov.bookmarks.push(mark.clone());
-    add_bookmark(&nov.path, mark)?;
+    add_nov_bookmark(nov.name.as_str(), mark);
     Ok(())
 }
 
 #[tauri::command]
 pub fn novel_del_bookmark(id: String) -> Result<(), String> {
-    let mut novel = OPENED_NOVEL.lock().unwrap();
+    let novel = OPENED_NOVEL.lock().unwrap();
     if novel.is_none() {
         return Err("还没有打开该小说".to_string());
     }
-    let nov = novel.as_mut().unwrap();
-    for (index, b) in nov.bookmarks.iter().enumerate() {
-        if b.id == id {
-            nov.bookmarks.remove(index);
-            break;
-        }
+    let nov = novel.as_ref().unwrap();
+    del_nov_bookmark(&nov.name, &id);
+    Ok(())
+}
+
+/// 保存小说记录
+#[tauri::command]
+pub fn novel_set_progress(record: Progress) -> Result<(), String> {
+    let novel = OPENED_NOVEL.lock().unwrap();
+    if novel.is_none() {
+        return Err("还没有打开该小说".to_string());
     }
-    del_bookmark(&nov.path, id)?;
+    let nov = novel.as_ref().unwrap();
+    set_nov_progress(&nov.name, record)?;
     Ok(())
 }
 
 /// 判断是否为标题
 fn is_title(line: &str) -> bool {
+    static RE_TITLE: OnceLock<Vec<Regex>> = OnceLock::new();
+    RE_TITLE.get_or_init(|| {
+        let res = vec![
+            r"^\s*开\s*篇.*\r?\n?$", //开篇
+            r"^\s*序\s*章.*\r?\n?$", //序章
+            r"^\s*第\s*[零一二三四五六七八九十百千万0-9]{1,10}\s*[章节幕卷集部回]\s*\r?\n?$", //第xxx章
+            r"^\s*第\s*[零一二三四五六七八九十百千万0-9]{1,10}\s*[章节幕卷集部回]\s+.*\r?\n?$", //第xxx章 章节名
+            r"^Chapter\s*[零一二三四五六七八九十百千万0-9]{1,10}\s+.*\r?\n?$", //Chapter xxx 章节名
+        ];
+        let mut v = Vec::new();
+        for r in res {
+            let r = Regex::new(r).unwrap();
+            v.push(r);
+        }
+        v
+    });
     let re_title = RE_TITLE.get().unwrap();
     for r in re_title {
         if r.is_match(line) {

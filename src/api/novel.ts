@@ -36,8 +36,8 @@ export class Novel {
         return await invoke<Chapter>("novel_get_chapter", { idx: idx });
     }
 
-    static async get_record() {
-        return await invoke<Record>("novel_get_record");
+    static async get_progress() {
+        return await invoke<Record>("novel_get_progress");
     }
 
     static async get_num_chapters() {
@@ -54,5 +54,9 @@ export class Novel {
 
     static async add_bookmark(mark: Bookmark) {
         return await invoke<boolean>("novel_add_bookmark", { mark: mark });
+    }
+
+    static async save_record(record: Record) {
+        return await invoke<boolean>("novel_set_progress", { record: record });
     }
 }

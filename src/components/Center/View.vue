@@ -124,10 +124,8 @@ async function fun_open_novel(path: string) {
 }
 
 
-let change_ch_prompt = '';
-
 watch(() => novel_store.cur_ch_idx, () => {
-	ElMessage.success(`${change_ch_prompt}: ${novel_store.show_chapter.title}`);
+	ElMessage.success(`${novel_store.show_chapter.title}`);
 });
 
 //翻到下一章
@@ -143,7 +141,6 @@ async function next_chapter() {
 	} else {
 		await nextTick();
 		ref_div_title.value.scrollIntoView();
-		change_ch_prompt = "下一章";
 	}
 }
 //翻到上一章
@@ -159,7 +156,6 @@ async function prev_chapter() {
 	} else {
 		await nextTick();
 		ref_div_title.value.scrollIntoView();
-		change_ch_prompt = "上一章";
 	}
 
 }
@@ -182,6 +178,9 @@ async function fun_jump(cur_chapter: number, cur_line: number) {
 }
 
 function scroll_line_to_view(line: number): boolean {
+	if (line == undefined) {
+		return false;
+	}
 	let p = ref_div_content.value.querySelector(`:nth-child(${line + 1})`) as Element;
 	if (!p) {
 		return false;
@@ -263,6 +262,19 @@ let timer: string | number | NodeJS.Timeout | undefined;
 
 function on_scroll() {
 	change_page = 0;
+
+	//获取所有段落
+	let ps = ref_div_content.value.querySelectorAll('div');
+	let p_rect = ref_div_content.value.getBoundingClientRect();
+	let line = 0;
+	for (let i = 0; i < ps.length; i++) {
+		let rect = ps[i].getBoundingClientRect();
+		if (rect.top > p_rect.top) {
+			line = i;
+			break;
+		}
+	}
+	novel_store.set_line(line);
 }
 
 function on_whell(e: WheelEvent) {

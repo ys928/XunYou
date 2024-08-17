@@ -42,8 +42,7 @@ onMounted(() => {
 });
 
 function dclick_mark(index: number) {
-    novel_store.call_jump_fun(index);
-    // mainpan_nov_jump_fun.value(mainpan_bookmark.value[index].chapter, mainpan_bookmark.value[index].line);
+    novel_store.jump_to_bookmark(index);
 }
 
 //删除一个记录项，
@@ -67,7 +66,7 @@ async function del_mark() {
                                     {{ item.content }}
                                 </div>
                                 <div class="bottom">
-                                    <span>第{{ item.chapter }}章{{ item.line }}行</span>
+                                    <span>{{ item.chapter }}章{{ item.line }}段</span>
                                     <span>{{ item.datetime }}</span>
                                 </div>
                             </div>

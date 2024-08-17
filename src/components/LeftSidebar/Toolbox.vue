@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { dialog, invoke } from '@tauri-apps/api';
-import { ElButton } from 'element-plus';
+// import { dialog, invoke } from '@tauri-apps/api';
+// import { ElButton } from 'element-plus';
 
-async function fun_txt_to_bzip2() {
-    const selected = await dialog.open({
-        multiple: false,
-        filters: [{
-            name: '文本文件',
-            extensions: ['txt']
-        }]
-    });
-    if (selected === null) return;
-    await invoke("txt_to_bzip", { txt: selected });
-}
+// async function fun_txt_to_bzip2() {
+//     const selected = await dialog.open({
+//         multiple: false,
+//         filters: [{
+//             name: '文本文件',
+//             extensions: ['txt']
+//         }]
+//     });
+//     if (selected === null) return;
+//     await invoke("txt_to_bzip", { txt: selected });
+// }
 
 </script>
 
@@ -20,7 +20,7 @@ async function fun_txt_to_bzip2() {
     <div class="Toolbox">
         <div class="title">工具箱</div>
         <div class="tools">
-            <el-button @click="fun_txt_to_bzip2">txt转换</el-button>
+            <!-- <el-button @click="fun_txt_to_bzip2">txt转换</el-button> -->
         </div>
     </div>
 </template>
