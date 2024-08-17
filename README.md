@@ -2,25 +2,24 @@
 
 这是一个非常小巧、美观的PC端小说阅读器。
 
-目前支持两种格式：txt文本，以及由txt文本经过bzip2算法压缩得到的文件。
-
-可以通过软件左下角中的工具箱工具，将txt文本进行压缩，节省占用空间。
-
-但要注意，txt文本必须为utf-8编码，这可以从window记事本的右下角查看：
+目前仅支持txt文本，并且必须为utf-8编码，这可以从window记事本的右下角查看：
 
 ![image](https://github.com/ys928/XunYou/assets/80371119/574faf70-b61f-4d0f-9149-17e1c15cad2d)
 
-目前仅支持PC端，待Tauri框架稳定后，会考虑支持手机端。
+暂时仅支持PC端，待Tauri框架稳定后，会考虑支持手机端。
 
 # 软件界面
 
-<img width="798" src="https://github.com/ys928/XunYou/assets/80371119/c8d84fa7-615f-4b26-befd-11021288faab">
+![image](https://github.com/user-attachments/assets/8619378b-9208-402c-b9cc-e8476519d25c)
+
 
 ## 暗色调主题：
 
-![image](https://github.com/ys928/XunYou/assets/80371119/9af2f656-09cf-49c6-8b58-c325ce7befbd)
+![image](https://github.com/user-attachments/assets/d3da4f4d-756e-49a3-b3e1-18c326a562b2)
+
 
 
 ## 亮色调主题：
 
-![image](https://github.com/ys928/XunYou/assets/80371119/c13082b6-0f8f-4dfe-9419-f8a67f357765)
+![image](https://github.com/user-attachments/assets/92b13021-862a-42d5-bcc2-69e5010734f7)
+
