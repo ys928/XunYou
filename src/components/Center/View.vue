@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Ref, ref, onMounted, nextTick, reactive, watch } from 'vue';
-import {  event,  } from '@tauri-apps/api';
+import { event, } from '@tauri-apps/api';
 import { useNovelStore } from '../../store/novel';
 import { useStyleStore } from '../../store/style';
 import { useShowStore } from '../../store/show';
@@ -66,7 +66,7 @@ onMounted(async () => {
 			});
 			if (selected === null) return;
 			//打开小说
-			fun_open_novel(selected as string);
+			fun_open_novel(selected.path);
 			return;
 		}
 		//关闭当前小说
@@ -106,7 +106,7 @@ onMounted(async () => {
 async function fun_open_novel(path: string) {
 	let b = await fs.exists(path);
 	if (!b) {
-		await dialog.message('小说不存在！', { title: '打开失败', type: 'warning' });
+		await dialog.message('小说不存在！', { title: '打开失败', kind: 'warning' });
 		return;
 	}
 
@@ -119,7 +119,7 @@ async function fun_open_novel(path: string) {
 	} else if (path.endsWith(".txt")) {
 		await novel_store.open(path);
 	} else {
-		await dialog.message('不支持该类型文件！', { title: '打开失败', type: 'warning' });
+		await dialog.message('不支持该类型文件！', { title: '打开失败', kind: 'warning' });
 		return;
 	}
 	show_store.set_loading(false);
