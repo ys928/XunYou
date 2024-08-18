@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { invoke } from '@tauri-apps/api';
+import { invoke } from '@tauri-apps/api/core';
 import { onMounted, reactive, Ref, ref } from 'vue';
 import { useNovelStore } from '../../store/novel';
 import { ElScrollbar, ElInput } from 'element-plus';

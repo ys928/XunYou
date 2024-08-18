@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { Ref, ref, onMounted } from 'vue';
-import { dialog } from '@tauri-apps/api';
-import { fs } from '@tauri-apps/api';
+import {  } from '@tauri-apps/api';
+import {  } from '@tauri-apps/api';
 import { useNovelStore } from '../../store/novel';
 import { FS, NovelInfo } from '../../api/fs';
 import { ElScrollbar, ElInput, ElIcon } from 'element-plus';
 import { Folder } from '@element-plus/icons-vue'
+import * as dialog from "@tauri-apps/plugin-dialog"
+import * as fs from "@tauri-apps/plugin-fs"
 const novel_store = useNovelStore();
 
 //控制要显示的小说列表项

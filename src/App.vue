@@ -2,7 +2,7 @@
 import Titlebar from './components/Titlebar.vue';
 import Statusbar from './components/Statusbar.vue';
 import { onBeforeMount, onMounted } from 'vue';
-import { event, invoke, window } from '@tauri-apps/api';
+import { invoke } from '@tauri-apps/api/core';
 import { useStyleStore } from './store/style';
 import { useCursorStore } from './store/cursor';
 
@@ -35,28 +35,6 @@ onMounted(() => {
     if ((e.key === 'X' || e.key === 'x') && e.ctrlKey && e.shiftKey) {
       e.preventDefault();
     }
-  });
-
-  var t: NodeJS.Timeout; //事件节流，防止频繁滚动导致界面卡顿
-  type Size = {
-    width: number,
-    height: number
-  };
-  const cur_win = window.getCurrent();
-  event.listen<Size>("tauri://resize", (e) => {
-    clearTimeout(t);
-    t = setTimeout(async function () {
-      //跳过最大最小化的情况
-      let f = await cur_win.isMaximized();
-      if (f) return;
-      f = await cur_win.isMinimized();
-      if (f) return;
-
-      invoke("cfg_set_windows_wh", {
-        w: e.payload.width,
-        h: e.payload.height
-      });
-    }, 800)
   });
 });
 

@@ -12,7 +12,6 @@ pub mod app;
 pub mod novel;
 pub mod style;
 
-
 #[derive(Serialize, Deserialize, Default, Debug)]
 pub struct AppConfigInfo {
     pub appinfo: AppInfo,       //软件界面相关的配置信息

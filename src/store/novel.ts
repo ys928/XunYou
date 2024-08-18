@@ -1,8 +1,10 @@
 import { defineStore } from 'pinia'
 import { Ref, ref } from 'vue'
 import { Bookmark, CataItem, Novel } from '../api/novel'
-import { dialog, fs, invoke } from '@tauri-apps/api'
+import { invoke } from '@tauri-apps/api/core'
 import { useShowStore } from './show'
+import * as dialog from "@tauri-apps/plugin-dialog"
+import * as fs from "@tauri-apps/plugin-fs"
 
 type Chapter = {
     /// 每章标题
@@ -49,7 +51,7 @@ export const useNovelStore = defineStore('novel', () => {
     async function open(filepath: string) {
         let b = await fs.exists(filepath);
         if (!b) {
-            await dialog.message('小说不存在！', { title: '打开失败', type: 'warning' });
+            await dialog.message('小说不存在！', { title: '打开失败', kind: 'warning' });
             return;
         }
         show_store.set_loading(true);

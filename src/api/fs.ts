@@ -1,6 +1,6 @@
-import { invoke } from "@tauri-apps/api";
-import { readDir } from "@tauri-apps/api/fs";
-
+import { invoke } from "@tauri-apps/api/core";
+import { readDir } from "@tauri-apps/plugin-fs";
+import * as path from '@tauri-apps/api/path';
 export type NovelInfo = {
     name: string,
     path: string,
@@ -8,13 +8,13 @@ export type NovelInfo = {
 
 
 export class FS {
-    static async read_dir(path: string): Promise<NovelInfo[]> {
-        let files = await readDir(path);
+    static async read_dir(p: string): Promise<NovelInfo[]> {
+        let files = await readDir(p);
         let names = [] as Array<NovelInfo>;
         for (let f of files) {
             names.push({
                 name: f.name as string,
-                path: f.path
+                path: await path.join(p, f.name)
             })
         }
         return names;

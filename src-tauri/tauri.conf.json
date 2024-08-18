@@ -2,58 +2,26 @@
   "build": {
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build",
-    "devPath": "http://localhost:1420",
-    "distDir": "../dist",
-    "withGlobalTauri": false
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:1420"
   },
-  "package": {
-    "productName": "XunYou",
-    "version": "2.2.0"
+  "bundle": {
+    "active": true,
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "targets": "all"
   },
-  "tauri": {
-    "allowlist": {
-      "all": false,
-      "shell": {
-        "all": false,
-        "open": true
-      },
-      "window": {
-        "all": true
-      },
-      "dialog": {
-        "all": true
-      },
-      "globalShortcut": {
-        "all": true
-      },
-      "clipboard": {
-        "all": true
-      },
-      "fs": {
-        "all": true,
-        "scope": [
-          "**"
-        ]
-      }
-    },
-    "bundle": {
-      "active": true,
-      "icon": [
-        "icons/32x32.png",
-        "icons/128x128.png",
-        "icons/128x128@2x.png",
-        "icons/icon.icns",
-        "icons/icon.ico"
-      ],
-      "identifier": "com.xunyou",
-      "targets": "all"
-    },
-    "security": {
-      "csp": null
-    },
-    "updater": {
-      "active": false
-    },
+  "productName": "XunYou",
+  "version": "2.2.1",
+  "identifier": "com.xunyou",
+  "plugins": {},
+  "app": {
+    "withGlobalTauri": false,
     "windows": [
       {
         "label": "MainWindow",
@@ -65,6 +33,29 @@
         "decorations": false,
         "transparent": true
       }
-    ]
+    ],
+    "security": {
+      "csp": null,
+      "capabilities": [
+        {
+          "identifier": "base",
+          "description": "base.",
+          "windows": ["MainWindow"],
+          "permissions": [
+            "core:default",
+            "core:window:allow-start-dragging",
+            "core:window:allow-close",
+            "core:window:allow-toggle-maximize",
+            "core:window:allow-minimize",
+            "fs:allow-app-meta",
+            {
+              "identifier": "fs:scope",
+              "allow": [{ "path": "**" }]
+            }
+          ],
+          "platforms": ["windows"]
+        }
+      ]
+    }
   }
 }

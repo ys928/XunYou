@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { nextTick, onMounted, ref } from "vue";
-import { appWindow } from "@tauri-apps/api/window";
-import { invoke } from "@tauri-apps/api";
+import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
+import { invoke } from "@tauri-apps/api/core";
 import { Close } from "@vicons/ionicons5"
 import { Maximize16Regular } from "@vicons/fluent"
 import { MinusOutlined } from "@vicons/antd"
@@ -9,6 +9,7 @@ import { useNovelStore } from "../store/novel";
 import { useCursorStore } from "../store/cursor";
 import { Sunny, Moon } from "@element-plus/icons-vue"
 import { ElMessage, ElSwitch, ElIcon } from 'element-plus'
+const appWindow = getCurrentWebviewWindow()
 
 const novel_store = useNovelStore();
 

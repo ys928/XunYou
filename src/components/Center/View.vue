@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { Ref, ref, onMounted, nextTick, reactive, watch } from 'vue';
-import { dialog, event, fs } from '@tauri-apps/api';
+import {  event,  } from '@tauri-apps/api';
 import { useNovelStore } from '../../store/novel';
 import { useStyleStore } from '../../store/style';
 import { useShowStore } from '../../store/show';
 import { Bookmark } from '../../api/novel';
 import { ElMessage, ElMessageBox, ElScrollbar, ElInput, ElDialog, ElButton } from 'element-plus';
+import * as dialog from "@tauri-apps/plugin-dialog"
+import * as fs from "@tauri-apps/plugin-fs"
 
 const novel_store = useNovelStore();
 
