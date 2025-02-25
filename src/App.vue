@@ -32,6 +32,9 @@ onMounted(() => {
     if ((e.key === 'f' || e.key === 'F') && e.ctrlKey) {
       e.preventDefault();
     }
+    if ((e.key === 'p' || e.key === 'P') && e.ctrlKey) {
+      e.preventDefault();
+    }
     if ((e.key === 'X' || e.key === 'x') && e.ctrlKey && e.shiftKey) {
       e.preventDefault();
     }

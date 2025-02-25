@@ -66,7 +66,8 @@ onMounted(async () => {
 			});
 			if (selected === null) return;
 			//打开小说
-			fun_open_novel(selected.path);
+			//@ts-ignore
+			fun_open_novel(selected);
 			return;
 		}
 		//关闭当前小说
@@ -96,8 +97,8 @@ onMounted(async () => {
 	})
 
 	//处理文件拖拽
-	event.listen<Array<string>>("tauri://file-drop", (e) => {
-		let file = e.payload[0];
+	event.listen<Array<string>>("tauri://drag-drop", (e) => {
+		let file = (e.payload as any).paths[0];
 		fun_open_novel(file);
 	})
 });

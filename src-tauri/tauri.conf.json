@@ -17,7 +17,7 @@
     "targets": "all"
   },
   "productName": "XunYou",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "identifier": "com.xunyou",
   "plugins": {},
   "app": {
@@ -48,6 +48,7 @@
             "core:window:allow-toggle-maximize",
             "core:window:allow-minimize",
             "fs:allow-app-meta",
+            "dialog:default",
             {
               "identifier": "fs:scope",
               "allow": [{ "path": "**" }]
