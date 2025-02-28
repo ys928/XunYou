@@ -5,6 +5,9 @@
     "windows",
     "linux"
   ],
+  "windows": [
+    "main"
+  ],
   "permissions": [
     "global-shortcut:default",
     "window-state:default"

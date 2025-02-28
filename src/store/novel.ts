@@ -45,7 +45,7 @@ export const useNovelStore = defineStore('novel', () => {
     const bookmark = ref([]) as Ref<Array<Bookmark>>
 
     // 跳转函数
-    let jump_novel_fun = (chap: number, line: number) => { };
+    let jump_novel_fun = (_chap: number, _line: number) => { };
 
     // 打开小说
     async function open(filepath: string) {

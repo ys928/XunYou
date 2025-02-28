@@ -42,7 +42,7 @@ jobs:
               repo: context.repo.repo,
               tag_name: '${{ steps.get_version.outputs.VERSION }}',
               name: 'XunYou ${{ steps.get_version.outputs.VERSION}} ',
-              body: '1.升级tauri至2.0，修复窗口边缘无法拖动问题',
+              body: '',
               draft: false,
               prerelease: false
             })

@@ -1,25 +1,16 @@
-# 介绍
+# Tauri + Vue + TypeScript
 
-这是一个非常小巧、美观的PC端小说阅读器。
+This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
 
-目前仅支持txt文本，并且必须为utf-8编码，这可以从window记事本的右下角查看：
+## Recommended IDE Setup
 
-![image](https://github.com/ys928/XunYou/assets/80371119/574faf70-b61f-4d0f-9149-17e1c15cad2d)
+- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
 
-暂时仅支持PC端，待Tauri框架稳定后，会考虑支持手机端。
+## Type Support For `.vue` Imports in TS
 
-# 软件界面
+Since TypeScript cannot handle type information for `.vue` imports, they are shimmed to be a generic Vue component type by default. In most cases this is fine if you don't really care about component prop types outside of templates. However, if you wish to get actual prop types in `.vue` imports (for example to get props validation when using manual `h(...)` calls), you can enable Volar's Take Over mode by following these steps:
 
-![image](https://github.com/user-attachments/assets/8619378b-9208-402c-b9cc-e8476519d25c)
+1. Run `Extensions: Show Built-in Extensions` from VS Code's command palette, look for `TypeScript and JavaScript Language Features`, then right click and select `Disable (Workspace)`. By default, Take Over mode will enable itself if the default TypeScript extension is disabled.
+2. Reload the VS Code window by running `Developer: Reload Window` from the command palette.
 
-
-## 暗色调主题：
-
-![image](https://github.com/user-attachments/assets/d3da4f4d-756e-49a3-b3e1-18c326a562b2)
-
-
-
-## 亮色调主题：
-
-![image](https://github.com/user-attachments/assets/92b13021-862a-42d5-bcc2-69e5010734f7)
-
+You can learn more about Take Over mode [here](https://github.com/johnsoncodehk/volar/discussions/471).

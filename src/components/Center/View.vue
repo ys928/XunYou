@@ -261,7 +261,7 @@ async function onPositiveClick() {
 }
 
 let change_page = 0;
-let timer: string | number | NodeJS.Timeout | undefined;
+let timer:  number | undefined;
 
 function on_scroll() {
 	change_page = 0;

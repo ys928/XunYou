@@ -42,7 +42,7 @@ onMounted(() => {
             panelW = div_content.value.offsetWidth; //记录宽度
         }
     });
-    document.addEventListener("mouseup", e => {
+    document.addEventListener("mouseup", _e => {
         act_divid = false; //关闭
         cursor_store.set_change(true);
         if (div_divid_line.value) {

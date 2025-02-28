@@ -1,27 +1,15 @@
 {
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "xunyou",
+  "version": "2.2.2",
+  "identifier": "com.xunyou.app",
   "build": {
     "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:1420",
     "beforeBuildCommand": "npm run build",
-    "frontendDist": "../dist",
-    "devUrl": "http://localhost:1420"
+    "frontendDist": "../dist"
   },
-  "bundle": {
-    "active": true,
-    "icon": [
-      "icons/32x32.png",
-      "icons/128x128.png",
-      "icons/128x128@2x.png",
-      "icons/icon.icns",
-      "icons/icon.ico"
-    ],
-    "targets": "all"
-  },
-  "productName": "XunYou",
-  "version": "2.2.2",
-  "identifier": "com.xunyou",
-  "plugins": {},
   "app": {
-    "withGlobalTauri": false,
     "windows": [
       {
         "label": "MainWindow",
@@ -58,5 +46,16 @@
         }
       ]
     }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
   }
 }
