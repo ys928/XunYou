@@ -1,8 +1,10 @@
+
+
 # 介绍
 
 这是一个非常小巧、美观的PC端小说阅读器。
 
-目前仅支持txt文本，并且必须为utf-8编码，这可以从window记事本的右下角查看：
+目前支持 .txt 和 .novel 文本格式，并且必须为utf-8编码，这可以从window记事本的右下角查看：
 
 ![image](https://github.com/ys928/XunYou/assets/80371119/574faf70-b61f-4d0f-9149-17e1c15cad2d)
 
@@ -22,4 +24,3 @@
 ## 亮色调主题：
 
 ![image](https://github.com/user-attachments/assets/92b13021-862a-42d5-bcc2-69e5010734f7)
-
