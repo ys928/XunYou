@@ -4,18 +4,8 @@
 
 目前仅支持txt文本，并且必须为utf-8编码。
 
-# 软件界面
+## 软件主题
 
-![image](https://github.com/user-attachments/assets/8619378b-9208-402c-b9cc-e8476519d25c)
-
-
-## 暗色调主题：
-
-![image](https://github.com/user-attachments/assets/d3da4f4d-756e-49a3-b3e1-18c326a562b2)
-
-
-
-## 亮色调主题：
-
-![image](https://github.com/user-attachments/assets/92b13021-862a-42d5-bcc2-69e5010734f7)
-
+|                暗色              | 亮色                             |
+| -------------------------------- | --------------------------------- |
+| ![预览](https://github.com/user-attachments/assets/71eaa3e4-0512-47ba-9a0e-018c055981f5) | ![预览](https://github.com/user-attachments/assets/49014592-1cb7-417b-975b-a768a21a5f85) |
