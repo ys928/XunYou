@@ -1,37 +1,248 @@
+:root,
 html.light {
-    --base-bgc: #fff;
-    --base-bgc1: #f0f0f2;
-    --base-bgc2: #eee;
-    --text-color: #3e3e3e;
-    --text-color1: rgb(118, 124, 130);
-    --text-color2: #18a058;
-    --text-c3: #28313b;
-    --thumb-color: #ddd;
-    --track-color: #eee;
-    --border-color: #e7e7e7;
-    --hover-color: #cfcfcf;
-    --menu-bgc: #b4b3bd;
-    --menu-color: #2e2e2e;
-    --mih-color: #aaa;
-    --error-color: #f00;
-    --selected-color: #c6d6f2;
+    --base-bgc: #ffffff;
+    --base-bgc1: #f0f0f0;
+    --base-bgc2: #e8e8e8;
+    --surface: #f0f0f0;
+    --surface-raised: #f7f7f7;
+    --text-color: #2c2c2c;
+    --text-color1: #8a8a8a;
+    --text-color2: #4a4a4a;
+    --text-c3: #333333;
+    --thumb-color: #c8c8c8;
+    --track-color: #e8e8e8;
+    --border-color: #e0e0e0;
+    --border-subtle: #e8e8e8;
+    --hover-color: #e6e6e6;
+    --active-color: #dddddd;
+    --menu-bgc: #3a3a3a;
+    --menu-color: #f5f5f5;
+    --mih-color: #4f4f4f;
+    --error-color: #d45454;
+    --selected-color: #dcdcdc;
+    --accent: #5a5a5a;
+    --accent-soft: #e8e8e8;
+    --accent-strong: #3d3d3d;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+    --titlebar-h: 36px;
+    --statusbar-h: 26px;
+    --toolbar-w: 46px;
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+    --font-ui: "Segoe UI", "PingFang SC", "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
+    --page-bg: #ffffff;
+    --page-edge: transparent;
 }
 
 html.dark {
-    --base-bgc: #202020;
-    --base-bgc1: #282828;
-    --base-bgc2: #222;
-    --text-color: #fff;
-    --text-color1: rgba(255, 255, 255, 0.52);
-    --text-color2: #63e2b7;
-    --text-c3: #eaeaea;
-    --thumb-color: #959595;
-    --track-color: #333;
-    --border-color: #3e3e3e;
-    --hover-color: #3f3f3f;
-    --menu-bgc: #4a4a4a;
-    --menu-color: #999;
-    --mih-color: #5f5f5f;
-    --error-color: #f00;
-    --selected-color: #273d59;
+    --base-bgc: #1e1e1e;
+    --base-bgc1: #141414;
+    --base-bgc2: #2a2a2a;
+    --surface: #2a2a2a;
+    --surface-raised: #303030;
+    --text-color: #e6e6e6;
+    --text-color1: #9a9a9a;
+    --text-color2: #c8c8c8;
+    --text-c3: #d8d8d8;
+    --thumb-color: #555555;
+    --track-color: #333333;
+    --border-color: #3a3a3a;
+    --border-subtle: #333333;
+    --hover-color: #333333;
+    --active-color: #3a3a3a;
+    --menu-bgc: #333333;
+    --menu-color: #e6e6e6;
+    --mih-color: #454545;
+    --error-color: #d45454;
+    --selected-color: #404040;
+    --accent: #a0a0a0;
+    --accent-soft: #333333;
+    --accent-strong: #d0d0d0;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.25);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
+    --titlebar-h: 36px;
+    --statusbar-h: 26px;
+    --toolbar-w: 46px;
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+    --font-ui: "Segoe UI", "PingFang SC", "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
+    --page-bg: #1a1a1a;
+    --page-edge: transparent;
+}
+
+html,
+body,
+#app {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    background: var(--base-bgc);
+    color: var(--text-color);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-ui);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--thumb-color);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-color1);
+    background-clip: content-box;
+    border: 2px solid transparent;
+}
+
+.panel-shell {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+}
+
+.panel-title {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px 10px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--text-color);
+}
+
+.panel-title::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border-color), transparent);
+}
+
+.panel-search {
+    flex-shrink: 0;
+    padding: 0 12px 12px;
+}
+
+.panel-list {
+    flex: 1;
+    min-height: 0;
+    padding: 0 8px 10px;
+}
+
+.panel-item {
+    display: block;
+    min-height: 34px;
+    margin: 2px 0;
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+    color: var(--text-color1);
+    font-size: 13px;
+    line-height: 1.4;
+    cursor: pointer;
+    transition: background-color 0.18s var(--ease), color 0.18s var(--ease);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.panel-item:hover {
+    background: var(--hover-color);
+    color: var(--text-color);
+}
+
+.panel-item.is-active {
+    background: var(--active-color);
+    color: var(--text-color);
+}
+
+.panel-empty {
+    padding: 28px 16px;
+    text-align: center;
+    color: var(--text-color1);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.ctx-menu {
+    position: fixed;
+    z-index: 1000;
+    min-width: 120px;
+    padding: 4px;
+    border-radius: var(--radius-sm);
+    background: var(--menu-bgc);
+    color: var(--menu-color);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-color);
+}
+
+.ctx-menu .item {
+    padding: 7px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background-color 0.15s var(--ease);
+}
+
+.ctx-menu .item:hover {
+    background: var(--mih-color);
+}
+
+@keyframes panel-enter {
+    from {
+        opacity: 0;
+        transform: translateX(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes panel-enter-right {
+    from {
+        opacity: 0;
+        transform: translateX(6px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes fade-rise {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
 }

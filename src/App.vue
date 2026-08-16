@@ -7,23 +7,20 @@ import { useStyleStore } from './store/style';
 import { useCursorStore } from './store/cursor';
 
 type app_style = {
-  font_size: number, //font-size
-  font_weight: number, //font-weight
-  line_height: number, //line-height
-  font_family: string, //font-family
+  font_size: number,
+  font_weight: number,
+  line_height: number,
+  font_family: string,
 }
 
 const style_store = useStyleStore();
-
 const cursor_store = useCursorStore();
 
 onBeforeMount(async () => {
-  //取得配置文件中的设置信息
   let setting = await invoke<app_style>("cfg_app_get_style", {});
   style_store.set(setting.font_size, setting.font_weight, setting.font_family, setting.line_height);
 });
 
-//初始化
 onMounted(() => {
   document.oncontextmenu = () => {
     return false;
@@ -40,8 +37,6 @@ onMounted(() => {
     }
   });
 });
-
-
 </script>
 
 <template>
@@ -56,30 +51,22 @@ onMounted(() => {
   </div>
 </template>
 
-
 <style scoped lang="scss">
 .MainWindow {
   display: flex;
   flex-direction: column;
   height: 100vh;
   width: 100vw;
+  background: var(--base-bgc);
+  overflow: hidden;
+  user-select: none;
 
   .MainPanel {
-    background-color: var(--base-bgc1);
-    flex-grow: 1;
-    height: 100px;
+    flex: 1;
+    min-height: 0;
     width: 100%;
     display: flex;
+    background: var(--base-bgc1);
   }
-}
-</style>
-
-<style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: '楷体';
-  user-select: none;
 }
 </style>

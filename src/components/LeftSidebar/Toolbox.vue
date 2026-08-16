@@ -1,49 +1,39 @@
 <script setup lang="ts">
-// import { dialog, invoke } from '@tauri-apps/api';
-// import { ElButton } from 'element-plus';
-
-// async function fun_txt_to_bzip2() {
-//     const selected = await dialog.open({
-//         multiple: false,
-//         filters: [{
-//             name: '文本文件',
-//             extensions: ['txt']
-//         }]
-//     });
-//     if (selected === null) return;
-//     await invoke("txt_to_bzip", { txt: selected });
-// }
-
 </script>
 
 <template>
-    <div class="Toolbox">
-        <div class="title">工具箱</div>
-        <div class="tools">
-            <!-- <el-button @click="fun_txt_to_bzip2">txt转换</el-button> -->
+    <div class="Toolbox panel-shell">
+        <div class="panel-title">工具箱</div>
+        <div class="panel-empty tools">
+            <div class="badge">即将开放</div>
+            <p>格式转换与实用小工具会放在这里</p>
         </div>
     </div>
 </template>
 
 <style scoped lang="scss">
 .Toolbox {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    background-color: var(--base-bgc);
-
-    .title {
-        width: 100%;
-        text-align: center;
-        font-size: 16px;
-        margin: 10px 0;
-        color: #aaa;
+    .tools {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        padding-top: 48px;
     }
 
-    .tools {
-        padding: 0 5px;
-        margin: 0 5px;
-        display: flex;
+    .badge {
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        color: var(--accent-strong);
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+    }
+
+    p {
+        max-width: 160px;
+        line-height: 1.6;
     }
 }
 </style>

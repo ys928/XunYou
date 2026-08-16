@@ -6,9 +6,7 @@ import { useShowStore } from '../store/show';
 import { useCursorStore } from '../store/cursor';
 
 const show_store = useShowStore();
-
 const cursor_store = useCursorStore();
-
 const div_center_panel = ref();
 
 onMounted(async () => {
@@ -18,13 +16,13 @@ onMounted(async () => {
         }
     })
 });
-
-
 </script>
 
 <template>
     <div class="CenterView" ref="div_center_panel" v-loading="show_store.show_loading">
-        <View></View>
+        <div class="reader-stage">
+            <View></View>
+        </div>
         <ShowInfo v-show="show_store.show_prompt"></ShowInfo>
     </div>
 </template>
@@ -32,8 +30,14 @@ onMounted(async () => {
 <style scoped lang="scss">
 .CenterView {
     position: relative;
-    flex-grow: 1;
+    flex: 1;
+    min-width: 0;
     height: 100%;
-    background-color: var(--base-bgc1);
+    background: var(--page-bg);
+
+    .reader-stage {
+        height: 100%;
+        padding: 0;
+    }
 }
 </style>

@@ -296,21 +296,23 @@ function on_whell(e: WheelEvent) {
 <template>
 	<div class="View" @wheel="on_whell($event)">
 		<el-scrollbar @scroll="on_scroll">
-			<div class="title" ref="ref_div_title">{{ novel_store.show_chapter.title }}</div>
-			<div class="content" ref="ref_div_content" :style="style_store.style">
-				<div class="line" v-for="(item, index) in novel_store.show_chapter.lines" :key="index">
-					{{ item }}
+			<div class="page-inner">
+				<div class="title" ref="ref_div_title">{{ novel_store.show_chapter.title }}</div>
+				<div class="content" ref="ref_div_content" :style="style_store.style">
+					<div class="line" v-for="(item, index) in novel_store.show_chapter.lines" :key="index">
+						{{ item }}
+					</div>
 				</div>
 			</div>
 		</el-scrollbar>
-		<div class="opt_menu" ref="dev_menu" v-show="is_show_menu">
+		<div class="ctx-menu" ref="dev_menu" v-show="is_show_menu">
 			<div class="item" @click="fun_add_bookmark">添加书签</div>
 		</div>
-		<el-dialog v-model="show_edit_remark" width="500">
+		<el-dialog v-model="show_edit_remark" width="420" class="bookmark-dialog">
 			<template #header>
 				<div>书签备注</div>
 			</template>
-			<el-input placeholder="填写书签备注" v-model="bookmark.label"></el-input>
+			<el-input placeholder="填写书签备注（可选）" v-model="bookmark.label"></el-input>
 			<template #footer>
 				<div class="dialog-footer">
 					<el-button @click="onNegativeClick">取消</el-button>
@@ -324,21 +326,22 @@ function on_whell(e: WheelEvent) {
 <style scoped lang="scss">
 .View {
 	height: 100%;
-	margin: 0 15px;
-	border: none;
 
-	&::-webkit-scrollbar {
-		width: 10px;
+	.page-inner {
+		max-width: 760px;
+		margin: 0 auto;
+		padding: 24px 36px 48px;
 	}
 
 	.title {
-		font-size: 25px;
+		font-size: 20px;
 		color: var(--text-c3);
 		text-align: center;
-		margin: 15px 0;
+		margin: 8px 0 28px;
 		user-select: none;
 		font-family: inherit;
 		font-weight: inherit;
+		line-height: 1.6;
 	}
 
 	.line {
@@ -347,31 +350,12 @@ function on_whell(e: WheelEvent) {
 		user-select: text;
 		font-family: inherit;
 		font-weight: inherit;
-		margin: 15px 0;
+		margin: 0.7em 0;
+		text-indent: 2em;
 
 		&::selection {
 			background: var(--selected-color);
-			opacity: 0.5;
 			line-height: normal;
-		}
-	}
-
-	.opt_menu {
-		position: fixed;
-		border-radius: 5px;
-		padding: 3px 5px;
-		width: 100px;
-		background-color: var(--menu-bgc);
-		color: var(--menu-color);
-		cursor: pointer;
-
-		.item {
-			padding: 2px 10px;
-			border-radius: 5px;
-
-			&:hover {
-				background-color: var(--mih-color);
-			}
 		}
 	}
 }
