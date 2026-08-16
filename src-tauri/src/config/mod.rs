@@ -1,6 +1,7 @@
 use app::AppInfo;
 use log4rs::append::console::ConsoleAppender;
 use log4rs::config::Appender;
+use log4rs::config::Logger;
 use log4rs::config::Root;
 use log4rs::encode::pattern::PatternEncoder;
 use novel::NovelInfo;
@@ -311,6 +312,12 @@ pub fn init_log() {
 
     let config = log4rs::Config::builder()
         .appender(Appender::builder().build("stdout", Box::new(con)))
+        // Windows 上 tao 事件循环状态机不同步时会刷 WARN，属于上游已知误报，
+        // 开发时 HMR / 窗口重新获得焦点就会触发，不影响功能。
+        .logger(Logger::builder().build(
+            "tao::platform_impl::platform::event_loop::runner",
+            log::LevelFilter::Error,
+        ))
         .build(
             Root::builder()
                 .appender("stdout")
