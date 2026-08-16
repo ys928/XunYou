@@ -116,6 +116,22 @@ pub fn novel_get_num_chapters() -> Result<usize, String> {
     return Ok(novel.as_ref().unwrap().chapters.len());
 }
 
+/// 各章段落行数，用于按当前页容量估算全书剩余页数
+#[tauri::command]
+pub fn novel_get_chapter_line_counts() -> Result<Vec<usize>, String> {
+    let novel = OPENED_NOVEL.lock().unwrap();
+    if novel.is_none() {
+        return Err("还没有打开该小说".to_string());
+    }
+    Ok(novel
+        .as_ref()
+        .unwrap()
+        .chapters
+        .iter()
+        .map(|c| c.lines.len())
+        .collect())
+}
+
 #[tauri::command]
 pub fn novel_get_cata() -> Result<Vec<CataItem>, String> {
     let novel = OPENED_NOVEL.lock().unwrap();

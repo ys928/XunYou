@@ -44,6 +44,10 @@ export class Novel {
         return await invoke<number>("novel_get_num_chapters");
     }
 
+    static async get_chapter_line_counts() {
+        return await invoke<Array<number>>("novel_get_chapter_line_counts");
+    }
+
     static async get_cata() {
         return await invoke<Array<CataItem>>("novel_get_cata");
     }

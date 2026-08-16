@@ -28,6 +28,7 @@ pub fn run() {
             novel::novel_get_chapter,
             novel::novel_get_progress,
             novel::novel_get_num_chapters,
+            novel::novel_get_chapter_line_counts,
             novel::novel_get_cata,
             novel::novel_get_bookmark,
             novel::novel_add_bookmark,

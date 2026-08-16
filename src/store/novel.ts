@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { Ref, ref } from 'vue'
+import { Ref, ref, nextTick } from 'vue'
 import { Bookmark, CataItem, Novel } from '../api/novel'
 import { invoke } from '@tauri-apps/api/core'
 import { useShowStore } from './show'
@@ -35,8 +35,18 @@ export const useNovelStore = defineStore('novel', () => {
     // 小说章节数量
     let num_chapters = 0;
 
+    // 各章段落行数
+    const chapter_line_counts = ref<number[]>([]);
+
     // 章节内行数索引
     const cur_line_idx = ref(0);
+
+    // 分页信息（由阅读器根据可视行数计算）
+    const chapter_page = ref(0);
+    const chapter_page_count = ref(0);
+    const remaining_pages = ref(0);
+    const book_page = ref(0);
+    const book_pages = ref(0);
 
     //当前显示的章节内容
     const show_chapter = ref({ title: '', lines: [] }) as Ref<Chapter>;
@@ -45,7 +55,7 @@ export const useNovelStore = defineStore('novel', () => {
     const bookmark = ref([]) as Ref<Array<Bookmark>>
 
     // 跳转函数
-    let jump_novel_fun = (_chap: number, _line: number) => { };
+    let jump_novel_fun: (chap: number, line: number) => void | Promise<void> = () => { };
 
     // 打开小说
     async function open(filepath: string) {
@@ -70,13 +80,19 @@ export const useNovelStore = defineStore('novel', () => {
             if (ret) {
                 let re = await Novel.get_progress();
                 show_chapter.value = await Novel.get_chapter(cur_ch_idx.value);
-                show_store.set_loading(false);
                 show_store.set_prompt(false);
                 num_chapters = await Novel.get_num_chapters();
                 cata.value = await Novel.get_cata();
                 bookmark.value = await Novel.get_bookmark();
-                call_jump_fun(re.chapter, re.line);
+                try {
+                    chapter_line_counts.value = await Novel.get_chapter_line_counts();
+                } catch {
+                    chapter_line_counts.value = [];
+                }
                 isopen.value = true;
+                await nextTick();
+                await call_jump_fun(re.chapter, re.line);
+                show_store.set_loading(false);
                 return true;
             } else {
                 show_store.set_loading(false);
@@ -90,8 +106,28 @@ export const useNovelStore = defineStore('novel', () => {
     async function close() {
         isopen.value = false;
         cata.value = [];
+        chapter_line_counts.value = [];
         show_chapter.value.lines = [];
         show_chapter.value.title = '';
+        chapter_page.value = 0;
+        chapter_page_count.value = 0;
+        remaining_pages.value = 0;
+        book_page.value = 0;
+        book_pages.value = 0;
+    }
+
+    function set_pager_state(state: {
+        chapterPage: number
+        chapterPageCount: number
+        remainingPages: number
+        bookPage: number
+        bookPages: number
+    }) {
+        chapter_page.value = state.chapterPage;
+        chapter_page_count.value = state.chapterPageCount;
+        remaining_pages.value = state.remainingPages;
+        book_page.value = state.bookPage;
+        book_pages.value = state.bookPages;
     }
 
     async function add_bookmark(mark: Bookmark) {
@@ -140,7 +176,7 @@ export const useNovelStore = defineStore('novel', () => {
     }
 
     async function call_jump_fun(chap: number, line: number) {
-        jump_novel_fun(chap, line);
+        await jump_novel_fun(chap, line);
         save_record();
     }
 
@@ -160,5 +196,5 @@ export const useNovelStore = defineStore('novel', () => {
         call_jump_fun(bookmark.value[index].chapter, bookmark.value[index].line);
     }
 
-    return { name, path, cur_ch_idx, cur_line_idx, show_chapter, bookmark, isopen, cata, set_line, open, close, jump_to_bookmark, add_bookmark, del_bookmark, next_chapter, prev_chapter, set_show_chapter, set_jump_fun, call_jump_fun };
+    return { name, path, cur_ch_idx, cur_line_idx, show_chapter, bookmark, isopen, cata, chapter_line_counts, chapter_page, chapter_page_count, remaining_pages, book_page, book_pages, set_pager_state, set_line, open, close, jump_to_bookmark, add_bookmark, del_bookmark, next_chapter, prev_chapter, set_show_chapter, set_jump_fun, call_jump_fun };
 })

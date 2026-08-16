@@ -19,7 +19,7 @@ watch(() => novel_store.cata, (v) => {
 }, { deep: true });
 
 function dclick_cata_item(index: number) {
-    novel_store.set_show_chapter(index);
+    novel_store.call_jump_fun(index, 0);
 }
 
 function search_fun(v: string) {

@@ -6,18 +6,11 @@ import { useNovelStore } from '../store/novel';
 const cursor_store = useCursorStore();
 const novel_store = useNovelStore();
 
-const progressText = computed(() => {
-    if (!novel_store.isopen || novel_store.cata.length === 0) {
-        return '';
-    }
-    return `${novel_store.cur_ch_idx + 1} / ${novel_store.cata.length}`;
-});
-
 const progressPercent = computed(() => {
-    if (!novel_store.isopen || novel_store.cata.length === 0) {
+    if (!novel_store.isopen || novel_store.book_pages <= 0) {
         return 0;
     }
-    return Math.round(((novel_store.cur_ch_idx + 1) / novel_store.cata.length) * 100);
+    return Math.round((novel_store.book_page / novel_store.book_pages) * 100);
 });
 </script>
 
@@ -34,7 +27,8 @@ const progressPercent = computed(() => {
             </template>
         </div>
         <div class="right" v-if="novel_store.isopen">
-            <span class="muted">{{ progressText }}</span>
+            <span class="muted">本章 {{ novel_store.chapter_page }}/{{ novel_store.chapter_page_count }}</span>
+            <span class="muted">还剩 {{ novel_store.remaining_pages }} 页</span>
             <div class="progress" :title="`进度 ${progressPercent}%`">
                 <div class="fill" :style="{ width: progressPercent + '%' }"></div>
             </div>

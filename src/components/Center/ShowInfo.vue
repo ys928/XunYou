@@ -6,8 +6,8 @@
     <div class="shortcuts">
       <div class="row"><span class="keys">Ctrl + O</span><span class="desc">打开小说</span></div>
       <div class="row"><span class="keys">Ctrl + X</span><span class="desc">关闭当前</span></div>
-      <div class="row"><span class="keys">PageUp / ←</span><span class="desc">上一章</span></div>
-      <div class="row"><span class="keys">PageDown / →</span><span class="desc">下一章</span></div>
+      <div class="row"><span class="keys">← / ↑</span><span class="desc">上一页</span></div>
+      <div class="row"><span class="keys">→ / ↓</span><span class="desc">下一页</span></div>
     </div>
   </div>
 </template>
