@@ -2,11 +2,7 @@
 
 这是一个非常小巧、美观的PC端小说阅读器。
 
-目前仅支持txt文本，并且必须为utf-8编码，这可以从window记事本的右下角查看：
-
-![image](https://github.com/ys928/XunYou/assets/80371119/574faf70-b61f-4d0f-9149-17e1c15cad2d)
-
-暂时仅支持PC端，待Tauri框架稳定后，会考虑支持手机端。
+目前仅支持txt文本，并且必须为utf-8编码。
 
 # 软件界面
 
