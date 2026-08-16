@@ -5985,6 +5985,7 @@ version = "2.2.4"
 dependencies = [
  "bzip2",
  "dirs",
+ "encoding_rs",
  "log",
  "log4rs",
  "regex",

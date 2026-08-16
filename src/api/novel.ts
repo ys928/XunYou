@@ -27,9 +27,41 @@ export type CataItem = {
     idx: number
 }
 
+export type EncodingPreview = {
+    encoding: string,
+    display_name: string,
+    preview: string,
+    recommended: boolean,
+}
+
+export type OpenTxtResult = {
+    status: "ok" | "need_pick",
+    encoding: string | null,
+    auto_detected: boolean,
+    previews: EncodingPreview[],
+}
+
+export function encoding_display_name(encoding: string): string {
+    switch (encoding) {
+        case "GB18030": return "GB18030（简体中文）";
+        case "Big5": return "Big5（繁体中文）";
+        case "UTF-16LE": return "UTF-16 LE";
+        case "UTF-16BE": return "UTF-16 BE";
+        case "windows-1252": return "Windows-1252";
+        default: return encoding || "UTF-8";
+    }
+}
+
 export class Novel {
-    static async open_txt(filepath: string): Promise<boolean> {
-        return await invoke<boolean>("novel_open_txt", { filepath: filepath });
+    static async open_txt(filepath: string, encoding?: string | null): Promise<OpenTxtResult> {
+        return await invoke<OpenTxtResult>("novel_open_txt", {
+            filepath,
+            encoding: encoding ?? null,
+        });
+    }
+
+    static async preview_encodings(filepath: string): Promise<EncodingPreview[]> {
+        return await invoke<EncodingPreview[]>("novel_preview_encodings", { filepath });
     }
 
     static async get_chapter(idx: number) {

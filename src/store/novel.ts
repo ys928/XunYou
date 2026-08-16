@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia'
-import { Ref, ref, nextTick } from 'vue'
-import { Bookmark, CataItem, Novel } from '../api/novel'
+import { reactive, Ref, ref, nextTick } from 'vue'
+import { Bookmark, CataItem, EncodingPreview, encoding_display_name, Novel } from '../api/novel'
 import { invoke } from '@tauri-apps/api/core'
 import { useShowStore } from './show'
+import { ElMessage } from 'element-plus'
 import * as dialog from "@tauri-apps/plugin-dialog"
 import * as fs from "@tauri-apps/plugin-fs"
 
@@ -25,6 +26,16 @@ export const useNovelStore = defineStore('novel', () => {
 
     // 小说所在路径
     const path = ref('');
+
+    // 当前文本编码
+    const encoding = ref('UTF-8');
+
+    const encoding_dialog = reactive({
+        visible: false,
+        filepath: '',
+        previews: [] as EncodingPreview[],
+    });
+    let applying_encoding = false;
 
     // 当前显示的章节索引
     const cur_ch_idx = ref(0);
@@ -57,45 +68,111 @@ export const useNovelStore = defineStore('novel', () => {
     // 跳转函数
     let jump_novel_fun: (chap: number, line: number) => void | Promise<void> = () => { };
 
-    // 打开小说
-    async function open(filepath: string) {
-        let b = await fs.exists(filepath);
-        if (!b) {
-            await dialog.message('小说不存在！', { title: '打开失败', kind: 'warning' });
+    function show_encoding_dialog(filepath: string, previews: EncodingPreview[]) {
+        encoding_dialog.filepath = filepath;
+        encoding_dialog.previews = previews;
+        encoding_dialog.visible = true;
+    }
+
+    function close_encoding_dialog() {
+        encoding_dialog.visible = false;
+        if (applying_encoding) {
+            return;
+        }
+        if (!isopen.value) {
+            show_store.set_prompt(true);
+        }
+    }
+
+    async function apply_encoding(enc: string) {
+        const filepath = encoding_dialog.filepath;
+        applying_encoding = true;
+        encoding_dialog.visible = false;
+        try {
+            if (!filepath) {
+                return false;
+            }
+            return await open(filepath, enc);
+        } finally {
+            applying_encoding = false;
+        }
+    }
+
+    async function show_encoding_picker() {
+        if (!path.value) {
             return;
         }
         show_store.set_loading(true);
-        // 保存路径
-        path.value = filepath;
+        try {
+            const previews = await Novel.preview_encodings(path.value);
+            show_encoding_dialog(path.value, previews);
+        } catch (e) {
+            await dialog.message(String(e), { title: '无法预览编码', kind: 'warning' });
+        }
+        show_store.set_loading(false);
+    }
 
-        // 保存文件名作为小说名
-        let com_path = filepath.replaceAll('\\', '/');
-        let idx = com_path.lastIndexOf('/');
-        let filename = com_path.substring(idx + 1);
-        name.value = filename.substring(0, filename.lastIndexOf('.'));
-        console.log(name.value);
+    async function finish_open() {
+        const re = await Novel.get_progress();
+        cur_ch_idx.value = re.chapter ?? 0;
+        cur_line_idx.value = re.line ?? 0;
+        try {
+            show_chapter.value = await Novel.get_chapter(cur_ch_idx.value);
+        } catch {
+            cur_ch_idx.value = 0;
+            cur_line_idx.value = 0;
+            show_chapter.value = await Novel.get_chapter(0);
+        }
+        show_store.set_prompt(false);
+        num_chapters = await Novel.get_num_chapters();
+        cata.value = await Novel.get_cata();
+        bookmark.value = await Novel.get_bookmark();
+        try {
+            chapter_line_counts.value = await Novel.get_chapter_line_counts();
+        } catch {
+            chapter_line_counts.value = [];
+        }
+        isopen.value = true;
+        await nextTick();
+        await call_jump_fun(cur_ch_idx.value, cur_line_idx.value);
+        show_store.set_loading(false);
+        return true;
+    }
+
+    // 打开小说
+    async function open(filepath: string, forced_encoding?: string) {
+        let b = await fs.exists(filepath);
+        if (!b) {
+            await dialog.message('小说不存在！', { title: '打开失败', kind: 'warning' });
+            return false;
+        }
+        show_store.set_loading(true);
 
         if (filepath.endsWith('.txt')) {
-            let ret = await Novel.open_txt(filepath);
-            if (ret) {
-                let re = await Novel.get_progress();
-                show_chapter.value = await Novel.get_chapter(cur_ch_idx.value);
-                show_store.set_prompt(false);
-                num_chapters = await Novel.get_num_chapters();
-                cata.value = await Novel.get_cata();
-                bookmark.value = await Novel.get_bookmark();
-                try {
-                    chapter_line_counts.value = await Novel.get_chapter_line_counts();
-                } catch {
-                    chapter_line_counts.value = [];
+            try {
+                const ret = await Novel.open_txt(filepath, forced_encoding);
+                if (ret.status === 'need_pick') {
+                    show_store.set_loading(false);
+                    show_encoding_dialog(filepath, ret.previews);
+                    return false;
                 }
-                isopen.value = true;
-                await nextTick();
-                await call_jump_fun(re.chapter, re.line);
+                path.value = filepath;
+                let com_path = filepath.replaceAll('\\', '/');
+                let idx = com_path.lastIndexOf('/');
+                let filename = com_path.substring(idx + 1);
+                name.value = filename.substring(0, filename.lastIndexOf('.'));
+                encoding.value = ret.encoding || 'UTF-8';
+                const ok = await finish_open();
+                if (ok && ret.auto_detected && encoding.value !== 'UTF-8') {
+                    ElMessage.success(`已按 ${encoding_display_name(encoding.value)} 打开`);
+                }
+                return ok;
+            } catch (e) {
                 show_store.set_loading(false);
-                return true;
-            } else {
-                show_store.set_loading(false);
+                if (!isopen.value) {
+                    show_store.set_prompt(true);
+                }
+                await dialog.message(String(e), { title: '打开失败', kind: 'error' });
                 return false;
             }
         }
@@ -105,6 +182,7 @@ export const useNovelStore = defineStore('novel', () => {
 
     async function close() {
         isopen.value = false;
+        encoding.value = 'UTF-8';
         cata.value = [];
         chapter_line_counts.value = [];
         show_chapter.value.lines = [];
@@ -196,5 +274,5 @@ export const useNovelStore = defineStore('novel', () => {
         call_jump_fun(bookmark.value[index].chapter, bookmark.value[index].line);
     }
 
-    return { name, path, cur_ch_idx, cur_line_idx, show_chapter, bookmark, isopen, cata, chapter_line_counts, chapter_page, chapter_page_count, remaining_pages, book_page, book_pages, set_pager_state, set_line, open, close, jump_to_bookmark, add_bookmark, del_bookmark, next_chapter, prev_chapter, set_show_chapter, set_jump_fun, call_jump_fun };
+    return { name, path, encoding, encoding_dialog, cur_ch_idx, cur_line_idx, show_chapter, bookmark, isopen, cata, chapter_line_counts, chapter_page, chapter_page_count, remaining_pages, book_page, book_pages, set_pager_state, set_line, open, close, jump_to_bookmark, add_bookmark, del_bookmark, next_chapter, prev_chapter, set_show_chapter, set_jump_fun, call_jump_fun, show_encoding_picker, apply_encoding, close_encoding_dialog };
 })

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Titlebar from './components/Titlebar.vue';
 import Statusbar from './components/Statusbar.vue';
+import EncodingPicker from './components/EncodingPicker.vue';
 import { onBeforeMount, onMounted } from 'vue';
 import { invoke } from '@tauri-apps/api/core';
 import { useStyleStore } from './store/style';
@@ -48,6 +49,7 @@ onMounted(() => {
       <router-view name="RightSidebar"></router-view>
     </div>
     <Statusbar></Statusbar>
+    <EncodingPicker />
   </div>
 </template>
 

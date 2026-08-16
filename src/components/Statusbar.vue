@@ -27,6 +27,12 @@ const progressPercent = computed(() => {
             </template>
         </div>
         <div class="right" v-if="novel_store.isopen">
+            <button
+                class="enc-chip"
+                type="button"
+                :title="`当前编码 ${novel_store.encoding} · 显示乱码时可点击更换`"
+                @click="novel_store.show_encoding_picker"
+            >{{ novel_store.encoding }}</button>
             <span class="muted">本章 {{ novel_store.chapter_page }}/{{ novel_store.chapter_page_count }}</span>
             <span class="muted">还剩 {{ novel_store.remaining_pages }} 页</span>
             <div class="progress" :title="`进度 ${progressPercent}%`">
@@ -104,6 +110,24 @@ const progressPercent = computed(() => {
             border-radius: inherit;
             background: var(--text-color1);
             transition: width 0.25s var(--ease);
+        }
+    }
+
+    .enc-chip {
+        max-width: 92px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        border: none;
+        background: transparent;
+        color: var(--text-color1);
+        font-size: 11px;
+        padding: 0;
+        cursor: pointer;
+        font-family: inherit;
+
+        &:hover {
+            color: var(--text-color);
         }
     }
 

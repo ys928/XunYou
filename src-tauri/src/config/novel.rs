@@ -35,6 +35,8 @@ pub struct NovelInfo {
     pub name: String,
     pub bookmarks: Vec<Bookmark>,
     pub record: Progress,
+    #[serde(default)]
+    pub encoding: Option<String>,
 }
 
 fn get_novel_record(name: &str) -> Option<NovelInfo> {
@@ -65,7 +67,7 @@ pub fn cfg_nov_get_records() -> Vec<NovelInfo> {
 }
 
 /// 将指定路径的小说添加到配置文件历史记录中
-pub fn add_nov_record(path: &str) {
+pub fn add_nov_record(path: &str, encoding: Option<&str>) {
     let mut cfg = get_config();
 
     let name = Path::new(path)
@@ -81,12 +83,21 @@ pub fn add_nov_record(path: &str) {
             name,
             bookmarks: Vec::new(),
             record: Progress::default(),
+            encoding: encoding.map(|s| s.to_string()),
         });
     } else {
-        cfg.record[pos.unwrap()].path = path.to_string();
+        let rec = &mut cfg.record[pos.unwrap()];
+        rec.path = path.to_string();
+        if let Some(enc) = encoding {
+            rec.encoding = Some(enc.to_string());
+        }
     }
 
     set_config(cfg);
+}
+
+pub fn get_nov_encoding(name: &str) -> Option<String> {
+    get_novel_record(name)?.encoding
 }
 
 /// 删除指定名字的小说记录

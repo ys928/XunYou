@@ -188,17 +188,12 @@ async function fun_open_novel(path: string) {
 		return;
 	}
 
-	show_store.set_prompt(false);
-	show_store.set_loading(true);
 	if (path.endsWith(".novel")) {
 	} else if (path.endsWith(".txt")) {
 		await novel_store.open(path);
 	} else {
 		await dialog.message('不支持该类型文件！', { title: '打开失败', kind: 'warning' });
-		show_store.set_loading(false);
-		return;
 	}
-	show_store.set_loading(false);
 }
 
 watch(() => style_store.style, () => {

@@ -2,6 +2,7 @@
 
 mod config;
 mod novel;
+mod txt_encoding;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -25,6 +26,7 @@ pub fn run() {
             config::style::cfg_app_get_style,
             config::style::cfg_app_set_style,
             novel::novel_open_txt,
+            novel::novel_preview_encodings,
             novel::novel_get_chapter,
             novel::novel_get_progress,
             novel::novel_get_num_chapters,

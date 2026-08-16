@@ -7,15 +7,25 @@ use regex::Regex;
 use serde::{Deserialize, Serialize};
 
 use crate::config::novel::{
-    add_nov_bookmark, add_nov_record, del_nov_bookmark, get_nov_bookmarks, get_nov_progress,
-    set_nov_progress, Bookmark, Chapter, Progress,
+    add_nov_bookmark, add_nov_record, del_nov_bookmark, get_nov_bookmarks, get_nov_encoding,
+    get_nov_progress, set_nov_progress, Bookmark, Chapter, Progress,
 };
+use crate::txt_encoding::{self, EncodingPreview};
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct Novel {
     pub path: String,
     pub name: String,
+    pub encoding: String,
     pub chapters: Vec<Chapter>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct OpenTxtResult {
+    pub status: String,
+    pub encoding: Option<String>,
+    pub auto_detected: bool,
+    pub previews: Vec<EncodingPreview>,
 }
 
 /// 目录项
@@ -31,20 +41,68 @@ static OPENED_NOVEL: Mutex<Option<Novel>> = Mutex::new(None);
 
 /// 打开文本格式小说内容
 #[tauri::command(async)]
-pub fn novel_open_txt(filepath: &str) -> bool {
-    let nov_content = std::fs::read_to_string(filepath);
-    if nov_content.is_err() {
-        return false;
-    }
-    let nov_content = nov_content.unwrap();
+pub fn novel_open_txt(filepath: &str, encoding: Option<String>) -> Result<OpenTxtResult, String> {
+    let bytes =
+        std::fs::read(filepath).map_err(|e| format!("无法读取文件：{e}"))?;
 
-    let nov_content = nov_content.replace("\r", "");
-    let lines: Vec<&str> = nov_content.split("\n").collect();
+    let name = Path::new(filepath)
+        .file_stem()
+        .map(|s| s.to_string_lossy().to_string())
+        .unwrap_or_else(|| "未命名".to_string());
+
+    let forced = encoding
+        .as_deref()
+        .map(str::trim)
+        .filter(|s| !s.is_empty());
+
+    let outcome = if let Some(label) = forced {
+        txt_encoding::decode_with_label(&bytes, label)?
+    } else {
+        let hint = get_nov_encoding(&name);
+        txt_encoding::detect_and_decode(&bytes, hint.as_deref(), is_title)?
+    };
+
+    if outcome.low_confidence && forced.is_none() {
+        return Ok(OpenTxtResult {
+            status: "need_pick".to_string(),
+            encoding: Some(outcome.encoding),
+            auto_detected: true,
+            previews: txt_encoding::preview_encodings(&bytes, is_title),
+        });
+    }
+
+    let mut nov = parse_novel_text(&outcome.text);
+    nov.name = name;
+    nov.path = filepath.to_string();
+    nov.encoding = outcome.encoding.clone();
+
+    add_nov_record(filepath, Some(&outcome.encoding));
+
+    let mut novel = OPENED_NOVEL.lock().unwrap();
+    *novel = Some(nov);
+
+    Ok(OpenTxtResult {
+        status: "ok".to_string(),
+        encoding: Some(outcome.encoding),
+        auto_detected: forced.is_none() && !outcome.used_hint,
+        previews: Vec::new(),
+    })
+}
+
+#[tauri::command]
+pub fn novel_preview_encodings(filepath: &str) -> Result<Vec<EncodingPreview>, String> {
+    let bytes =
+        std::fs::read(filepath).map_err(|e| format!("无法读取文件：{e}"))?;
+    Ok(txt_encoding::preview_encodings(&bytes, is_title))
+}
+
+fn parse_novel_text(nov_content: &str) -> Novel {
+    let nov_content = nov_content.replace('\r', "");
+    let lines: Vec<&str> = nov_content.split('\n').collect();
 
     let mut chap = Chapter::default();
 
-    // 如果第一行不是标题，则添加一个默认标题
-    if !is_title(lines[0]) {
+    if !lines.is_empty() && !is_title(lines[0]) {
         chap.title = "开始".to_string();
     }
 
@@ -61,21 +119,8 @@ pub fn novel_open_txt(filepath: &str) -> bool {
         }
         chap.lines.push(line.to_string());
     }
-    // 最后一章
     nov.chapters.push(chap);
-    nov.name = Path::new(filepath)
-        .file_stem()
-        .unwrap()
-        .to_string_lossy()
-        .to_string();
-    nov.path = filepath.to_string();
-
-    // 保存在最近打开记录
-    add_nov_record(filepath);
-
-    let mut novel = OPENED_NOVEL.lock().unwrap();
-    *novel = Some(nov);
-    true
+    nov
 }
 
 /// 获取指定小说章节
