@@ -1,6 +1,6 @@
 [package]
 name = "xunyou"
-version = "2.2.2"
+version = "2.2.4"
 description = "xunyou"
 authors = ["ys928"]
 license = "MIT"
